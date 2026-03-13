@@ -1,0 +1,101 @@
+# AIOX Core Configuration for Synkra AIOX
+# Auto-generated for project configuration
+# Last Updated: 2026-03-13
+
+---
+project:
+  name: "Synkra AIOX"
+  type: "aiox-development"
+  description: "AI-Orchestrated System for Full Stack Development"
+
+# Development Story Location
+devStoryLocation: "docs/stories"
+
+# Product Requirements Documents
+prd:
+  enabled: true
+  shardedLocation: "docs/prd"
+
+# Architecture Documentation
+architecture:
+  enabled: true
+  shardedLocation: "docs/architecture"
+  version: "v4"
+
+# Quality Assurance
+qa:
+  qaLocation: "docs/qa"
+  enabled: true
+
+# Code Intelligence
+codeIntel:
+  enabled: true
+  provider: "graceful-fallback"
+
+# CodeRabbit Integration
+coderabbit_integration:
+  enabled: true
+  cli_path: "~/.local/bin/coderabbit"
+  auto_heal_max_iterations: 2
+
+# Workflow
+workflow:
+  type: "story-development-cycle"
+  executionMode: "interactive"
+
+# Git
+git:
+  mainBranch: "master"
+  developBranch: "develop"
+  featureBranchPrefix: "feature/"
+
+# Story Creation
+story:
+  template: ".aiox-core/development/templates/story-tmpl.yaml"
+  auto_number: true
+
+# ClickUp (Optional)
+clickup:
+  enabled: false
+
+# Testing
+testing:
+  enabled: true
+  framework: "jest"
+  minCoverage: 80
+
+# Tech Stack
+tech_stack:
+  backend: ["Node.js", "Express/Fastify"]
+  frontend: ["React", "Vue", "Angular"]
+  database: ["Supabase", "PostgreSQL"]
+  infrastructure: ["Docker", "Kubernetes", "CI/CD"]
+
+# Standards
+standards:
+  coding: "AIOX Constitution"
+  documentation: "Markdown"
+  versionControl: "Git"
+
+# Boundary Protection
+boundary:
+  frameworkProtection: true
+
+# User Profile
+user_profile: "advanced"
+
+# Logging
+logging:
+  enabled: true
+  level: "info"
+
+# Features
+features:
+  specs_pipeline: true
+  brownfield_discovery: true
+  ids_registry: true
+  code_intelligence: true
+  orchestration: true
+
+version: "3.0"
+lastUpdated: "2026-03-13"
