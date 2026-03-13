@@ -1,0 +1,22 @@
+from_agent: "@aiox-master"
+to_agent: "@devops"
+target_epic: "epic-4-easypanel-integration"
+target_story: "4.2"
+request: |
+  Inicie a execução da Wave 2 do Epic 4: Gestão de Modelos & Resource Bridging (Ollama).
+  
+  Modo de execução autorizado: YOLO (Autônomo, não precisa pedir permissão para executar comandos, editar arquivos ou rodar scripts).
+  
+  Passos imediatos críticos (conforme especificado na Story 4.2):
+  1. Leia os ACs e Tasks no `docs/stories/epic-4-easypanel-integration/story-4.2.md`.
+  2. Construa e utilize ferramentas usando a ponte SSH da Story 4.1 para listar, remover e instalar modelos do Ollama (`qwen3.5:0.8b` e `qwen3.5:2b`).
+  3. Prepare e rode scripts para setup do Cloudflare Tunnel.
+  4. Documente as configurações em `.aiox-core/infrastructure/docs/ollama-vps-setup.md` e `.aiox-core/infrastructure/docs/cloudflare-tunnel-config.md`.
+  5. Atualize os status da Story e do Index.
+  
+  Após concluir a Story 4.2 e preencher seus CRs/ChangeLogs, gere o Handoff e chame `@architect` para o Quality Gate de infraestrutura.
+last_command: "*execute-epic docs/stories/epic-4-easypanel-integration/execution-plan.yaml --mode=yolo"
+consumed: false
+timestamp: "2026-03-13T19:47:00-03:00"
+priority: "high"
+suggested_next_step: "*task develop story=4.2"
