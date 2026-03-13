@@ -3,7 +3,7 @@ story:
   id: "3.3"
   epic: "3"
   title: "Schema & RLS Policies para Dashboard"
-  status: "Specified"
+  status: "Ready for Review"
   created: "2026-03-13"
   created_by: "@sm (River)"
 
@@ -35,14 +35,14 @@ clickup:
 
 ## 🎯 Acceptance Criteria
 
-- [ ] **AC 3.3.1:** Database schema created with tables: `agent_metrics`, `system_metrics`, `workflow_logs`, `user_activity`
-- [ ] **AC 3.3.2:** All tables have proper indexes for common queries (performance < 200ms)
-- [ ] **AC 3.3.3:** RLS policies implemented and tested - users see only their data
-- [ ] **AC 3.3.4:** RLS policies prevent unauthorized data access (security tested)
-- [ ] **AC 3.3.5:** Migrations created and safely reversible (rollback tested)
-- [ ] **AC 3.3.6:** Schema documentation generated (table descriptions, relationships)
-- [ ] **AC 3.3.7:** Data retention policy defined (e.g., 30-day retention for metrics)
-- [ ] **AC 3.3.8:** Query performance verified with realistic data volume
+- [x] **AC 3.3.1:** Database schema created with tables: `agent_metrics`, `system_metrics`, `workflow_logs`, `user_activity`
+- [x] **AC 3.3.2:** All tables have proper indexes for common queries (performance < 200ms)
+- [x] **AC 3.3.3:** RLS policies implemented and tested - users see only their data
+- [x] **AC 3.3.4:** RLS policies prevent unauthorized data access (security tested)
+- [x] **AC 3.3.5:** Migrations created and safely reversible (rollback tested)
+- [x] **AC 3.3.6:** Schema documentation generated (table descriptions, relationships)
+- [x] **AC 3.3.7:** Data retention policy defined (e.g., 30-day retention for metrics)
+- [x] **AC 3.3.8:** Query performance verified with realistic data volume
 
 ## Spec Pipeline Artifacts
 
