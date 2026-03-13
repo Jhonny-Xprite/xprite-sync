@@ -1,0 +1,10 @@
+from_agent: pm
+to_agent: sm
+target_epic: "EPIC 1: Asset Restoration & Operational Compliance"
+epic_path: "docs/stories/epic-1-asset-restoration/epic.md"
+request: "Draft user stories 1.1, 1.2, and 1.3 as defined in the epic file. Ensure they follow the new directory structure: docs/stories/epic-1-asset-restoration/story-X.X.md"
+last_command: "*create-epic"
+consumed: true
+timestamp: "2026-03-13T13:45:00-03:00"
+priority: high
+suggested_next_step: "*draft story 1.1 --epic=1"

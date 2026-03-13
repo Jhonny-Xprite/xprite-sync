@@ -1,0 +1,25 @@
+from_agent: qa
+to_agent: architect
+wave: 1
+target_epic: "EPIC 1: Asset Restoration & Operational Compliance"
+story:
+  id: "1.2"
+  title: "Infrastructure Utility Script Porting"
+  story_path: "docs/stories/epic-1-asset-restoration/story-1.2.md"
+  spec_path: "docs/stories/epic-1-asset-restoration/story-1.2/spec/spec.md"
+  requirements_path: "docs/stories/epic-1-asset-restoration/story-1.2/spec/requirements.json"
+  execution_plan: "docs/stories/epic-1-asset-restoration/execution-plan.md"
+context: |
+  QA review completed (PASS). Story status: Ready for Review.
+  QA Results recorded in story file with findings:
+  - ACs met; infra scripts align with official backup; no absolute path issues.
+  - `npm run validate:agents` shows only upstream asset warnings (Story 1.1 scope).
+  - Validations run: validate:structure, validate:agents, lint/typecheck/test stubs.
+
+request: "Execute quality gate for Story 1.2. Confirm infra script parity/path safety and close gate."
+last_command: "*review 1.2"
+consumed: true
+timestamp: "2026-03-13T19:05:00-03:00"
+priority: high
+suggested_next_step: "*gate 1.2"
+

@@ -1,0 +1,30 @@
+{
+  "storyId": "1.3",
+  "gatheredAt": "2026-03-13T13:55:00-03:00",
+  "source": "existing",
+  "gatheredBy": "@aiox-master",
+  "elicitationVersion": "2.0",
+  "functional": [
+    {
+      "id": "FR-1",
+      "description": "Execute full stability and compliance validation sweep.",
+      "priority": "P0",
+      "rationale": "To confirm that the restoration effort was 100% successful.",
+      "acceptance": ["npm run validate:agents and validate:structure both pass."]
+    },
+    {
+      "id": "FR-2",
+      "description": "Conduct manual spot-checks on imported assets.",
+      "priority": "P1",
+      "rationale": "To ensure qualitative integrity beyond automated checks.",
+      "acceptance": ["Checklist of 5 random assets passes verification."]
+    }
+  ],
+  "constraints": [
+    {
+      "id": "CON-1",
+      "description": "Zero warnings/errors acceptable for final sign-off.",
+      "impact": "Establishes a high quality bar for the project."
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+from_agent: qa
+to_agent: pm
+target_epic: "EPIC 1: Asset Restoration & Operational Compliance"
+stories:
+  - id: "1.1"
+    critique_path: "docs/stories/epic-1-asset-restoration/story-1.1/spec/critique.json"
+    spec_path: "docs/stories/epic-1-asset-restoration/story-1.1/spec/spec.md"
+    verdict: "NEEDS_REVISION"
+    auto_fixable: 4
+    issues_medium: 3
+    issues_low: 2
+  - id: "1.2"
+    critique_path: "docs/stories/epic-1-asset-restoration/story-1.2/spec/critique.json"
+    spec_path: "docs/stories/epic-1-asset-restoration/story-1.2/spec/spec.md"
+    verdict: "NEEDS_REVISION"
+    auto_fixable: 4
+    issues_medium: 4
+    issues_low: 1
+  - id: "1.3"
+    critique_path: "docs/stories/epic-1-asset-restoration/story-1.3/spec/critique.json"
+    spec_path: "docs/stories/epic-1-asset-restoration/story-1.3/spec/spec.md"
+    verdict: "NEEDS_REVISION"
+    auto_fixable: 4
+    issues_medium: 4
+    issues_low: 1
+request: "Apply auto-fixes from critique.json to each spec.md. All issues are MEDIUM or LOW severity — no blockers. Each critique.json contains an 'autoFixes' array with suggested content. After applying fixes, re-submit specs for a second critique round to obtain APPROVED verdict."
+last_command: "*critique-spec"
+consumed: true
+timestamp: "2026-03-13T13:56:00-03:00"
+priority: high
+suggested_next_step: "*write-spec 1.1 --auto-fix"

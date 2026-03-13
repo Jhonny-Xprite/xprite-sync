@@ -1,0 +1,37 @@
+{
+  "storyId": "1.2",
+  "gatheredAt": "2026-03-13T13:53:00-03:00",
+  "source": "existing",
+  "gatheredBy": "@aiox-master",
+  "elicitationVersion": "2.0",
+  "functional": [
+    {
+      "id": "FR-1",
+      "description": "Identify missing infrastructure scripts in .aiox-core/infrastructure/.",
+      "priority": "P0",
+      "rationale": "To identify gaps in the operational toolset.",
+      "acceptance": ["List of missing reference scripts is generated."]
+    },
+    {
+      "id": "FR-2",
+      "description": "Port infrastructure utility scripts (bash, powershell) to the local workspace.",
+      "priority": "P0",
+      "rationale": "To restore full operational capabilities.",
+      "acceptance": ["Scripts are present in .aiox-core/infrastructure/scripts/ and /utils/."]
+    },
+    {
+      "id": "FR-3",
+      "description": "Ensure scripts have correct execution permissions and project-relative paths.",
+      "priority": "P1",
+      "rationale": "To ensure scripts are runnable across different environments.",
+      "acceptance": ["Scripts execute without path errors."]
+    }
+  ],
+  "constraints": [
+    {
+      "id": "CON-1",
+      "description": "Maintain cross-platform compatibility (Windows/Linux).",
+      "impact": "Ensures the framework works regardless of OS."
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+from_agent: aiox-master
+to_agent: qa
+target_epic: "EPIC 1: Asset Restoration & Operational Compliance"
+stories:
+  - id: "1.1"
+    spec_path: "docs/stories/epic-1-asset-restoration/story-1.1/spec/spec.md"
+    requirements_path: "docs/stories/epic-1-asset-restoration/story-1.1/spec/requirements.json"
+  - id: "1.2"
+    spec_path: "docs/stories/epic-1-asset-restoration/story-1.2/spec/spec.md"
+    requirements_path: "docs/stories/epic-1-asset-restoration/story-1.2/spec/requirements.json"
+  - id: "1.3"
+    spec_path: "docs/stories/epic-1-asset-restoration/story-1.3/spec/spec.md"
+    requirements_path: "docs/stories/epic-1-asset-restoration/story-1.3/spec/requirements.json"
+request: "Execute Phase 5 (Critique) of the spec-pipeline on all three specs. Run *critique-spec for each story. Produce critique.json with APPROVED/NEEDS_REVISION/BLOCKED verdict per spec."
+last_command: "*write-spec"
+consumed: true
+timestamp: "2026-03-13T13:53:00-03:00"
+priority: high
+suggested_next_step: "*critique-spec 1.1"

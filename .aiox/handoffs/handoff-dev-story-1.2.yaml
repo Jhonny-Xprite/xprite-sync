@@ -1,0 +1,31 @@
+from_agent: pm
+to_agent: dev
+wave: 1
+target_epic: "EPIC 1: Asset Restoration & Operational Compliance"
+story:
+  id: "1.2"
+  title: "Infrastructure Utility Script Porting"
+  story_path: "docs/stories/epic-1-asset-restoration/story-1.2.md"
+  spec_path: "docs/stories/epic-1-asset-restoration/story-1.2/spec/spec.md"
+  requirements_path: "docs/stories/epic-1-asset-restoration/story-1.2/spec/requirements.json"
+  execution_plan: "docs/stories/epic-1-asset-restoration/execution-plan.md"
+context: |
+  Wave 1 do EPIC 1. Esta story pode ser executada em paralelo com Story 1.1 (@analyst).
+  Spec APPROVED pelo QA (Critique Round 2, score 4.70/5).
+  
+  Resumo da missão:
+  1. Auditar `package.json` para identificar script references quebradas.
+  2. Portar scripts de `Recursos/Github/aiox-core-official` para `.aiox-core/infrastructure/scripts/`.
+  3. Sanitizar caminhos absolutos → usar `${PROJECT_ROOT}` ou `path.join()`.
+  4. Manter compatibilidade cross-platform: .sh + .ps1 (CON-1).
+  5. Verificar que scripts executam sem erros de path.
+  
+  Open Question (OQ-2): Se bash vs node cross-platform — escalar para @architect se necessário.
+  Referência completa: ler spec.md antes de iniciar.
+request: "Execute Story 1.2 following the approved spec. Read spec.md first, then execute the implementation checklist."
+last_command: "*execute-epic"
+consumed: true
+timestamp: "2026-03-13T14:04:00-03:00"
+priority: high
+suggested_next_step: "Read spec.md → Execute implementation checklist"
+

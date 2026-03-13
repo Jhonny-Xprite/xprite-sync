@@ -1,0 +1,29 @@
+from_agent: pm
+to_agent: analyst
+wave: 1
+target_epic: "EPIC 1: Asset Restoration & Operational Compliance"
+story:
+  id: "1.1"
+  title: "Core Skill & Agent Checklist Restoration"
+  story_path: "docs/stories/epic-1-asset-restoration/story-1.1.md"
+  spec_path: "docs/stories/epic-1-asset-restoration/story-1.1/spec/spec.md"
+  requirements_path: "docs/stories/epic-1-asset-restoration/story-1.1/spec/requirements.json"
+  execution_plan: "docs/stories/epic-1-asset-restoration/execution-plan.md"
+context: |
+  Wave 1 do EPIC 1. Esta story pode ser executada em paralelo com Story 1.2 (@dev).
+  Spec APPROVED pelo QA (Critique Round 2, score 4.85/5).
+  
+  Resumo da missão:
+  1. Rodar `npm run validate:agents` e capturar warnings de checklists/skills ausentes.
+  2. Mapear cada arquivo ausente ao equivalente em `Recursos/Github/aiox-core-official`.
+  3. Copiar seletivamente para `.aiox-core/checklists/` e `.aiox-core/skills/`.
+  4. NÃO sobrescrever customizações locais existentes (CON-1).
+  5. Revalidar com `npm run validate:agents` — zero warnings é o critério de aceite.
+  
+  Referência completa: ler spec.md antes de iniciar.
+request: "Execute Story 1.1 following the approved spec. Read spec.md first, then execute the implementation checklist."
+last_command: "*execute-epic"
+consumed: true
+timestamp: "2026-03-13T14:04:00-03:00"
+priority: high
+suggested_next_step: "Read spec.md → Execute implementation checklist"

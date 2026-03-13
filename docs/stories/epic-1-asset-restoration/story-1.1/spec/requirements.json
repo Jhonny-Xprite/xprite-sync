@@ -1,0 +1,49 @@
+{
+  "storyId": "1.1",
+  "gatheredAt": "2026-03-13T13:51:00-03:00",
+  "source": "existing",
+  "gatheredBy": "@aiox-master",
+  "elicitationVersion": "2.0",
+  "functional": [
+    {
+      "id": "FR-1",
+      "description": "Identify all missing skill and checklist files through agent validation logs.",
+      "priority": "P0",
+      "rationale": "To know exactly which assets are missing for compliance.",
+      "acceptance": ["npm run validate:agents shows identified missing files."]
+    },
+    {
+      "id": "FR-2",
+      "description": "Restore identified missing core skill and agent checklist assets from the official repository.",
+      "priority": "P0",
+      "rationale": "To restore framework functionality and eliminate warnings.",
+      "acceptance": ["Files are present in .aiox-core/checklists/ and .aiox-core/skills/."]
+    },
+    {
+      "id": "FR-3",
+      "description": "Verify asset restoration with framework validation tools.",
+      "priority": "P0",
+      "rationale": "To ensure 100% compliance for these specific assets.",
+      "acceptance": ["npm run validate:agents reports zero warnings for restored assets."]
+    }
+  ],
+  "constraints": [
+    {
+      "id": "CON-1",
+      "description": "Do not overwrite local customizations.",
+      "impact": "Prevents data loss of existing project-specific configurations."
+    },
+    {
+      "id": "CON-2",
+      "description": "Use official assets from 'Recursos/Github/aiox-core-official'.",
+      "impact": "Ensures version compatibility with AIOX-CORE v5.0.3."
+    }
+  ],
+  "testing": [
+    {
+      "id": "TST-1",
+      "description": "Execution of npm run validate:agents.",
+      "type": "automated"
+    }
+  ]
+}

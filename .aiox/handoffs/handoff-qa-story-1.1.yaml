@@ -1,0 +1,39 @@
+from_agent: analyst
+to_agent: qa
+wave: 1
+target_epic: "EPIC 1: Asset Restoration & Operational Compliance"
+story:
+  id: "1.1"
+  title: "Core Skill & Agent Checklist Restoration"
+  story_path: "docs/stories/epic-1-asset-restoration/story-1.1.md"
+  spec_path: "docs/stories/epic-1-asset-restoration/story-1.1/spec/spec.md"
+  requirements_path: "docs/stories/epic-1-asset-restoration/story-1.1/spec/requirements.json"
+  execution_plan: "docs/stories/epic-1-asset-restoration/execution-plan.md"
+context: |
+  Story concluded by @analyst. Status set to Ready for Review.
+  Validations run:
+  - npm run validate:agents (pass, 0 warnings)
+  - npm run lint (stub, exit 0)
+  - npm run typecheck (stub, exit 0)
+  - npm test (stub, exit 0)
+
+  Changes:
+  - Restored missing development assets from `Recursos/Github/aiox-core-official` into `.aiox-core/development/` for checklists, templates, data, scripts, utils, and `tasks/manage-story-backlog.md`.
+  - Preserved existing local files; copy was selective and non-destructive to satisfy CON-1.
+  - Applied a short follow-up correction to eliminate residual validation noise:
+    - removed invalid dependency `add-tech-doc.md` from `@aiox-master`
+    - removed invalid dependency `gitignore-manager` from `@devops`
+    - added `schemas` support to `.aiox-core/infrastructure/scripts/validate-agents.js`
+
+  Expected QA focus:
+  - Verify restored assets are in the exact validator lookup paths under `.aiox-core/development/`
+  - Confirm no local customization was overwritten
+  - Confirm acceptance criteria and story checklist/file list are consistent with the implementation
+  - Confirm `validate:agents` clean report is due to valid restoration plus minimal manifest correction
+
+request: "Execute QA gate for Story 1.1. Focus on selective restoration integrity, non-destructive asset import, and zero-warning agent validation."
+last_command: "*research-deps 1.1"
+consumed: true
+timestamp: "2026-03-13T19:05:00-03:00"
+priority: high
+suggested_next_step: "*review 1.1"

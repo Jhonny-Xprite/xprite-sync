@@ -1,0 +1,32 @@
+from_agent: dev
+to_agent: qa
+wave: 1
+target_epic: "EPIC 1: Asset Restoration & Operational Compliance"
+story:
+  id: "1.2"
+  title: "Infrastructure Utility Script Porting"
+  story_path: "docs/stories/epic-1-asset-restoration/story-1.2.md"
+  spec_path: "docs/stories/epic-1-asset-restoration/story-1.2/spec/spec.md"
+  requirements_path: "docs/stories/epic-1-asset-restoration/story-1.2/spec/requirements.json"
+  execution_plan: "docs/stories/epic-1-asset-restoration/execution-plan.md"
+context: |
+  Story concluded by @dev. Status set to Ready for Review.
+  Validations run:
+  - npm run validate:structure (pass)
+  - npm run validate:agents (pass, warnings only for upstream assets tracked in Story 1.1)
+  - npm run lint / typecheck / test (stubs, exit 0)
+
+  Changes:
+  - Added package.json + package-lock.json with working script targets to local .aiox-core infra.
+  - Synced .aiox-core/infrastructure/scripts/config-cache.js from official backup (hash match).
+  - Updated story checkboxes, Dev Agent Record, file list.
+
+  Outstanding warnings:
+  - validate:agents reports missing templates/data for other agents; scoped to Story 1.1 restoration.
+
+request: "Execute QA gate for Story 1.2. Focus on infra script parity, path safety, and acceptance criteria."
+last_command: "*develop 1.2"
+consumed: true
+timestamp: "2026-03-13T18:45:00-03:00"
+priority: high
+suggested_next_step: "*review 1.2"

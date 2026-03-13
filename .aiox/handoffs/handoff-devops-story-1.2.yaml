@@ -1,0 +1,23 @@
+from_agent: architect
+to_agent: github-devops
+wave: 1
+target_epic: "EPIC 1: Asset Restoration & Operational Compliance"
+story:
+  id: "1.2"
+  title: "Infrastructure Utility Script Porting"
+  story_path: "docs/stories/epic-1-asset-restoration/story-1.2.md"
+  spec_path: "docs/stories/epic-1-asset-restoration/story-1.2/spec/spec.md"
+  requirements_path: "docs/stories/epic-1-asset-restoration/story-1.2/spec/requirements.json"
+  execution_plan: "docs/stories/epic-1-asset-restoration/execution-plan.md"
+context: |
+  QA: PASS (recorded in QA Results).
+  Architecture Gate: PASS (recorded in story). Status: Ready for Review.
+  Validations run: validate:structure, validate:agents (warnings limited to assets pending in Story 1.1), lint/typecheck/test stubs.
+  Changes: package.json/package-lock.json added; config-cache.js synced to official; ACs all checked.
+
+request: "Prepare for push/PR once Story 1.1 also clears. Stage/commit locally; do not push until instructed."
+last_command: "*gate 1.2"
+consumed: false
+timestamp: "2026-03-13T19:20:00-03:00"
+priority: high
+suggested_next_step: "*push"

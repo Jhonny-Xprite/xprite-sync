@@ -1,0 +1,47 @@
+﻿{
+  "name": "xprite-sync-true",
+  "version": "0.1.0",
+  "description": "Local AIOX infrastructure scripts and validations (port from official repo)",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "scripts": {
+    "validate:structure": "node .aiox-core/infrastructure/scripts/validate-paths.js",
+    "validate:agents": "node .aiox-core/infrastructure/scripts/validate-agents.js",
+    "sync:ide": "node .aiox-core/infrastructure/scripts/ide-sync/index.js sync",
+    "sync:ide:check": "node .aiox-core/infrastructure/scripts/ide-sync/index.js validate --strict",
+    "sync:ide:claude": "node .aiox-core/infrastructure/scripts/ide-sync/index.js sync --ide claude-code",
+    "sync:ide:codex": "node .aiox-core/infrastructure/scripts/ide-sync/index.js sync --ide codex",
+    "sync:skills:codex": "node .aiox-core/infrastructure/scripts/codex-skills-sync/index.js",
+    "sync:skills:codex:global": "node .aiox-core/infrastructure/scripts/codex-skills-sync/index.js --global --global-only",
+    "lint": "echo \"lint: no tracked source files yet\"",
+    "typecheck": "echo \"typecheck: no TypeScript sources yet\"",
+    "test": "echo \"test: no automated tests yet\""
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.11.0",
+    "@kayvan/markdown-tree-parser": "^1.5.0",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "ansi-to-html": "^0.7.2",
+    "asciichart": "^1.5.25",
+    "chalk": "^4.1.2",
+    "chokidar": "^3.5.3",
+    "cli-progress": "^3.12.0",
+    "commander": "^12.1.0",
+    "execa": "^5.1.1",
+    "fast-glob": "^3.3.3",
+    "fs-extra": "^11.3.2",
+    "glob": "^10.4.4",
+    "handlebars": "^4.7.8",
+    "inquirer": "^8.2.6",
+    "js-yaml": "^4.1.0",
+    "ora": "^5.4.1",
+    "picocolors": "^1.1.1",
+    "proper-lockfile": "^4.1.2",
+    "semver": "^7.7.2",
+    "validator": "^13.15.15"
+  }
+}
