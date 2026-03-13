@@ -36,8 +36,8 @@ Story 1.2 (@dev)    ───┘
 | [Story 1.2](./story-1.2.md) | @dev | @architect | [spec.md](./story-1.2/spec/spec.md) | None |
 
 **Wave 1 Exit Criteria:**
-- [ ] Story 1.1: All checklists and skills restored, `validate:agents` passes for those assets.
-- [ ] Story 1.2: All infrastructure scripts ported, `package.json` references fixed.
+- [x] Story 1.1: All checklists and skills restored, `validate:agents` passes for those assets.
+- [x] Story 1.2: All infrastructure scripts ported, `package.json` references fixed.
 
 ### Wave 2: Final Validation (Sequential)
 
@@ -46,10 +46,10 @@ Story 1.2 (@dev)    ───┘
 | [Story 1.3](./story-1.3.md) | @qa | @architect | [spec.md](./story-1.3/spec/spec.md) | Story 1.1 ✅, Story 1.2 ✅ |
 
 **Wave 2 Exit Criteria:**
-- [ ] `npm run validate:agents` returns 0 warnings.
-- [ ] `npm run validate:structure` returns 0 errors.
-- [ ] Manual spot-check (5 files) passes.
-- [ ] Epic 1 DoD checkboxes all marked.
+- [x] `npm run validate:agents` returns 0 warnings.
+- [x] `npm run validate:structure` returns 0 errors.
+- [x] Manual spot-check (5 files) passes.
+- [x] Epic 1 DoD checkboxes all marked.
 
 ---
 
