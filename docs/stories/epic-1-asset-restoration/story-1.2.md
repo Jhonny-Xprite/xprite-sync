@@ -1,7 +1,7 @@
 ﻿# Story 1.2: Infrastructure Utility Script Porting
 
 ## Status
-- **Status**: Ready for Review
+- **Status**: Done
 - **Executor**: @dev
 - **Quality Gate**: @architect
 

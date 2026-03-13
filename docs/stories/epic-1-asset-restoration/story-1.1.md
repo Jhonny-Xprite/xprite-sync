@@ -1,7 +1,7 @@
 # Story 1.1: Core Skill & Agent Checklist Restoration
 
 ## Status
-- **Status**: Ready for Review
+- **Status**: Done
 - **Executor**: @analyst
 - **Quality Gate**: @pm
 
