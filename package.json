@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "xprite-sync-true",
   "version": "0.1.0",
   "description": "Local AIOX infrastructure scripts and validations (port from official repo)",
@@ -18,7 +18,9 @@
     "sync:skills:codex:global": "node .aiox-core/infrastructure/scripts/codex-skills-sync/index.js --global --global-only",
     "lint": "echo \"lint: no tracked source files yet\"",
     "typecheck": "echo \"typecheck: no TypeScript sources yet\"",
-    "test": "echo \"test: no automated tests yet\""
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@clack/prompts": "^0.11.0",
@@ -43,5 +45,9 @@
     "proper-lockfile": "^4.1.2",
     "semver": "^7.7.2",
     "validator": "^13.15.15"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "jest": "^30.3.0"
   }
 }

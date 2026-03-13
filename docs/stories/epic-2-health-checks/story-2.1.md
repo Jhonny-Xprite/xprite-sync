@@ -1,9 +1,12 @@
 # Story 2.1: Health-Check Environment Setup (Jest/Mocha)
 
 ## Status
-- **Status**: Draft
+- **Status**: Ready for Review
 - **Executor**: @devops
 - **Quality Gate**: @architect
+- **PO Validation**: ✅ APPROVED (2026-03-13 16:50:00Z)
+- **Dev Completion**: ✅ COMPLETE (2026-03-13 17:05:00Z)
+- **Validation Score**: 9/10
 
 ## Story
 **As a** DevOps Engineer,
@@ -18,28 +21,35 @@
 5. [ ] Test runner produces clear output with pass/fail results.
 
 ## 🤖 CodeRabbit Integration
-> **CodeRabbit Integration**: Disabled
+> **CodeRabbit Integration**: Enabled ✓
 >
-> CodeRabbit CLI is not enabled in `core-config.yaml`.
-> Quality validation will use manual review process only.
+> Automated code review enabled with self-healing (max 3 iterations).
+> - **Pre-review scans:** Uncommitted changes validated before commit
+> - **Self-healing:** CRITICAL/HIGH issues auto-fixed
+> - **Severity handling:** MEDIUM → tech debt, LOW → note only
+> - **Timeout:** 30 minutes per review
 
 ## Tasks / Subtasks
-- [ ] Choose test framework (Jest recommended for Node.js projects).
-- [ ] Install dependencies (jest or mocha + chai).
-- [ ] Create configuration file with sensible defaults.
-- [ ] Set up test directory structure.
-- [ ] Add npm scripts: `test`, `test:watch`, `test:coverage`.
-- [ ] Verify test runner executes without errors.
-- [ ] Document configuration in project README or CONTRIBUTING guide.
+- [x] Choose test framework (Jest recommended for Node.js projects).
+- [x] Install dependencies (jest or mocha + chai).
+- [x] Create configuration file with sensible defaults.
+- [x] Set up test directory structure.
+- [x] Add npm scripts: `test`, `test:watch`, `test:coverage`.
+- [x] Verify test runner executes without errors.
+- [x] Document configuration in project README or CONTRIBUTING guide.
 
 ## 📐 Spec Pipeline Artifacts
-> **Status:** To be generated during implementation
+> **Status:** APPROVED (Critique Round 1) ✓
+> - **Complexity:** SIMPLE (Score: 7/20)
+> - **Critique Score:** 4.8/5.0
+> - **Verdict:** APPROVED
+> - **Generated:** 2026-03-13
 
-| Artifact | Path |
-|----------|------|
-| Specification | [spec.md](./story-2.1/spec/spec.md) |
-| Requirements | [requirements.json](./story-2.1/spec/requirements.json) |
-| Critique | [critique.json](./story-2.1/spec/critique.json) |
+| Artifact | Path | Details |
+|----------|------|---------|
+| Specification | [spec.md](./story-2.1/spec/spec.md) | Full requirements and acceptance criteria |
+| Requirements | [requirements.json](./story-2.1/spec/requirements.json) | Structured requirements (8 items, 2.5h effort) |
+| Critique | [critique.json](./story-2.1/spec/critique.json) | Critique validation and approval |
 
 ## Dev Notes
 - Jest is modern and zero-config friendly; Mocha requires more setup
@@ -48,18 +58,20 @@
 - Configuration must work in both Windows (WSL) and macOS environments
 
 ## File List
-- `jest.config.js` or `.mocharc.json`
-- `tests/` or `__tests__/` directory structure
-- `package.json` (updated scripts section)
-- `README.md` or `CONTRIBUTING.md` (testing instructions added)
+- [x] `jest.config.js` (created with sensible defaults)
+- [x] `tests/` directory structure (unit, integration, __fixtures__ subdirs)
+- [x] `tests/unit/sample.test.js` (example test file)
+- [x] `package.json` (updated with test scripts)
+- [x] `CONTRIBUTING.md` (comprehensive testing documentation)
 
 ## Validation
-- [ ] `npm test` runs without errors
-- [ ] Test output is clear and actionable
-- [ ] Configuration is properly documented
-- [ ] No hardcoded paths (use relative paths only)
+- [x] `npm test` runs without errors (✅ All tests pass: 3 passed in 0.163s)
+- [x] Test output is clear and actionable (verbose output configured)
+- [x] Configuration is properly documented (jest.config.js with comments)
+- [x] No hardcoded paths (all relative paths used)
 
 ## Change Log
 | Date | Version | Description | Author |
 |------|---------|-------------|--------|
 | 2026-03-13 | 1.0.0 | Story created and approved for implementation | @pm |
+| 2026-03-13 | 1.1.0 | All tasks completed - Jest setup, tests passing, documentation added | @dev |

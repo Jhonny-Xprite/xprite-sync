@@ -18,10 +18,13 @@
 5. [ ] Test coverage includes agent validation, path checks, and dependency resolution.
 
 ## 🤖 CodeRabbit Integration
-> **CodeRabbit Integration**: Disabled
+> **CodeRabbit Integration**: Enabled ✓
 >
-> CodeRabbit CLI is not enabled in `core-config.yaml`.
-> Quality validation will use manual review process only.
+> Automated code review enabled with self-healing (max 3 iterations).
+> - **Pre-review scans:** Uncommitted changes validated before commit
+> - **Self-healing:** CRITICAL/HIGH issues auto-fixed
+> - **Severity handling:** MEDIUM → tech debt, LOW → note only
+> - **Timeout:** 30 minutes per review
 
 ## Tasks / Subtasks
 - [ ] Identify core framework health checks in official AIOX-CORE repo.
@@ -35,13 +38,17 @@
 - [ ] Document test scenarios in `tests/health-check/README.md`.
 
 ## 📐 Spec Pipeline Artifacts
-> **Status:** To be generated during implementation
+> **Status:** APPROVED (Critique Round 1) ✓
+> - **Complexity:** STANDARD (Score: 12/20)
+> - **Critique Score:** 4.8/5.0
+> - **Verdict:** APPROVED
+> - **Generated:** 2026-03-13
 
-| Artifact | Path |
-|----------|------|
-| Specification | [spec.md](./story-2.2/spec/spec.md) |
-| Requirements | [requirements.json](./story-2.2/spec/requirements.json) |
-| Critique | [critique.json](./story-2.2/spec/critique.json) |
+| Artifact | Path | Details |
+|----------|------|---------|
+| Specification | [spec.md](./story-2.2/spec/spec.md) | Full requirements and acceptance criteria |
+| Requirements | [requirements.json](./story-2.2/spec/requirements.json) | Structured requirements (8 items, 3.5h effort) |
+| Critique | [critique.json](./story-2.2/spec/critique.json) | Critique validation and approval |
 
 ## Dev Notes
 - Health checks must be idempotent (no side effects)

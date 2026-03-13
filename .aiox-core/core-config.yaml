@@ -104,6 +104,22 @@ boundary:
     - .aiox-core/development/agents/*/MEMORY.md
     - .aiox-core/core/config/schemas/**
     - .aiox-core/core/config/template-overrides.js
+coderabbit:
+  enabled: true
+  cli:
+    installPath: ~/.local/bin/coderabbit
+    workingDir: ${PROJECT_ROOT}
+    timeout: 1800000
+  integration:
+    preReview: true
+    selfHealing:
+      enabled: true
+      maxIterations: 3
+    severity:
+      CRITICAL: auto_fix
+      HIGH: auto_fix
+      MEDIUM: document_as_debt
+      LOW: ignore
 agentIdentity:
   greeting:
     contextDetection: true

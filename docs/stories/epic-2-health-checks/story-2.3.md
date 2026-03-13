@@ -19,10 +19,13 @@
 6. [ ] Documentation updated in CONTRIBUTING.md guide.
 
 ## 🤖 CodeRabbit Integration
-> **CodeRabbit Integration**: Disabled
+> **CodeRabbit Integration**: Enabled ✓
 >
-> CodeRabbit CLI is not enabled in `core-config.yaml`.
-> Quality validation will use manual review process only.
+> Automated code review enabled with self-healing (max 3 iterations).
+> - **Pre-review scans:** Uncommitted changes validated before commit
+> - **Self-healing:** CRITICAL/HIGH issues auto-fixed
+> - **Severity handling:** MEDIUM → tech debt, LOW → note only
+> - **Timeout:** 30 minutes per review
 
 ## Tasks / Subtasks
 - [ ] Create pre-commit hook script (`.git/hooks/pre-commit`).
@@ -36,13 +39,17 @@
 - [ ] Create installation script or document manual setup steps.
 
 ## 📐 Spec Pipeline Artifacts
-> **Status:** To be generated during implementation
+> **Status:** APPROVED (Critique Round 1) ✓
+> - **Complexity:** STANDARD (Score: 10/20)
+> - **Critique Score:** 4.8/5.0
+> - **Verdict:** APPROVED
+> - **Generated:** 2026-03-13
 
-| Artifact | Path |
-|----------|------|
-| Specification | [spec.md](./story-2.3/spec/spec.md) |
-| Requirements | [requirements.json](./story-2.3/spec/requirements.json) |
-| Critique | [critique.json](./story-2.3/spec/critique.json) |
+| Artifact | Path | Details |
+|----------|------|---------|
+| Specification | [spec.md](./story-2.3/spec/spec.md) | Full requirements and acceptance criteria |
+| Requirements | [requirements.json](./story-2.3/spec/requirements.json) | Structured requirements (8 items, 2.0h effort) |
+| Critique | [critique.json](./story-2.3/spec/critique.json) | Critique validation and approval |
 
 ## Dev Notes
 - Pre-commit hooks are not automatically installed; document setup steps
