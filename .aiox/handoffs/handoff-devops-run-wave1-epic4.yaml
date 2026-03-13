@@ -1,0 +1,22 @@
+from_agent: "@aiox-master"
+to_agent: "@devops"
+target_epic: "epic-4-easypanel-integration"
+target_story: "4.1"
+request: |
+  Inicie a execução da Wave 1 do Epic 4: Ponte SSH Base — AIOX Ganha Acesso à VPS.
+  
+  Modo de execução autorizado: YOLO (Autônomo, não precisa pedir permissão para executar comandos, editar arquivos ou rodar scripts).
+  
+  Passos imediatos críticos:
+  1. Leia os ACs e Tasks no `docs/stories/epic-4-easypanel-integration/story-4.1.md`.
+  2. Leia a spec rigorosa no `docs/stories/epic-4-easypanel-integration/story-4.1/spec/spec.md`.
+  3. Você está autorizado a ler, criar chaves ED25519 (se não existirem) e realizar chamadas `ssh`.
+  4. Modifique o `.gitignore` para selar as chaves como documentado.
+  5. Você DEVE provar o sucesso mostrando a saída do `vps-ssh-test.js` que foi arrumado e atestado.
+  
+  Após concluir a Story 4.1 e preencher seus CRs/ChangeLogs, chame `@architect` para o Quality Gate de infraestrutura.
+last_command: "*execute-epic docs/stories/epic-4-easypanel-integration/execution-plan.yaml --mode=yolo"
+consumed: false
+timestamp: "2026-03-13T19:37:00-03:00"
+priority: "critical"
+suggested_next_step: "*task develop story=4.1"
