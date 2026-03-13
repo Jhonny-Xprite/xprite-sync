@@ -1,7 +1,7 @@
 # Story 4.2: Gestão de Modelos & Resource Bridging (Ollama)
 
 ## Status
-- **Status:** Pendente ⏳
+- **Status:** In Progress 🏃
 - **Executor:** `@devops` / `@qa`
 - **Quality Gate:** `@architect`
 - **Epic:** [Epic 4 — VPS como Extensão Inteligente do AIOX](./epic.md)
@@ -34,7 +34,7 @@
 
 ## Tasks / Subtasks
 
-- [ ] **Task 1 — Auditoria & Limpeza de Modelos:**
+- [x] **Task 1 — Auditoria & Limpeza de Modelos:**
   Via AIOX (SSH), executar:
   ```bash
   ollama list
@@ -44,8 +44,9 @@
   ollama rm <nome-do-modelo>
   ```
   Confirmar `ollama list` limpo após remoção.
+  ✅ Modelos `qwen2.5` removidos.
 
-- [ ] **Task 2 — Instalar Família Qwen 3.5:**
+- [x] **Task 2 — Instalar Família Qwen 3.5:**
   Via AIOX (SSH), executar sequencialmente:
   ```bash
   ollama pull qwen3.5:0.8b    # ~500 MB — sempre instalar
@@ -54,6 +55,7 @@
   # Se RAM livre > 5 GB: ollama pull qwen3.5:4b
   ```
   Validar com `ollama list` pós-instalação. Documentar versões efetivamente instaladas.
+  ✅ `qwen3.5:0.8b` e `qwen3.5:2b` instalados com sucesso.
 
 - [ ] **Task 3 — Configurar KEEP_ALIVE:**
   Aplicar `OLLAMA_KEEP_ALIVE=5m` no serviço Ollama da VPS. Opções (avaliar o que está disponível):
