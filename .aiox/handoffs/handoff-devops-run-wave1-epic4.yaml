@@ -16,7 +16,7 @@ request: |
   
   Após concluir a Story 4.1 e preencher seus CRs/ChangeLogs, chame `@architect` para o Quality Gate de infraestrutura.
 last_command: "*execute-epic docs/stories/epic-4-easypanel-integration/execution-plan.yaml --mode=yolo"
-consumed: false
+consumed: true
 timestamp: "2026-03-13T19:37:00-03:00"
 priority: "critical"
 suggested_next_step: "*task develop story=4.1"
