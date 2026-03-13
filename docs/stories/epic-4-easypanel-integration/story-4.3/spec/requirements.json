@@ -1,0 +1,303 @@
+{
+  "storyId": "epic-4-easypanel-integration/story-4.3",
+  "gatheredAt": "2026-03-13T19:16:00-03:00",
+  "source": "prd",
+  "gatheredBy": "@pm",
+  "elicitationVersion": "2.0",
+  "prdReference": "docs/prd/epic-4-easypanel.md",
+  "storyReference": "docs/stories/epic-4-easypanel-integration/story-4.3.md",
+
+  "functional": [
+    {
+      "id": "FR-1",
+      "description": "Criar o módulo ssh-executor.js em .aiox-core/infrastructure/scripts/ como utilitário SSH genérico e reutilizável, exportando executeOnVps(command: string): Promise<{stdout, stderr}>. Refatorar vps-ssh-test.js para usar este módulo.",
+      "priority": "P0",
+      "rationale": "DRY principle — a lógica SSH será usada em múltiplos scripts. Um módulo central garante consistência e facilita manutenção.",
+      "acceptance": ["AC-1"]
+    },
+    {
+      "id": "FR-2",
+      "description": "O script vps-health-check.js deve coletar via SSH as seguintes métricas: uso de RAM (free -h), uso de disco (df -h /), uso de CPU (top -bn1), uptime, status do processo Ollama, status do processo cloudflared.",
+      "priority": "P0",
+      "rationale": "Métricas mínimas para o AIOX ter consciência do estado de saúde básico da VPS.",
+      "acceptance": ["AC-2"]
+    },
+    {
+      "id": "FR-3",
+      "description": "O script vps-health-check.js deve integrar com a Easypanel API para consultar o status de containers/serviços, usando EASYPANEL_API_TOKEN como variável de ambiente.",
+      "priority": "P1",
+      "rationale": "A Easypanel API fornece status de serviços de forma estruturada, complementando as métricas brutas do SSH.",
+      "acceptance": ["AC-3"]
+    },
+    {
+      "id": "FR-4",
+      "description": "O health report deve ser exibido em formato semafórico estruturado: ✅ (OK — abaixo do threshold), ⚠️ (Atenção — próximo do limite), ❌ (Crítico — acima do limite ou serviço down).",
+      "priority": "P0",
+      "rationale": "Formato visual permite leitura imediata do estado da VPS sem necessidade de interpretar números.",
+      "acceptance": ["AC-4"]
+    },
+    {
+      "id": "FR-5",
+      "description": "Alertas proativos: RAM > VPS_RAM_THRESHOLD (padrão 80%) → ❌ CRÍTICO + process.exit(1) + ação sugerida. Disco > VPS_DISK_THRESHOLD (padrão 75%) → ⚠️ ATENÇÃO + ação sugerida.",
+      "priority": "P0",
+      "rationale": "Alertas preemptivos permitem ao AIOX agir antes que a VPS atinja estado de falha.",
+      "acceptance": ["AC-5"]
+    },
+    {
+      "id": "FR-6",
+      "description": "Serviços críticos (Ollama, cloudflared) down devem gerar alerta ❌ CRÍTICO com instrução específica de restart (via SSH ou Easypanel).",
+      "priority": "P0",
+      "rationale": "Serviços down bloqueiam funcionalidades das Stories 4.1 e 4.2.",
+      "acceptance": ["AC-5"]
+    },
+    {
+      "id": "FR-7",
+      "description": "O script deve gerar recomendações inteligentes contextuais baseadas no estado real: ex. 'Disco em 78% — execute docker image prune -a -f' ou 'RAM crítica — execute ollama stop qwen3.5:2b'.",
+      "priority": "P1",
+      "rationale": "Recomendações com ações concretas transformam o AIOX de monitor passivo em guardião ativo.",
+      "acceptance": ["AC-6"]
+    },
+    {
+      "id": "FR-8",
+      "description": "Os thresholds de alerta devem ser configuráveis via variáveis de ambiente: VPS_RAM_THRESHOLD (padrão 80) e VPS_DISK_THRESHOLD (padrão 75).",
+      "priority": "P1",
+      "rationale": "Diferentes contextos podem requerer diferentes sensibilidades de alerta.",
+      "acceptance": ["AC-7"]
+    },
+    {
+      "id": "FR-9",
+      "description": "Adicionar npm script 'vps:health' ao package.json raiz e 'vps:ssh' para execução direta de comandos remotos: npm run vps:ssh \"<command>\".",
+      "priority": "P0",
+      "rationale": "Interface padronizada para o AIOX acessar a VPS sem conhecer os detalhes de implementação SSH.",
+      "acceptance": ["AC-8"]
+    },
+    {
+      "id": "FR-10",
+      "description": "Criar .env.example completo para o Epic 4 com todas as variáveis necessárias (VPS_IP, VPS_USER, EASYPANEL_API_TOKEN, CLOUDFLARE_TUNNEL_URL, OLLAMA_API_TOKEN, thresholds) sem valores reais.",
+      "priority": "P1",
+      "rationale": "Permite que qualquer dev/agente saiba quais variáveis configurar sem expor segredos.",
+      "acceptance": ["AC-9"]
+    },
+    {
+      "id": "FR-11",
+      "description": "Criar .aiox-core/infrastructure/docs/devsecops-playbook.md documentando: interpretação dos indicadores, thresholds, playbook de resposta por tipo de alerta, comandos de diagnóstico rápido.",
+      "priority": "P1",
+      "rationale": "Knowledge base para que qualquer agente AIOX (ou o usuário) saiba como responder a cada situação.",
+      "acceptance": ["AC-10"]
+    }
+  ],
+
+  "nonFunctional": [
+    {
+      "id": "NFR-1",
+      "category": "reliability",
+      "description": "O script vps-health-check.js deve completar a coleta de todas as métricas em menos de 30 segundos em condições normais de rede.",
+      "metric": "Execução completa < 30s medida localmente contra VPS real"
+    },
+    {
+      "id": "NFR-2",
+      "category": "security",
+      "description": "EASYPANEL_API_TOKEN e todas as credenciais lidas exclusivamente de variáveis de ambiente — jamais hardcoded no código.",
+      "metric": "grep -r 'EASYPANEL_API_TOKEN=' src/ retorna zero resultados com valor"
+    },
+    {
+      "id": "NFR-3",
+      "category": "usability",
+      "description": "Falha de autenticação na Easypanel API deve produzir mensagem de erro descritiva, não crash silencioso ou stack trace.",
+      "metric": "EASYPANEL_API_TOKEN=invalido npm run vps:health → erro descritivo legível por humano"
+    },
+    {
+      "id": "NFR-4",
+      "category": "reliability",
+      "description": "Se a Easypanel API não estiver disponível, o script deve continuar com as métricas SSH e reportar apenas que a integração Easypanel falhou (degraded mode).",
+      "metric": "Script com API indisponível retorna health report parcial, não erro fatal"
+    },
+    {
+      "id": "NFR-5",
+      "category": "scalability",
+      "description": "O módulo ssh-executor.js deve ser genérico o suficiente para ser reutilizado em scripts futuros sem modificação.",
+      "metric": "API pública: executeOnVps(command) — sem acoplamento a comandos específicos"
+    }
+  ],
+
+  "constraints": [
+    {
+      "id": "CON-1",
+      "type": "technical",
+      "description": "ssh-executor.js deve usar apenas módulos nativos do Node.js (child_process, util) — zero dependências externas de SSH.",
+      "impact": "Mantém o padrão AIOX de dependências mínimas e portabilidade."
+    },
+    {
+      "id": "CON-2",
+      "type": "technical",
+      "description": "A Easypanel API é tRPC — endpoints e formatos devem ser mapeados na versão instalada na VPS antes de implementar.",
+      "impact": "Se a API não suportar o necessário, usar 'docker ps' via SSH como fallback obrigatório."
+    },
+    {
+      "id": "CON-3",
+      "type": "business",
+      "description": "Esta story depende de Stories 4.1 (SSH) e 4.2 (Ollama + Tunnel ativos) estarem completas.",
+      "impact": "Não pode ser iniciada antes de 4.1 e 4.2 estarem aprovadas no QA Gate."
+    },
+    {
+      "id": "CON-4",
+      "type": "technical",
+      "description": ".env não deve nunca ser rastreado pelo Git. .env.example é o arquivo versionado.",
+      "impact": "git status deve sempre mostrar .env como .gitignored."
+    }
+  ],
+
+  "assumptions": [
+    {
+      "id": "ASM-1",
+      "description": "A Easypanel API na VPS possui algum endpoint para listar o status de serviços/containers. Pode requerer investigação prévia da versão instalada.",
+      "risk_if_wrong": "A integração Easypanel será substituída por 'docker ps' via SSH — funcionalidade reduzida mas aceitável.",
+      "validation_needed": true
+    },
+    {
+      "id": "ASM-2",
+      "description": "systemctl está disponível na VPS (Ubuntu 24.04 usa systemd) para verificar status de cloudflared e ollama como serviços.",
+      "risk_if_wrong": "Substituir por pgrep/ps para verificar processos — menos robusto mas funcional.",
+      "validation_needed": false
+    },
+    {
+      "id": "ASM-3",
+      "description": "O npm run vps:ssh usará a mesma configuração de SSH do módulo ssh-executor.js (variáveis de ambiente VPS_IP, VPS_USER).",
+      "risk_if_wrong": "Sem impacto — é apenas um wrapper do ssh-executor.",
+      "validation_needed": false
+    }
+  ],
+
+  "domainModel": [
+    {
+      "entity": "SSHExecutor",
+      "description": "Módulo utilitário Node.js que encapsula a lógica de execução de comandos remotos via SSH. Interface: executeOnVps(command).",
+      "attributes": ["host", "user", "connectTimeout", "strictHostKeyChecking"],
+      "relationships": [
+        { "type": "used_by", "target": "VPSHealthCheck" },
+        { "type": "used_by", "target": "vps-ssh-test.js" }
+      ]
+    },
+    {
+      "entity": "VPSHealthCheck",
+      "description": "Script que coleta métricas da VPS via SSHExecutor e Easypanel API, analisa thresholds e emite health report semafórico.",
+      "attributes": ["ramThreshold", "diskThreshold", "metrics", "report"],
+      "relationships": [
+        { "type": "uses", "target": "SSHExecutor" },
+        { "type": "calls", "target": "EasypanelAPI" },
+        { "type": "monitors", "target": "VPS" }
+      ]
+    },
+    {
+      "entity": "EasypanelAPI",
+      "description": "API tRPC do Easypanel na VPS. Fornece status de containers e serviços.",
+      "attributes": ["baseUrl", "authToken", "endpoints"],
+      "relationships": [
+        { "type": "reports_on", "target": "VPS.containers" }
+      ]
+    },
+    {
+      "entity": "HealthReport",
+      "description": "Output estruturado do VPSHealthCheck. Contém métricas, semáforos, alertas e recomendações.",
+      "attributes": ["timestamp", "metrics", "alerts", "recommendations", "exitCode"],
+      "relationships": [
+        { "type": "generated_by", "target": "VPSHealthCheck" },
+        { "type": "consumed_by", "target": "AIOX" }
+      ]
+    }
+  ],
+
+  "interactions": [
+    {
+      "flow": "npm run vps:health → vps-health-check.js → SSHExecutor → [free, df, top, uptime, pgrep] → EasypanelAPI → HealthReport → console output",
+      "description": "Happy path: todas as métricas coletadas, thresholds OK, saída semafórica ✅.",
+      "states": ["collecting_ssh_metrics", "querying_easypanel", "analyzing_thresholds", "generating_report"]
+    },
+    {
+      "flow": "npm run vps:health → RAM > 80% detected → ❌ alerta gerado → recomendação exibida → process.exit(1)",
+      "description": "Alert path: RAM crítica detectada, alerta com ação sugerida, exit code 1.",
+      "states": ["collecting", "threshold_exceeded", "alert_generated", "exit_1"]
+    },
+    {
+      "flow": "npm run vps:ssh \"free -h\" → SSHExecutor.executeOnVps → stdout exibido",
+      "description": "Execução direta de comando SSH via npm script.",
+      "states": ["connecting", "executing", "output_returned"]
+    }
+  ],
+
+  "edgeCases": [
+    {
+      "scenario": "Easypanel API indisponível ou retorna erro",
+      "handling": "Modo degradado: reportar métricas SSH normalmente, exibir '⚠️ Easypanel API indisponível' na linha relevante, continuar sem fazer exit(1)",
+      "severity": "medium"
+    },
+    {
+      "scenario": "SSH não conecta durante health check (VPS offline)",
+      "handling": "Exibir ❌ CRÍTICO: 'VPS inacessível — SSH timeout' + sugestão de verificar conectividade + exit(1)",
+      "severity": "critical"
+    },
+    {
+      "scenario": "VPS_RAM_THRESHOLD não configurado como variável de ambiente",
+      "handling": "Usar valor padrão 80. Nunca fazer o script falhar por variável ausente.",
+      "severity": "low"
+    },
+    {
+      "scenario": "Output de 'free -h' ou 'df -h' em formato inesperado (locale diferente)",
+      "handling": "Parser deve ser robusto para variações de formato. Usar LC_ALL=C no comando SSH para forçar output em inglês.",
+      "severity": "medium"
+    },
+    {
+      "scenario": "Processo Ollama rodando mas sem responder (hung)",
+      "handling": "pgrep detecta processo mas health da API pode estar indisponível. Reportar ⚠️ 'Ollama: Processo existe mas pode não estar respondendo — verificar manualmente'.",
+      "severity": "high"
+    }
+  ],
+
+  "terminology": [
+    {
+      "term": "Health Report",
+      "definition": "Relatório semafórico gerado pelo VPSHealthCheck contendo métricas de saúde da VPS, alertas e recomendações contextuais.",
+      "synonyms": ["health check", "status report"],
+      "avoid": []
+    },
+    {
+      "term": "SSHExecutor",
+      "definition": "Módulo utilitário Node.js (ssh-executor.js) que abstrai a execução de comandos SSH remotos via child_process.",
+      "synonyms": ["ssh module", "ssh utility"],
+      "avoid": ["ssh-test (script de validação, não o módulo genérico)"]
+    },
+    {
+      "term": "Degraded Mode",
+      "definition": "Estado em que o health check funciona parcialmente — ex: Easypanel API indisponível, mas métricas SSH coletadas normalmente.",
+      "synonyms": ["modo parcial", "fallback mode"],
+      "avoid": []
+    },
+    {
+      "term": "Threshold",
+      "definition": "Limite configurável acima do qual uma métrica gera alerta. Ex: VPS_RAM_THRESHOLD=80 significa que RAM acima de 80% é CRÍTICO.",
+      "synonyms": ["limiar", "limite de alerta"],
+      "avoid": []
+    }
+  ],
+
+  "openQuestions": [
+    {
+      "id": "OQ-1",
+      "question": "Qual versão do Easypanel está instalada na VPS? Quais endpoints tRPC estão disponíveis para listar status de serviços?",
+      "blocking": true,
+      "assignedTo": "@devops"
+    },
+    {
+      "id": "OQ-2",
+      "question": "O Ollama está rodando como serviço systemd na VPS ou como container Docker no Easypanel?",
+      "blocking": false,
+      "assignedTo": "@devops"
+    },
+    {
+      "id": "OQ-3",
+      "question": "O npm run vps:ssh deve aceitar múltiplos comandos encadeados (ex: 'free -h && df -h') ou apenas um comando por vez?",
+      "blocking": false,
+      "assignedTo": "@architect"
+    }
+  ]
+}

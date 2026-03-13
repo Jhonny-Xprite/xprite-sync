@@ -1,0 +1,75 @@
+{
+  "storyId": "epic-4-easypanel-integration/story-4.1",
+  "researchedAt": "2026-03-13T19:23:00-03:00",
+  "researchedBy": "@analyst",
+  "complexity": "STANDARD",
+  "dependencies": [
+    {
+      "name": "child_process",
+      "type": "library",
+      "version": "native",
+      "verified": true,
+      "source": "codebase",
+      "existing": {
+        "installed": true,
+        "currentVersion": "node-native",
+        "usageLocations": [
+          ".aiox-core/infrastructure/scripts/vps-ssh-test.js:1"
+        ]
+      },
+      "documentation": {
+        "url": "https://nodejs.org/api/child_process.html",
+        "relevantSections": ["child_process.exec", "util.promisify"]
+      },
+      "patterns": [
+        {
+          "name": "execAsync",
+          "description": "Utilizar exec com util.promisify para chamadas SSH awaitable",
+          "codeExample": "const execAsync = util.promisify(exec); const {stdout} = await execAsync('ssh root@ip ls');"
+        }
+      ],
+      "compatibility": {
+        "preferred": true,
+        "alternatives": ["node-ssh", "ssh2"],
+        "conflicts": []
+      }
+    },
+    {
+      "name": "SSH Client (OpenSSH)",
+      "type": "infrastructure",
+      "version": "latest",
+      "verified": true,
+      "source": "manual",
+      "existing": {
+        "installed": true,
+        "currentVersion": "OS-dependent",
+        "usageLocations": []
+      },
+      "documentation": {
+        "url": "https://man.openbsd.org/ssh",
+        "relevantSections": ["BatchMode", "StrictHostKeyChecking", "ConnectTimeout"]
+      },
+      "patterns": [
+        {
+          "name": "SSH Automation Flags",
+          "description": "Flags seguras para execução via script",
+          "codeExample": "ssh -o BatchMode=yes -o ConnectTimeout=10 -o StrictHostKeyChecking=accept-new"
+        }
+      ],
+      "compatibility": {
+        "preferred": true,
+        "alternatives": [],
+        "conflicts": []
+      }
+    }
+  ],
+  "unverifiedClaims": [],
+  "recommendations": [
+    {
+      "type": "prefer",
+      "subject": "child_process",
+      "rationale": "Mantém o AIOX-CORE com zero dependências externas para utilitários de sistema. O cliente OpenSSH nativo do host é mais confiável que implementações NodeJS puras."
+    }
+  ],
+  "researchNotes": "Pesquisa confirmou que o Node.js nativo é adequado para esta task sem dependências adicionais no package.json."
+}

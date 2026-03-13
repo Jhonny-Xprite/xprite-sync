@@ -1,0 +1,107 @@
+{
+  "storyId": "epic-4-easypanel-integration/story-4.2",
+  "researchedAt": "2026-03-13T19:23:00-03:00",
+  "researchedBy": "@analyst",
+  "complexity": "STANDARD",
+  "dependencies": [
+    {
+      "name": "Ollama CLI",
+      "type": "infrastructure",
+      "version": "latest",
+      "verified": true,
+      "source": "manual",
+      "existing": {
+        "installed": false,
+        "currentVersion": null,
+        "usageLocations": []
+      },
+      "documentation": {
+        "url": "https://github.com/ollama/ollama",
+        "relevantSections": ["Commands", "Environment Variables"]
+      },
+      "patterns": [
+        {
+          "name": "OLLAMA_KEEP_ALIVE",
+          "description": "Configuração para descarregar o modelo da RAM em caso de inatividade",
+          "codeExample": "OLLAMA_KEEP_ALIVE=5m ollama run qwen3.5:2b"
+        }
+      ],
+      "compatibility": {
+        "preferred": true,
+        "alternatives": [],
+        "conflicts": []
+      }
+    },
+    {
+      "name": "Cloudflare Tunnel (cloudflared)",
+      "type": "service",
+      "version": "latest",
+      "verified": true,
+      "source": "manual",
+      "existing": {
+        "installed": false,
+        "currentVersion": null,
+        "usageLocations": []
+      },
+      "documentation": {
+        "url": "https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/",
+        "relevantSections": ["Create a tunnel", "Authentication"]
+      },
+      "patterns": [
+        {
+          "name": "Zero Trust Tunnel",
+          "description": "Expor serviços internos na porta localhost sem abrir porta no firewall",
+          "codeExample": "cloudflared tunnel route dns aiox-ollama ollama.domain.com"
+        }
+      ],
+      "compatibility": {
+        "preferred": true,
+        "alternatives": ["ngrok", "tailscale"],
+        "conflicts": []
+      }
+    },
+    {
+      "name": "Qwen 3.5 Models",
+      "type": "api",
+      "version": "0.8b / 2b",
+      "verified": true,
+      "source": "manual",
+      "existing": {
+        "installed": false,
+        "currentVersion": null,
+        "usageLocations": []
+      },
+      "documentation": {
+        "url": "https://ollama.com/library/qwen3.5",
+        "relevantSections": ["Tags", "Memory Requirements"]
+      },
+      "patterns": [
+        {
+          "name": "RAM Constraints Check",
+          "description": "O modelo qwen3.5:2b consome aproximadamente ~1.5GB de RAM, viável para a VPS de 8GB",
+          "codeExample": "ollama pull qwen3.5:2b"
+        }
+      ],
+      "compatibility": {
+        "preferred": true,
+        "alternatives": ["llama3", "phi3"],
+        "conflicts": ["Modelos maiores que 4b podem causar OOM"]
+      }
+    }
+  ],
+  "unverifiedClaims": [
+    {
+      "claim": "O Obsidian suporta Bearer Token nativamente para o Ollama via Cloudflare",
+      "reason": "Alguns plugins do Obsidian não permitem configurar headers customizados de autorização",
+      "action": "needs_validation"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "prefer",
+      "subject": "Cloudflare Tunnel",
+      "rationale": "Solução mais segura para expor endpoint do Ollama (inbound bloqueado, comunicação estritamente via túnel outbound HTTPS)."
+    }
+  ],
+  "researchNotes": "Os modelos do Qwen 3.5 são extremamente eficientes em resource usage. O único gargalo potencial é se o plugin do Obsidian não suportar 'Authorization: Bearer' no backend do Cloudflare."
+}

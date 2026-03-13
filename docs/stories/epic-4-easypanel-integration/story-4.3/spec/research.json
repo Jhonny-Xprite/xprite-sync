@@ -1,0 +1,79 @@
+{
+  "storyId": "epic-4-easypanel-integration/story-4.3",
+  "researchedAt": "2026-03-13T19:23:00-03:00",
+  "researchedBy": "@analyst",
+  "complexity": "STANDARD",
+  "dependencies": [
+    {
+      "name": "Easypanel tRPC API",
+      "type": "api",
+      "version": "v1",
+      "verified": true,
+      "source": "manual",
+      "existing": {
+        "installed": false,
+        "currentVersion": null,
+        "usageLocations": []
+      },
+      "documentation": {
+        "url": "https://easypanel.io/docs/api",
+        "relevantSections": ["Authentication", "tRPC Endpoints"]
+      },
+      "patterns": [
+        {
+          "name": "Fetch Services",
+          "description": "Chamada comum para inspecionar os serviços instalados no Easypanel via token administrativo",
+          "codeExample": "fetch('http://localhost:3000/api/trpc/services.list', { headers: { Authorization: `Bearer ${EASYPANEL_API_TOKEN}` }})"
+        }
+      ],
+      "compatibility": {
+        "preferred": true,
+        "alternatives": ["docker ps via SSH"],
+        "conflicts": []
+      }
+    },
+    {
+      "name": "Bash system metrics",
+      "type": "infrastructure",
+      "version": "n/a",
+      "verified": true,
+      "source": "manual",
+      "existing": {
+        "installed": true,
+        "currentVersion": "Ubuntu 24.04 utils",
+        "usageLocations": []
+      },
+      "documentation": {
+        "url": "https://manpages.ubuntu.com/",
+        "relevantSections": ["free", "df", "top", "uptime"]
+      },
+      "patterns": [
+        {
+          "name": "Parse Free Memory",
+          "description": "Extrair valores consistentes com flags corretas",
+          "codeExample": "LC_ALL=C free -h | awk '/^Mem:/ {print $3 \"/\" $2}'"
+        }
+      ],
+      "compatibility": {
+        "preferred": true,
+        "alternatives": ["Instalar agente de métricas externo (node_exporter)"],
+        "conflicts": []
+      }
+    }
+  ],
+  "unverifiedClaims": [
+    {
+      "claim": "Easypanel usa formato trpc acessível diretamente via curl no localhost",
+      "reason": "O Easypanel mudou recentemente algumas rotas tRPC para batching. Validar o endpoint exato.",
+      "action": "needs_validation"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "consider",
+      "subject": "docker ps fallback",
+      "rationale": "Caso a API do Easypanel seja complexa de rotear no tRPC, usar 'docker ps --format json' remotamente é muito mais robusto e não depende de tokens adicionais."
+    }
+  ],
+  "researchNotes": "Mandar scripts de bash inline limpos via SSHExecutor será mais eficiente que tentar parsing complexo no Node."
+}

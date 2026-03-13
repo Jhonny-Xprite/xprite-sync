@@ -1,0 +1,296 @@
+{
+  "storyId": "epic-4-easypanel-integration/story-4.2",
+  "gatheredAt": "2026-03-13T19:16:00-03:00",
+  "source": "prd",
+  "gatheredBy": "@pm",
+  "elicitationVersion": "2.0",
+  "prdReference": "docs/prd/epic-4-easypanel.md",
+  "storyReference": "docs/stories/epic-4-easypanel-integration/story-4.2.md",
+
+  "functional": [
+    {
+      "id": "FR-1",
+      "description": "O AIOX deve executar 'ollama list' remotamente via SSH na VPS e produzir um inventário dos modelos encontrados, identificando quais não pertencem à família Qwen 3.5.",
+      "priority": "P0",
+      "rationale": "Auditoria necessária antes de qualquer limpeza — o AIOX não pode remover cegamente sem saber o que existe.",
+      "acceptance": ["AC-1"]
+    },
+    {
+      "id": "FR-2",
+      "description": "O AIOX deve remover todos os modelos Ollama da VPS que não pertencem à família Qwen 3.5, executando 'ollama rm <model>' via SSH para cada modelo identificado.",
+      "priority": "P0",
+      "rationale": "Liberar RAM e disco para os novos modelos. Modelos fracos/desatualizados consomem recursos sem valor.",
+      "acceptance": ["AC-2"]
+    },
+    {
+      "id": "FR-3",
+      "description": "O AIOX deve instalar qwen3.5:0.8b e qwen3.5:2b na VPS via SSH ('ollama pull'). A instalação de qwen3.5:4b é condicional: apenas se free -h mostrar RAM livre > 5GB após os dois anteriores.",
+      "priority": "P0",
+      "rationale": "Stack de modelos calibrada ao hardware de 8GB. 0.8b e 2b são suficientes para a maioria dos casos de uso.",
+      "acceptance": ["AC-3"]
+    },
+    {
+      "id": "FR-4",
+      "description": "A variável OLLAMA_KEEP_ALIVE=5m deve ser configurada e ativa no serviço Ollama da VPS, garantindo que o modelo seja descarregado da RAM após 5 minutos de inatividade.",
+      "priority": "P0",
+      "rationale": "Com apenas 8GB de RAM, manter modelos carregados indefinidamente causaria pressão de memória para outros serviços.",
+      "acceptance": ["AC-4"]
+    },
+    {
+      "id": "FR-5",
+      "description": "Um Cloudflare Tunnel deve ser provisionado na VPS, expondo localhost:11434 (Ollama) via URL pública HTTPS.",
+      "priority": "P0",
+      "rationale": "Sem o tunnel, o Ollama só é acessível localmente na VPS. O tunnel é o que viabiliza integração com ferramentas externas.",
+      "acceptance": ["AC-5"]
+    },
+    {
+      "id": "FR-6",
+      "description": "O acesso à URL pública do Cloudflare Tunnel deve ser protegido por Bearer Token — requisições sem autenticação devem retornar 401/403.",
+      "priority": "P0",
+      "rationale": "Zero Trust: o Ollama não pode ser acessível publicamente sem autenticação, mesmo via tunnel.",
+      "acceptance": ["AC-6"]
+    },
+    {
+      "id": "FR-7",
+      "description": "A integração Obsidian ↔ Ollama deve ser validada: o Obsidian (via plugin) deve conseguir fazer uma inferência com qwen3.5:2b através da rota autenticada e receber resposta válida.",
+      "priority": "P0",
+      "rationale": "Caso de uso principal deste epic — validação end-to-end da integração completa.",
+      "acceptance": ["AC-7"]
+    },
+    {
+      "id": "FR-8",
+      "description": "A porta 11434 do Ollama NÃO deve ser acessível diretamente da internet. Validação via curl externo deve retornar Connection refused.",
+      "priority": "P0",
+      "rationale": "NFR Zero Trust — exposição direta do Ollama na internet é inaceitável.",
+      "acceptance": ["AC-8"]
+    },
+    {
+      "id": "FR-9",
+      "description": "Criar documentação de infraestrutura: ollama-vps-setup.md (modelos instalados, política de RAM) e cloudflare-tunnel-config.md (arquitetura, autenticação, exemplos de chamada).",
+      "priority": "P1",
+      "rationale": "Documentação essencial para que outros agentes AIOX possam operar os recursos sem knowledge loss.",
+      "acceptance": ["AC-10"]
+    }
+  ],
+
+  "nonFunctional": [
+    {
+      "id": "NFR-1",
+      "category": "performance",
+      "description": "O consumo de RAM da VPS durante inferência ativa com qwen3.5:2b não deve ultrapassar 80% (aproximadamente 6.4 GB de 8 GB).",
+      "metric": "free -h durante inferência mostra Used ≤ 6.4 GB"
+    },
+    {
+      "id": "NFR-2",
+      "category": "security",
+      "description": "Zero Trust: porta 11434 do Ollama não exposta diretamente na internet em nenhum momento.",
+      "metric": "curl http://92.112.176.118:11434 retorna Connection refused de rede externa"
+    },
+    {
+      "id": "NFR-3",
+      "category": "security",
+      "description": "URL do Cloudflare Tunnel e Bearer Token armazenados exclusivamente em .env local — nunca hardcoded ou commitados no Git.",
+      "metric": "git status não exibe .env; .env.example contém chaves sem valores"
+    },
+    {
+      "id": "NFR-4",
+      "category": "reliability",
+      "description": "OLLAMA_KEEP_ALIVE=5m deve descarregar o modelo da RAM após 5 minutos de inatividade, liberando recursos para outros serviços.",
+      "metric": "Monitoramento de RAM 6 minutos após inferência mostra queda de uso"
+    },
+    {
+      "id": "NFR-5",
+      "category": "usability",
+      "description": "A integração Obsidian deve funcionar com configuração mínima de plugin — URL + token — sem necessidade de configurações avançadas.",
+      "metric": "Configuração documentada reproduzível em menos de 10 minutes"
+    }
+  ],
+
+  "constraints": [
+    {
+      "id": "CON-1",
+      "type": "technical",
+      "description": "Apenas modelos da família Qwen 3.5 são permitidos na VPS de 8GB: qwen3.5:0.8b (obrigatório), qwen3.5:2b (obrigatório), qwen3.5:4b (condicional).",
+      "impact": "Qualquer outro modelo deve ser removido. Garante que a RAM de 8GB seja suficiente."
+    },
+    {
+      "id": "CON-2",
+      "type": "technical",
+      "description": "Apenas 1 modelo Ollama pode estar carregado em RAM simultaneamente na VPS.",
+      "impact": "KEEP_ALIVE e not carregar múltiplos modelos são práticas obrigatórias."
+    },
+    {
+      "id": "CON-3",
+      "type": "technical",
+      "description": "O Cloudflare Tunnel deve ser a única rota de acesso externo ao Ollama — nenhuma abertura de porta no firewall da VPS.",
+      "impact": "Cloudflare Tunnel é outbound por design — não requer configuração de firewall inbound."
+    },
+    {
+      "id": "CON-4",
+      "type": "business",
+      "description": "Esta story depende de Story 4.1 estar completa (SSH bridge ativo e atestado).",
+      "impact": "Todas as tasks desta story executam via SSH — Story 4.1 é pré-requisito absoluto."
+    },
+    {
+      "id": "CON-5",
+      "type": "technical",
+      "description": "Todos os comandos de gestão de modelos (ollama pull, ollama rm, ollama list) devem ser executados remotamente via SSH pelo AIOX — não manualmente pelo usuário.",
+      "impact": "Demonstra a capacidade central do Epic: AIOX como braço operacional da VPS."
+    }
+  ],
+
+  "assumptions": [
+    {
+      "id": "ASM-1",
+      "description": "O Ollama já está instalado e rodando como serviço na VPS (instalado pelo usuário anteriormente).",
+      "risk_if_wrong": "Será necessário instalar o Ollama primeiro — adicionar Task de instalação.",
+      "validation_needed": true
+    },
+    {
+      "id": "ASM-2",
+      "description": "O usuário possui uma conta Cloudflare (gratuita ou paga) e um domínio configurado, ou está disposto a usar uma URL *.trycloudflare.com.",
+      "risk_if_wrong": "Sem conta Cloudflare, o tunnel não pode ser configurado com autenticação robusta.",
+      "validation_needed": true
+    },
+    {
+      "id": "ASM-3",
+      "description": "O Obsidian está instalado localmente com capacidade de instalar plugins da comunidade.",
+      "risk_if_wrong": "Validação da integração Obsidian não será possível — substituir por teste via curl.",
+      "validation_needed": false
+    },
+    {
+      "id": "ASM-4",
+      "description": "A VPS tem espaço em disco suficiente para qwen3.5:0.8b (~500MB) e qwen3.5:2b (~1.5GB) após remoção dos modelos antigos.",
+      "risk_if_wrong": "Pull dos modelos falhará por falta de espaço — requer df -h para verificar antes.",
+      "validation_needed": false
+    }
+  ],
+
+  "domainModel": [
+    {
+      "entity": "OllamaService",
+      "description": "Serviço de inferência LLM rodando na VPS — gerenciado pelo AIOX via SSH.",
+      "attributes": ["host", "port", "keepAlive", "loadedModel"],
+      "relationships": [
+        { "type": "exposes_via", "target": "CloudflareTunnel" },
+        { "type": "managed_by", "target": "AIOX.SSHBridge" },
+        { "type": "runs", "target": "Qwen35Model" }
+      ]
+    },
+    {
+      "entity": "Qwen35Model",
+      "description": "Modelos da família Qwen 3.5 — stack de LLM aprovada para a VPS de 8GB.",
+      "attributes": ["name", "size", "ramUsage", "useCase"],
+      "relationships": [
+        { "type": "installed_on", "target": "VPS" },
+        { "type": "served_by", "target": "OllamaService" }
+      ]
+    },
+    {
+      "entity": "CloudflareTunnel",
+      "description": "Túnel outbound que expõe OllamaService internamente via URL HTTPS pública autenticada.",
+      "attributes": ["tunnelId", "publicUrl", "targetLocalPort", "authToken"],
+      "relationships": [
+        { "type": "exposes", "target": "OllamaService" },
+        { "type": "consumed_by", "target": "Obsidian" }
+      ]
+    },
+    {
+      "entity": "ObsidianIntegration",
+      "description": "Plugin no Obsidian configurado para consumir o OllamaService via CloudflareTunnel.",
+      "attributes": ["pluginName", "endpointUrl", "authToken", "defaultModel"],
+      "relationships": [
+        { "type": "consumes", "target": "CloudflareTunnel" }
+      ]
+    }
+  ],
+
+  "interactions": [
+    {
+      "flow": "AIOX → SSH → ollama list → inventário → ollama rm <antigos> → ollama pull qwen3.5:0.8b → ollama pull qwen3.5:2b",
+      "description": "Gestão autônoma de modelos: AIOX audita, limpa e instala via SSH.",
+      "states": ["auditing", "removing", "installing", "validated"]
+    },
+    {
+      "flow": "Obsidian → Bearer Token → Cloudflare Tunnel → localhost:11434 → qwen3.5:2b → resposta → Obsidian",
+      "description": "Happy path da integração Obsidian ↔ Ollama via rota autenticada.",
+      "states": ["authenticating", "routing", "inferring", "responding"]
+    }
+  ],
+
+  "edgeCases": [
+    {
+      "scenario": "Disco insuficiente para pull de qwen3.5:2b (~1.5GB)",
+      "handling": "Verificar df -h antes do pull; se < 5GB livre, executar docker image prune e confirmar espaço",
+      "severity": "high"
+    },
+    {
+      "scenario": "Serviço Ollama não responde após configuração KEEP_ALIVE",
+      "handling": "Verificar logs via journalctl -u ollama; reiniciar serviço; validar variável de ambiente",
+      "severity": "high"
+    },
+    {
+      "scenario": "Cloudflare Tunnel cai após configuração",
+      "handling": "Verificar systemctl status cloudflared; reiniciar; verificar token de autenticação CF",
+      "severity": "high"
+    },
+    {
+      "scenario": "qwen3.5:4b causa OOM (Out of Memory) na VPS",
+      "handling": "Sistema Linux pode matar processo — executar ollama rm qwen3.5:4b e usar apenas 0.8b/2b",
+      "severity": "critical"
+    },
+    {
+      "scenario": "Plugin Obsidian não suporta Bearer Token customizado",
+      "handling": "Usar Cloudflare Access com JWT automático ou validar via curl antes do Obsidian",
+      "severity": "medium"
+    }
+  ],
+
+  "terminology": [
+    {
+      "term": "Qwen 3.5",
+      "definition": "Família de modelos LLM da Alibaba Cloud, otimizados para hardware com RAM limitada. Versões aprovadas para esta VPS: 0.8b, 2b, 4b (condicional).",
+      "synonyms": ["qwen3.5", "Qwen3.5"],
+      "avoid": ["Qwen 2.5 (versão anterior, não usar)"]
+    },
+    {
+      "term": "KEEP_ALIVE",
+      "definition": "Parâmetro do Ollama que define por quanto tempo um modelo permanece carregado em RAM após a última inferência. Valor: 5m = 5 minutos.",
+      "synonyms": ["OLLAMA_KEEP_ALIVE"],
+      "avoid": []
+    },
+    {
+      "term": "Cloudflare Tunnel",
+      "definition": "Serviço que cria um túnel outbound seguro de dentro da VPS para a rede Cloudflare, expondo serviços internos via URL pública HTTPS sem abrir portas no firewall.",
+      "synonyms": ["cloudflared", "CF Tunnel"],
+      "avoid": ["SSH tunnel (diferente)", "ngrok (alternativa, não usada)"]
+    },
+    {
+      "term": "Resource Bridging",
+      "definition": "Ato de expor um recurso interno da VPS (como Ollama) para consumidores externos autorizados (como Obsidian) de forma segura.",
+      "synonyms": ["bridging", "exposição segura"],
+      "avoid": []
+    }
+  ],
+
+  "openQuestions": [
+    {
+      "id": "OQ-1",
+      "question": "O Ollama está instalado e rodando como serviço systemd na VPS? Ou foi instalado de outra forma (Docker, manual)?",
+      "blocking": true,
+      "assignedTo": "@devops"
+    },
+    {
+      "id": "OQ-2",
+      "question": "O usuário possui conta Cloudflare com domínio configurado, ou aceita usar a URL temporária *.trycloudflare.com (sem autenticação CF Access robusta)?",
+      "blocking": true,
+      "assignedTo": "@devops"
+    },
+    {
+      "id": "OQ-3",
+      "question": "Qual plugin Obsidian usar para a integração? obsidian-ollama ou Smart Connections ou Templater+fetch?",
+      "blocking": false,
+      "assignedTo": "@qa"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "storyId": "epic-4-easypanel-integration/story-4.1",
+  "assessedAt": "2026-03-13T19:22:00-03:00",
+  "assessedBy": "@architect",
+  "result": "STANDARD",
+  "overridden": false,
+  "dimensions": {
+    "scope": {
+      "score": 2,
+      "notes": "Mudança localizada afetando o script existente (vps-ssh-test.js), atualização do .gitignore e criação de 1 doc de arquitetura."
+    },
+    "integration": {
+      "score": 2,
+      "notes": "Apenas integração direta via SSH (child_process) com infraestrutura remota."
+    },
+    "infrastructure": {
+      "score": 3,
+      "notes": "Configuração de chaves SSH (ED25519) locais e alteração no authorized_keys do root na VPS."
+    },
+    "knowledge": {
+      "score": 2,
+      "notes": "O padrão node child_process e comandos SSH básicos são bem estabelecidos."
+    },
+    "risk": {
+      "score": 3,
+      "notes": "Acesso root implica em riscos de segurança que devem ser tratados (StrictHostKeyChecking, segurança de chaves Git)."
+    }
+  },
+  "totalScore": 12,
+  "pipelinePhases": [
+    "gather",
+    "assess",
+    "research",
+    "spec",
+    "critique",
+    "plan"
+  ],
+  "flags": [
+    "Verificar com cuidado possíveis vazamentos de chaves no Git"
+  ],
+  "estimatedEffort": "1-2 dias"
+}

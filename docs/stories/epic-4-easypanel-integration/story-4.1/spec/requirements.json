@@ -1,0 +1,254 @@
+{
+  "storyId": "epic-4-easypanel-integration/story-4.1",
+  "gatheredAt": "2026-03-13T19:16:00-03:00",
+  "source": "prd",
+  "gatheredBy": "@pm",
+  "elicitationVersion": "2.0",
+  "prdReference": "docs/prd/epic-4-easypanel.md",
+  "storyReference": "docs/stories/epic-4-easypanel-integration/story-4.1.md",
+
+  "functional": [
+    {
+      "id": "FR-1",
+      "description": "O sistema deve verificar a existência de chaves SSH ED25519 no ambiente local (~/.ssh/id_ed25519). Se não existirem, deve gerar com ssh-keygen -t ed25519 -C 'aiox-core-vps'.",
+      "priority": "P0",
+      "rationale": "Pré-requisito para toda conexão SSH passwordless. Sem chaves, nenhuma automação SSH é possível.",
+      "acceptance": ["AC-1"]
+    },
+    {
+      "id": "FR-2",
+      "description": "O sistema deve adicionar a chave pública (~/.ssh/id_ed25519.pub) ao authorized_keys do root na VPS (92.112.176.118), via ssh-copy-id ou equivalente.",
+      "priority": "P0",
+      "rationale": "Autorizar a chave local na VPS é o que habilita a conexão sem senha.",
+      "acceptance": ["AC-2"]
+    },
+    {
+      "id": "FR-3",
+      "description": "O script vps-ssh-test.js deve executar o comando 'ls -la /' na VPS e retornar o output com sucesso, sem nenhum prompt de senha.",
+      "priority": "P0",
+      "rationale": "Validação funcional da ponte SSH — gate obrigatório antes de prosseguir para Stories 4.2 e 4.3.",
+      "acceptance": ["AC-3"]
+    },
+    {
+      "id": "FR-4",
+      "description": "O script vps-ssh-test.js deve tratar falhas de conexão com mensagem de erro clara e acionável, retornando process.exit(1) e instruções de remediation (verificar chaves, authorized_keys).",
+      "priority": "P1",
+      "rationale": "Sem tratamento de erro adequado, falhas são silenciosas e difíceis de diagnosticar.",
+      "acceptance": ["AC-4"]
+    },
+    {
+      "id": "FR-5",
+      "description": "O parâmetro StrictHostKeyChecking deve ser configurado como 'accept-new' após a primeira conexão bem-sucedida, salvando o fingerprint da VPS em ~/.ssh/known_hosts.",
+      "priority": "P1",
+      "rationale": "Protege contra ataques MITM. 'accept-new' é mais seguro que 'no' para uso contínuo.",
+      "acceptance": ["AC-7"]
+    },
+    {
+      "id": "FR-6",
+      "description": "Criar o documento .aiox-core/infrastructure/docs/mcp-ssh-architecture.md descrevendo a interface proposta para encapsulamento SSH em Tools AIOX futuros (executeOnVps, tratamento de erros, escopo de segurança).",
+      "priority": "P1",
+      "rationale": "Documenta o contrato técnico que Stories 4.2 e 4.3 irão implementar. Garante consistência futura.",
+      "acceptance": ["AC-6"]
+    },
+    {
+      "id": "FR-7",
+      "description": "O arquivo .gitignore deve cobrir todos os padrões de chaves privadas SSH (id_ed25519, id_rsa, *.pem, *.key, .env) para garantir que nenhuma credencial seja rastreada pelo Git.",
+      "priority": "P0",
+      "rationale": "Restrição de segurança não negociável — credenciais no Git são um vetor de vazamento crítico.",
+      "acceptance": ["AC-5"]
+    }
+  ],
+
+  "nonFunctional": [
+    {
+      "id": "NFR-1",
+      "category": "security",
+      "description": "Nenhuma chave privada ou credencial sensível deve aparecer em git status como arquivo rastreado ou untracked.",
+      "metric": "git status retorna zero arquivos com padrões de chave privada"
+    },
+    {
+      "id": "NFR-2",
+      "category": "reliability",
+      "description": "A conexão SSH deve falhar rapidamente (fail-fast) em caso de timeout, com tempo máximo de 10 segundos.",
+      "metric": "ConnectTimeout=10 configurado; script retorna em até 12s em caso de falha"
+    },
+    {
+      "id": "NFR-3",
+      "category": "usability",
+      "description": "Mensagens de erro do script devem ser acionáveis — o usuário deve saber exatamente o que fazer sem consultar documentação.""",
+      "metric": "Cada cenário de falha produz mensagem com causa + ação corretiva específica"
+    },
+    {
+      "id": "NFR-4",
+      "category": "security",
+      "description": "BatchMode=yes deve ser configurado no comando SSH para garantir que jamais seja exibido prompt de senha durante execução automática.",
+      "metric": "Execução do script em ambiente sem chave autorizada retorna erro sem prompt"
+    }
+  ],
+
+  "constraints": [
+    {
+      "id": "CON-1",
+      "type": "technical",
+      "description": "A solução deve usar Node.js (child_process) para executar comandos SSH — sem dependências externas de SSH client libraries (node-ssh, ssh2, etc.).",
+      "impact": "O script usa apenas módulos nativos do Node.js, alinhado ao padrão AIOX de zero dependências desnecessárias."
+    },
+    {
+      "id": "CON-2",
+      "type": "technical",
+      "description": "O algoritmo de chave SSH deve ser exclusivamente ED25519 — não RSA, não DSA.",
+      "impact": "Mais seguro e performático. Toda documentação e scripts devem referenciar apenas ED25519."
+    },
+    {
+      "id": "CON-3",
+      "type": "technical",
+      "description": "O script vps-ssh-test.js já existe em .aiox-core/infrastructure/scripts/ — deve ser endurecido, não reescrito do zero.",
+      "impact": "Reduz escopo do trabalho; foco em validação, robustez e segurança do script existente."
+    },
+    {
+      "id": "CON-4",
+      "type": "business",
+      "description": "Esta story é pré-requisito bloqueante para Stories 4.2 e 4.3 — deve ser concluída e atingir todos os ACs antes de qualquer trabalho subsequente.",
+      "impact": "Prioridade máxima; nenhuma paralelização possível com 4.2/4.3."
+    }
+  ],
+
+  "assumptions": [
+    {
+      "id": "ASM-1",
+      "description": "O cliente SSH (binary 'ssh') está disponível no ambiente local do AIOX (Windows via WSL, Git Bash, ou OpenSSH nativo).",
+      "risk_if_wrong": "O script não funcionará sem o binary SSH disponível no PATH.",
+      "validation_needed": true
+    },
+    {
+      "id": "ASM-2",
+      "description": "O serviço SSH está ativo e acessível na VPS (porta 22) e o usuário root tem permissão para login via SSH.",
+      "risk_if_wrong": "Conexão impossível; necessitaria acesso ao Easypanel para habilitar SSH root.",
+      "validation_needed": true
+    },
+    {
+      "id": "ASM-3",
+      "description": "O Easypanel na VPS permite adicionar chaves SSH públicas via interface ou o acesso inicial via senha ainda está disponível para adicionar authorized_keys.",
+      "risk_if_wrong": "Bootstrapping da primeira conexão requer método alternativo (console VPS do provedor).",
+      "validation_needed": false
+    }
+  ],
+
+  "domainModel": [
+    {
+      "entity": "SSHBridge",
+      "description": "A ponte de comunicação entre AIOX local e VPS remota via protocolo SSH.",
+      "attributes": ["host", "user", "keyPath", "connectTimeout", "strictHostKeyChecking"],
+      "relationships": [
+        { "type": "connects_to", "target": "VPS" },
+        { "type": "authenticates_via", "target": "ED25519KeyPair" }
+      ]
+    },
+    {
+      "entity": "ED25519KeyPair",
+      "description": "Par de chaves criptográficas ED25519 para autenticação SSH sem senha.",
+      "attributes": ["privateKeyPath", "publicKeyPath", "comment"],
+      "relationships": [
+        { "type": "authorizes_on", "target": "VPS.authorized_keys" }
+      ]
+    },
+    {
+      "entity": "VPS",
+      "description": "Servidor remoto Ubuntu 24.04 com Easypanel — extensão computacional do AIOX.",
+      "attributes": ["ip", "hostname", "os", "ram", "cpu", "disk"],
+      "relationships": [
+        { "type": "managed_by", "target": "AIOX" },
+        { "type": "runs", "target": "Easypanel" }
+      ]
+    }
+  ],
+
+  "interactions": [
+    {
+      "flow": "AIOX executa vps-ssh-test.js → SSH conecta → comando executado → output retornado",
+      "description": "Happy path: conexão SSH bem-sucedida e execução de comando remoto.",
+      "states": ["connecting", "connected", "executing", "success"]
+    },
+    {
+      "flow": "AIOX executa vps-ssh-test.js → SSH falha → erro capturado → mensagem acionável exibida → exit(1)",
+      "description": "Failure path: chave não autorizada, timeout, ou host inacessível.",
+      "states": ["connecting", "failed", "error_displayed"]
+    }
+  ],
+
+  "edgeCases": [
+    {
+      "scenario": "Chave SSH não existe em ~/.ssh/ no ambiente local",
+      "handling": "Script detecta ausência e instrui: 'Execute ssh-keygen -t ed25519 -C aiox-core-vps'",
+      "severity": "high"
+    },
+    {
+      "scenario": "Chave existe localmente mas não está em authorized_keys na VPS",
+      "handling": "SSH retorna 'Permission denied' — script captura e instrui sobre ssh-copy-id",
+      "severity": "high"
+    },
+    {
+      "scenario": "VPS inacessível (timeout de rede)",
+      "handling": "ConnectTimeout=10 expira — script retorna erro com IP e sugere verificar conectividade",
+      "severity": "critical"
+    },
+    {
+      "scenario": "Fingerprint da VPS mudou (possível MITM ou reinstalação de SO)",
+      "handling": "StrictHostKeyChecking=accept-new rejeita mudança — script instrui verificação manual",
+      "severity": "critical"
+    },
+    {
+      "scenario": "Arquivo .gitignore não cobre padrão de chaves privadas",
+      "handling": "Task 5 valida explicitamente git status — bloqueante se chave aparecer rastreada",
+      "severity": "critical"
+    }
+  ],
+
+  "terminology": [
+    {
+      "term": "SSHBridge",
+      "definition": "A ponte de comunicação programática entre AIOX local e VPS, implementada via child_process + binary ssh.",
+      "synonyms": ["SSH tunnel", "ponte SSH"],
+      "avoid": ["SSH tunnel (confunde com SSH port forwarding)"]
+    },
+    {
+      "term": "BatchMode",
+      "definition": "Parâmetro SSH que desativa todos os prompts interativos — conexão falha silenciosamente se autenticação não funcionar.",
+      "synonyms": [],
+      "avoid": ["modo silencioso"]
+    },
+    {
+      "term": "ED25519",
+      "definition": "Algoritmo de criptografia de curva elíptica para pares de chaves SSH. Preferido sobre RSA para automação.",
+      "synonyms": ["ed25519", "Edwards-curve Digital Signature Algorithm"],
+      "avoid": ["RSA", "DSA"]
+    },
+    {
+      "term": "MCP SSH Architecture",
+      "definition": "Documento técnico que define a interface futura para encapsular chamadas SSH em Tools AIOX (Model Context Protocol).",
+      "synonyms": ["SSH Tool Interface"],
+      "avoid": []
+    }
+  ],
+
+  "openQuestions": [
+    {
+      "id": "OQ-1",
+      "question": "O cliente SSH (binary 'ssh') está disponível no PATH do ambiente Windows do usuário? (Git Bash, WSL, ou OpenSSH nativo?)",
+      "blocking": true,
+      "assignedTo": "@devops"
+    },
+    {
+      "id": "OQ-2",
+      "question": "O acesso SSH root na VPS está habilitado por padrão no Easypanel? Ou requer configuração adicional no PermitRootLogin do sshd_config?",
+      "blocking": true,
+      "assignedTo": "@devops"
+    },
+    {
+      "id": "OQ-3",
+      "question": "O StrictHostKeyChecking deve ser 'accept-new' ou 'yes' após bootstrap? 'yes' requer adicionar o fingerprint manualmente; 'accept-new' é mais prático para automação.",
+      "blocking": false,
+      "assignedTo": "@architect"
+    }
+  ]
+}
