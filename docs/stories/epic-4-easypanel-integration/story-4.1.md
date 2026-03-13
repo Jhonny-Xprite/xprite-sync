@@ -1,7 +1,7 @@
 # Story 4.1: Ponte SSH Base — AIOX Ganha Acesso à VPS
 
 ## Status
-- **Status:** In Progress 🏃
+- **Status:** ⏳ PENDING QUALITY GATE — Ações Base concluídas pelo DevOps. Aguardando a chave na VPS.
 - **Executor:** `@devops`
 - **Quality Gate:** `@architect`
 - **Epic:** [Epic 4 — VPS como Extensão Inteligente do AIOX](./epic.md)
@@ -17,12 +17,12 @@
 
 ## Acceptance Criteria
 
-1. [ ] Chaves SSH ED25519 verificadas/geradas no ambiente local (`~/.ssh/id_ed25519` + `~/.ssh/id_ed25519.pub`).
+1. [x] Chaves SSH ED25519 verificadas/geradas no ambiente local (`~/.ssh/id_ed25519` + `~/.ssh/id_ed25519.pub`).
 2. [ ] Chave pública adicionada ao `authorized_keys` do root na VPS (`root@92.112.176.118`).
 3. [ ] Script `vps-ssh-test.js` executa `ls -la /` na VPS e retorna saída sem nenhum prompt de senha.
-4. [ ] Script `vps-ssh-test.js` trata falha de conexão com mensagem acionável (sem stack trace bruto).
-5. [ ] Nenhuma chave privada ou arquivo sensível aparece em `git status` como untracked/modified.
-6. [ ] Arquitetura de como o AIOX irá encapsular chamadas SSH em Tools futuras documentada em `mcp-ssh-architecture.md`.
+4. [x] Script `vps-ssh-test.js` trata falha de conexão com mensagem acionável (sem stack trace bruto).
+5. [x] Nenhuma chave privada ou arquivo sensível aparece em `git status` como untracked/modified.
+6. [x] Arquitetura de como o AIOX irá encapsular chamadas SSH em Tools futuras documentada em `mcp-ssh-architecture.md`.
 7. [ ] Fingerprint da VPS salvo em `~/.ssh/known_hosts` (conexão não prompta após primeira autenticação).
 
 ## Tasks / Subtasks
