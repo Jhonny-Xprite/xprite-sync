@@ -1,0 +1,46 @@
+epic_name: "Epic 4: VPS como Extensão Inteligente do AIOX"
+epic_dir: "docs/stories/epic-4-easypanel-integration"
+status: "ready"
+parallel_execution: false
+waves:
+  - wave: 1
+    name: "Foundation: Remote Access"
+    parallel: false
+    stories:
+      - id: "4.1"
+        title: "Ponte SSH Base — AIOX Ganha Acesso à VPS"
+        path: "story-4.1.md"
+        status: "ready"
+        assigned_agent: "@devops"
+        quality_gate: "@architect"
+        dependencies: []
+  
+  - wave: 2
+    name: "Cognitive Resource: Ollama & Tunnel"
+    parallel: false
+    stories:
+      - id: "4.2"
+        title: "Gestão de Modelos & Resource Bridging (Ollama)"
+        path: "story-4.2.md"
+        status: "pending"
+        assigned_agent: "@devops"
+        quality_gate: "@architect"
+        dependencies: ["4.1"]
+
+  - wave: 3
+    name: "Awareness: VPS Health & Actions"
+    parallel: false
+    stories:
+      - id: "4.3"
+        title: "Consciência & Saúde da VPS (DevSecOps Agent)"
+        path: "story-4.3.md"
+        status: "pending"
+        assigned_agent: "@devops"
+        quality_gate: "@architect"
+        dependencies: ["4.1", "4.2"]
+
+validation_notes:
+  - "Story 4.1 is an absolute blocker. Without passwordless SSH validation, neither Ollama management nor Health checks can run remotely."
+  - "Story 4.2 provides the cognitive models and tunnel. It MUST execute via the established SSH bridge from 4.1."
+  - "Story 4.3 utilizes the SSH executor modularized in 4.1 and verifies the Ollama/Cloudflare statuses established in 4.2."
+  - "Conclusion: Full sequential execution (Wave 1 → Wave 2 → Wave 3). No parallelization possible due to strong hard-dependencies."
