@@ -1,10 +1,4 @@
-import Redis from 'ioredis';
-import { Logger } from '../utils/logger';
-
-export interface CacheOptions {
-  ttl?: number; // TTL em segundos
-  prefix?: string;
-}
+import * as redis from 'ioredis';
 
 export interface CacheStats {
   hits: number;
@@ -13,9 +7,8 @@ export interface CacheStats {
   hitRate: number;
 }
 
-export class CacheService {
-  private redis: Redis | null = null;
-  private logger = new Logger('CacheService');
+class CacheService {
+  private client: redis.Redis | null = null;
   private stats: CacheStats = {
     hits: 0,
     misses: 0,
@@ -23,36 +16,28 @@ export class CacheService {
     hitRate: 0,
   };
 
-  private ttlDefaults: Record<string, number> = {
-    metrics: 5 * 60, // 5 minutes
-    status: 10, // 10 seconds
-    config: 24 * 60 * 60, // 24 hours
-    user: 5 * 60, // 5 minutes
-    default: 5 * 60, // 5 minutes
-  };
-
   async initialize(): Promise<void> {
     try {
       const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
-      this.redis = new Redis(redisUrl);
+      this.client = new redis.Redis(redisUrl);
 
       // Test connection
-      await this.redis.ping();
-      this.logger.info('✅ Redis connected');
+      await this.client.ping();
+      console.log('✅ Redis connected');
     } catch (error) {
-      this.logger.error('❌ Redis connection failed, continuing with DB fallback', error);
-      this.redis = null;
+      console.error('⚠️  Redis connection failed, caching disabled:', error);
+      this.client = null;
     }
   }
 
   async get<T = any>(key: string): Promise<T | null> {
-    if (!this.redis) {
+    if (!this.client) {
       this.stats.misses++;
       return null;
     }
 
     try {
-      const data = await this.redis.get(key);
+      const data = await this.client.get(key);
       if (data) {
         this.stats.hits++;
         this.updateHitRate();
@@ -63,69 +48,62 @@ export class CacheService {
       return null;
     } catch (error) {
       this.stats.errors++;
-      this.logger.error(`Cache get error for key ${key}:`, error);
+      console.error(`Cache get error for key ${key}:`, error);
       return null;
     }
   }
 
-  async set<T = any>(
-    key: string,
-    value: T,
-    options: CacheOptions = {}
-  ): Promise<boolean> {
-    if (!this.redis) {
+  async set<T = any>(key: string, value: T, ttl: number = 300): Promise<boolean> {
+    if (!this.client) {
       return false;
     }
 
     try {
-      const ttl = options.ttl || this.ttlDefaults[options.prefix || 'default'];
       const serialized = JSON.stringify(value);
-
-      if (ttl) {
-        await this.redis.setex(key, ttl, serialized);
+      if (ttl > 0) {
+        await this.client.setex(key, ttl, serialized);
       } else {
-        await this.redis.set(key, serialized);
+        await this.client.set(key, serialized);
       }
-
       return true;
     } catch (error) {
       this.stats.errors++;
-      this.logger.error(`Cache set error for key ${key}:`, error);
+      console.error(`Cache set error for key ${key}:`, error);
       return false;
     }
   }
 
   async invalidate(pattern: string): Promise<number> {
-    if (!this.redis) {
+    if (!this.client) {
       return 0;
     }
 
     try {
-      const keys = await this.redis.keys(pattern);
+      const keys = await this.client.keys(pattern);
       if (keys.length === 0) return 0;
 
-      await this.redis.del(...keys);
-      this.logger.debug(`Invalidated ${keys.length} cache entries matching ${pattern}`);
+      await this.client.del(...keys);
+      console.log(`Invalidated ${keys.length} cache entries matching ${pattern}`);
       return keys.length;
     } catch (error) {
       this.stats.errors++;
-      this.logger.error(`Cache invalidate error for pattern ${pattern}:`, error);
+      console.error(`Cache invalidate error for pattern ${pattern}:`, error);
       return 0;
     }
   }
 
   async clear(): Promise<boolean> {
-    if (!this.redis) {
+    if (!this.client) {
       return false;
     }
 
     try {
-      await this.redis.flushdb();
-      this.logger.info('Cache cleared');
+      await this.client.flushdb();
+      console.log('Cache cleared');
       return true;
     } catch (error) {
       this.stats.errors++;
-      this.logger.error('Cache clear error:', error);
+      console.error('Cache clear error:', error);
       return false;
     }
   }
@@ -140,18 +118,18 @@ export class CacheService {
   }
 
   async shutdown(): Promise<void> {
-    if (this.redis) {
+    if (this.client) {
       try {
-        await this.redis.quit();
-        this.logger.info('Redis connection closed');
+        await this.client.quit();
+        console.log('Redis connection closed');
       } catch (error) {
-        this.logger.error('Error closing Redis connection:', error);
+        console.error('Error closing Redis connection:', error);
       }
     }
   }
 
   isAvailable(): boolean {
-    return this.redis !== null;
+    return this.client !== null;
   }
 }
 
