@@ -1,0 +1,21 @@
+from_agent: "@pm"
+to_agent: "@qa"
+target_epic: "Epic 4 - VPS como Extensão Inteligente"
+stories:
+  - "4.1"
+  - "4.2"
+  - "4.3"
+request: |
+  Por favor, realize a validação final das stories do Epic 4 e de todos os seus artefatos associados (requirements.json, spec.md, etc).
+  
+  Objetivos da validação (QA Gate):
+  1. Garantir que todos os arquivos (PRD, epic.md, stories.md, JSONs de spec) existam, estejam acessíveis e linkados corretamente no index.
+  2. Confirmar que as stories estão estruturadas no rigoroso padrão canônico do AIOX.
+  3. Validar se os agentes designados (@devops nas stories primárias, @qa como reviewer, etc.) estão corretos para as tarefas.
+  
+  Se tudo estiver validado e aprovado, o QA deverá dar o "Go-ahead" oficial para o start do desenvolvimento pelo agente @devops.
+last_command: "Spec Pipeline -> completion (Phase 5)"
+consumed: true
+timestamp: "2026-03-13T19:26:00-03:00"
+priority: "high"
+suggested_next_step: "*review docs/stories/epic-4-easypanel-integration/index.md"

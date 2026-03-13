@@ -1,0 +1,93 @@
+from_agent: aiox-master
+to_agent: pm
+target_epic: "EPIC 4: VPS como Extensão Inteligente do AIOX"
+
+context: |
+  Todos os 3 stories do Epic 4 foram redigidos com visão estratégica completa,
+  tasks granulares, comandos reais, AC detalhados e Dev Notes relevantes.
+  A documentação está aprovada e pronta para o spec-pipeline.
+
+  Visão do Epic: A VPS (92.112.176.118) é um braço operacional do AIOX —
+  com acesso SSH total, gestão autônoma de modelos Ollama (família Qwen 3.5),
+  orquestração de integrações (Obsidian ↔ Ollama via Cloudflare Tunnel),
+  e monitoramento de saúde proativo com alertas e recomendações.
+
+  PRD: docs/prd/epic-4-easypanel.md
+  Epic Overview: docs/stories/epic-4-easypanel-integration/epic.md
+
+stories:
+  - id: "4.1"
+    title: "Ponte SSH Base — AIOX Ganha Acesso à VPS"
+    story_path: "docs/stories/epic-4-easypanel-integration/story-4.1.md"
+    spec_output_dir: "docs/stories/epic-4-easypanel-integration/story-4.1/spec/"
+    executor: "@devops"
+    quality_gate: "@architect"
+    status: "In Progress"
+    complexity_hint: "STANDARD"
+    key_context: |
+      Story fundacional — sem ela, nenhuma outra story é possível.
+      Script vps-ssh-test.js já existe em .aiox-core/infrastructure/scripts/.
+      Foco: atestar conexão SSH passwordless (ED25519), robustez do script,
+      segurança Git (.gitignore), e documento de arquitetura MCP SSH.
+
+  - id: "4.2"
+    title: "Gestão de Modelos & Resource Bridging (Ollama)"
+    story_path: "docs/stories/epic-4-easypanel-integration/story-4.2.md"
+    spec_output_dir: "docs/stories/epic-4-easypanel-integration/story-4.2/spec/"
+    executor: "@devops"
+    quality_gate: "@architect"
+    status: "Pendente"
+    complexity_hint: "STANDARD"
+    key_context: |
+      Depende de 4.1 (SSH ativo).
+      Modelos atuais na VPS são fracos — devem ser removidos.
+      Stack alvo: família Qwen 3.5 (0.8b obrigatório, 2b obrigatório, 4b condicional).
+      Infraestrutura: Cloudflare Tunnel + Bearer Token.
+      Integração real: Obsidian usando qwen3.5:2b via rota autenticada.
+      Restrição crítica: RAM 8GB — OLLAMA_KEEP_ALIVE=5m + 1 modelo por vez.
+
+  - id: "4.3"
+    title: "Consciência & Saúde da VPS (DevSecOps Agent)"
+    story_path: "docs/stories/epic-4-easypanel-integration/story-4.3.md"
+    spec_output_dir: "docs/stories/epic-4-easypanel-integration/story-4.3/spec/"
+    executor: "@devops"
+    quality_gate: "@architect"
+    status: "Pendente"
+    complexity_hint: "STANDARD"
+    key_context: |
+      Depende de 4.1 (SSH) e 4.2 (Ollama + Tunnel ativos).
+      Criar módulo reutilizável ssh-executor.js (DRY — extrai lógica de vps-ssh-test.js).
+      Health report semafórico: RAM, Disco, CPU, Uptime, Ollama, Cloudflared, Easypanel API.
+      Alertas proativos: RAM > 80% = CRÍTICO + exit(1); Disco > 75% = ATENÇÃO.
+      Recomendações inteligentes com ações concretas (docker prune, ollama stop, etc).
+      npm run vps:health + npm run vps:ssh "<cmd>" como interface de acesso.
+
+request: |
+  Execute o Spec Pipeline completo (fases 1→5) para todos os 3 stories do Epic 4,
+  na ordem sequencial: 4.1 → 4.2 → 4.3.
+
+  Para cada story:
+  - Phase 1 (@pm): *gather-requirements — ler story_path e PRD; extrair requirements.json
+  - Phase 2 (@architect): *analyze-impact — avaliar complexidade; gerar complexity.json
+  - Phase 3 (@analyst): *research — pesquisar dependências técnicas (SSH Node.js, Ollama API,
+    Cloudflare Tunnel, Easypanel API tRPC); gerar research.json
+  - Phase 4 (@pm): *write-spec — gerar spec.md completo a partir dos artefatos anteriores
+  - Phase 5 (@qa): *critique-spec — validar spec; gerar critique.json com verdict
+
+  Outputs esperados por story (em spec_output_dir):
+    - requirements.json
+    - complexity.json
+    - research.json
+    - spec.md
+    - critique.json
+
+  Em caso de NEEDS_REVISION: aplicar auto-fixes e re-rodar critique (máx 2 iterações).
+  Em caso de BLOCKED: escalar para @architect antes de prosseguir.
+
+last_command: "*draft-stories (Epic 4 — todas reescritas e alinhadas)"
+consumed: true
+timestamp: "2026-03-13T19:15:00-03:00"
+priority: high
+suggested_next_step: "*gather-requirements 4.1"
+prd_path: "docs/prd/epic-4-easypanel.md"
+epic_path: "docs/stories/epic-4-easypanel-integration/epic.md"
