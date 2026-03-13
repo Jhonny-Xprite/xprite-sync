@@ -1,0 +1,77 @@
+#!/bin/bash
+
+# ==============================================================================
+# PRE-COMMIT HOOK: Framework Health-Check Validation
+# ==============================================================================
+# This hook ensures that all commits pass framework health-check validations.
+# It runs the AIOX health-check test suite to validate framework integrity
+# and prevent regressions in core agentic systems.
+#
+# Exit Codes:
+#   0 = All health checks passed, commit allowed
+#   1 = Health checks failed, commit BLOCKED
+#
+# Bypass: git commit --no-verify (use only when necessary)
+# ==============================================================================
+
+set -e
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Log file
+LOG_FILE=".git/logs/health-check.log"
+mkdir -p "$(dirname "$LOG_FILE")"
+
+# Get project root
+PROJECT_ROOT="$(git rev-parse --show-toplevel)"
+cd "$PROJECT_ROOT"
+
+# Timestamp function
+timestamp() {
+  date '+%Y-%m-%d %H:%M:%S'
+}
+
+# Log message
+log_message() {
+  echo "[$(timestamp)] $1" >> "$LOG_FILE"
+}
+
+# Header
+echo ""
+echo -e "${BLUE}╔════════════════════════════════════════════════════════════════╗${NC}"
+echo -e "${BLUE}║        AIOX Framework Health-Check Pre-Commit Gate              ║${NC}"
+echo -e "${BLUE}╚════════════════════════════════════════════════════════════════╝${NC}"
+echo ""
+
+log_message "Pre-commit hook started"
+log_message "Executing: npm run test:health-check"
+
+# Run health checks
+echo -e "${YELLOW}Running health-check tests...${NC}"
+echo ""
+
+if npm run test:health-check 2>&1 | tee -a "$LOG_FILE"; then
+  echo ""
+  echo -e "${GREEN}✅ All health checks PASSED${NC}"
+  echo -e "${GREEN}Commit is allowed to proceed.${NC}"
+  echo ""
+  log_message "Health checks PASSED - Commit allowed"
+  exit 0
+else
+  echo ""
+  echo -e "${RED}❌ Health checks FAILED${NC}"
+  echo -e "${RED}Commit is BLOCKED - Fix failing tests and try again.${NC}"
+  echo ""
+  echo -e "${YELLOW}To bypass this check (NOT recommended):${NC}"
+  echo -e "${YELLOW}  git commit --no-verify${NC}"
+  echo ""
+  echo -e "${YELLOW}For more info, see: CONTRIBUTING.md${NC}"
+  echo ""
+  log_message "Health checks FAILED - Commit blocked"
+  exit 1
+fi
