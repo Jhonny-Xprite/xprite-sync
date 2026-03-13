@@ -1,0 +1,16 @@
+# Handoff: DevOps -> Architect (Epic 4, Wave 1, Story 4.1)
+from_agent: "@devops"
+to_agent: "@architect"
+target_epic: "epic-4-easypanel-integration"
+target_story: "4.1"
+request: |
+  A infraestrutura SSH básica foi implementada.
+  1. Chaves ED25519 geradas com sucesso localmente.
+  2. Scripts alterados (vps-ssh-test.js adotou BatchMode e StrictHostKeyChecking=accept-new).
+  3. .gitignore alterado para prevenir vazamento de id_ed25519 e id_rsa.
+  
+  Por favor, aprove o Quality Gate da Story 4.1 conforme definido na documentação, garantindo que a infra suportará os Módulos de Comando do Easypanel e Ollama (Story 4.2).
+last_command: "N/A"
+consumed: false
+timestamp: "2026-03-13T19:40:00-03:00"
+priority: "high"
