@@ -10,7 +10,7 @@ waves:
       - id: "4.1"
         title: "Ponte SSH Base — AIOX Ganha Acesso à VPS"
         path: "story-4.1.md"
-        status: "ready"
+        status: "done"
         assigned_agent: "@devops"
         quality_gate: "@architect"
         dependencies: []
