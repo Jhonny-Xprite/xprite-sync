@@ -29,7 +29,9 @@
     "typecheck:api": "cd packages/api && npm run typecheck || true",
     "typecheck:dashboard": "cd packages/dashboard && npm run typecheck || true",
     "validate:structure": "node .aiox-core/infrastructure/scripts/validate-paths.js",
-    "validate:agents": "node .aiox-core/infrastructure/scripts/validate-agents.js"
+    "validate:agents": "node .aiox-core/infrastructure/scripts/validate-agents.js",
+    "vps:health": "node .aiox-core/infrastructure/scripts/vps-health-check.js",
+    "vps:ssh": "node -e \"const {executeOnVps}=require('./.aiox-core/infrastructure/scripts/ssh-executor.js');executeOnVps(process.argv[1]).then(r=>console.log(r.stdout)).catch(e=>console.error(e.stderr)||process.exit(1))\" --"
   },
   "dependencies": {
     "@clack/prompts": "^0.11.0",

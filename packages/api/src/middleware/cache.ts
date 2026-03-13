@@ -45,14 +45,15 @@ export async function cacheMiddleware(
     const cachedData = await cache.get(cacheKey);
     if (cachedData) {
       res.setHeader('X-Cache', 'HIT');
-      return res.json(cachedData);
+      res.json(cachedData);
+      return;
     }
 
     res.setHeader('X-Cache', 'MISS');
 
     // Wrap original json() method to cache response
     const originalJson = res.json.bind(res);
-    res.json = function (data: any) {
+    (res as any).json = function (data: any) {
       // Cache successful responses (2xx status codes)
       if (res.statusCode >= 200 && res.statusCode < 300) {
         cache.set(cacheKey, data, 300).catch((error) => {
