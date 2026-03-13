@@ -1,0 +1,73 @@
+generated_at: "2026-03-13T00:00:00"
+project_name: xprite-sync
+
+system:
+  os: "Windows 11 Home 10.0.26200"
+  architecture: x64
+  shell: "bash 5.2.37 (msys)"
+
+cli_tools:
+  git:
+    installed: true
+    version: "2.53.0.windows.1"
+  gh:
+    installed: true
+    version: "2.87.3"
+    authenticated: true
+    account: "Jhonny-Xprite"
+  node:
+    installed: true
+    version: "24.14.0"
+  npm:
+    installed: true
+    version: "11.9.0"
+  supabase:
+    installed: true
+    version: "2.75.0"
+    authenticated: true
+  railway:
+    installed: true
+    version: "4.30.5"
+    authenticated: true
+    account: "equipe@jhonnyxprite.com"
+  docker:
+    installed: true
+    version: "29.2.1"
+  coderabbit:
+    installed: true
+    version: "0.3.6"
+    location: "WSL (~/.local/bin/coderabbit)"
+  pnpm:
+    installed: true
+    version: "10.30.3"
+  bun:
+    installed: true
+    version: "1.3.10"
+
+package_managers:
+  winget: "1.28.220"
+  chocolatey: "2.6.0"
+  scoop: "0.5.3"
+
+repository:
+  initialized: true
+  remote_url: "https://github.com/Jhonny-Xprite/xprite-sync.git"
+  branch: "master"
+
+mcp:
+  gateway: "http://localhost:8080/mcp"
+  transport: "http + stdio (MCP_DOCKER)"
+  servers:
+    - context7
+    - desktop-commander
+    - exa
+    - n8n
+    - playwright
+    - supabase
+
+validation:
+  essential_complete: true
+  recommended_complete: true
+  mcp_complete: true
+  ready_for_development: true
+  pending: []
