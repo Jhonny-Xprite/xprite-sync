@@ -1,0 +1,17 @@
+{
+  "story_id": "2.2",
+  "title": "Porting Official Framework Health Tests",
+  "requirements": [
+    {"id": "FR-1", "type": "functional", "description": "Test suite porting (agents, paths, deps)", "priority": "critical"},
+    {"id": "FR-2", "type": "functional", "description": "Test implementation (5 test areas)", "priority": "critical"},
+    {"id": "FR-3", "type": "functional", "description": "Configuration and npm scripts", "priority": "high"},
+    {"id": "FR-4", "type": "functional", "description": "Code coverage ≥80%", "priority": "high"},
+    {"id": "FR-5", "type": "functional", "description": "Documentation of test scenarios", "priority": "medium"},
+    {"id": "NFR-1", "type": "non-functional", "description": "Performance: <30s execution", "priority": "high"},
+    {"id": "NFR-2", "type": "non-functional", "description": "Reliability: fail-fast, cross-platform", "priority": "high"},
+    {"id": "NFR-3", "type": "non-functional", "description": "Maintainability: clear naming, extensible", "priority": "medium"}
+  ],
+  "complexity": {"score": 12, "max": 20, "class": "STANDARD"},
+  "estimated_effort_hours": 3.5,
+  "created_at": "2026-03-13T16:50:00Z"
+}

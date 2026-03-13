@@ -1,0 +1,68 @@
+{
+  "story_id": "2.1",
+  "title": "Health-Check Environment Setup (Jest/Mocha)",
+  "requirements": [
+    {
+      "id": "FR-1",
+      "type": "functional",
+      "description": "Test framework installation (Jest or Mocha)",
+      "priority": "critical"
+    },
+    {
+      "id": "FR-2",
+      "type": "functional",
+      "description": "Configuration files (jest.config.js or .mocharc.json)",
+      "priority": "critical"
+    },
+    {
+      "id": "FR-3",
+      "type": "functional",
+      "description": "NPM scripts (test, test:watch, test:coverage)",
+      "priority": "high"
+    },
+    {
+      "id": "FR-4",
+      "type": "functional",
+      "description": "Test directory structure (tests/ and tests/health-check/)",
+      "priority": "high"
+    },
+    {
+      "id": "FR-5",
+      "type": "functional",
+      "description": "Documentation (README or CONTRIBUTING)",
+      "priority": "medium"
+    },
+    {
+      "id": "NFR-1",
+      "type": "non-functional",
+      "description": "Performance: test startup < 5s, execution < 2s",
+      "priority": "medium"
+    },
+    {
+      "id": "NFR-2",
+      "type": "non-functional",
+      "description": "Compatibility: Windows (WSL), macOS, Node 18+",
+      "priority": "high"
+    },
+    {
+      "id": "NFR-3",
+      "type": "non-functional",
+      "description": "DX: clear errors, minimal config, extensible",
+      "priority": "medium"
+    }
+  ],
+  "complexity": {
+    "score": 7,
+    "max": 20,
+    "class": "SIMPLE",
+    "dimensions": {
+      "scope": 1,
+      "integration": 1,
+      "infrastructure": 2,
+      "knowledge": 2,
+      "risk": 1
+    }
+  },
+  "estimated_effort_hours": 2.5,
+  "created_at": "2026-03-13T16:50:00Z"
+}

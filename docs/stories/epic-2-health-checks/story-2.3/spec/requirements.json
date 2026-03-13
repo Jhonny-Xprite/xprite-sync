@@ -1,0 +1,17 @@
+{
+  "story_id": "2.3",
+  "title": "Integration of Health-Gates in Pre-Commit",
+  "requirements": [
+    {"id": "FR-1", "type": "functional", "description": "Pre-commit hook creation", "priority": "critical"},
+    {"id": "FR-2", "type": "functional", "description": "Hook behavior and bypass", "priority": "critical"},
+    {"id": "FR-3", "type": "functional", "description": "Testing and validation", "priority": "high"},
+    {"id": "FR-4", "type": "functional", "description": "Documentation updates", "priority": "high"},
+    {"id": "FR-5", "type": "functional", "description": "Git workflow integration", "priority": "high"},
+    {"id": "NFR-1", "type": "non-functional", "description": "Performance: <30s execution", "priority": "high"},
+    {"id": "NFR-2", "type": "non-functional", "description": "Reliability and consistency", "priority": "high"},
+    {"id": "NFR-3", "type": "non-functional", "description": "Usability and UX", "priority": "medium"}
+  ],
+  "complexity": {"score": 10, "max": 20, "class": "STANDARD"},
+  "estimated_effort_hours": 2.0,
+  "created_at": "2026-03-13T16:50:00Z"
+}
