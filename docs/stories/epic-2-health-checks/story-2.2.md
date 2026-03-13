@@ -1,11 +1,12 @@
 # Story 2.2: Porting Official Framework Health Tests
 
 ## Status
-- **Status**: Ready for Review ✅
+- **Status**: Done ✅ (Merged & Deployed - 2026-03-13 17:50:00Z)
 - **Executor**: @dev
 - **Quality Gate**: @qa
 - **PO Validation**: ✅ APPROVED (2026-03-13 17:15:00Z)
 - **Dev Completion**: ✅ COMPLETE (2026-03-13 17:25:00Z)
+- **Merge Completion**: ✅ MERGED (2026-03-13 17:50:00Z)
 - **Test Results**: 36/36 PASSING (health-check + regression suite)
 
 ## Story
