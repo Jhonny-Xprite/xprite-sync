@@ -15,11 +15,11 @@
 **so that** we can establish a foundation for implementing health-check tests and a zero-regression stability gate.
 
 ## Acceptance Criteria
-1. [ ] Jest or Mocha installed and configured correctly.
-2. [ ] Test configuration files created (jest.config.js or .mocharc.json).
-3. [ ] `npm test` command executes test runner successfully.
-4. [ ] Basic test file structure created (tests/ or __tests__/ directory).
-5. [ ] Test runner produces clear output with pass/fail results.
+1. [x] Jest or Mocha installed and configured correctly.
+2. [x] Test configuration files created (jest.config.js or .mocharc.json).
+3. [x] `npm test` command executes test runner successfully.
+4. [x] Basic test file structure created (tests/ or __tests__/ directory).
+5. [x] Test runner produces clear output with pass/fail results.
 
 ## 🤖 CodeRabbit Integration
 > **CodeRabbit Integration**: Enabled ✓

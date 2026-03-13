@@ -12,12 +12,12 @@
 **so that** developers cannot commit code that fails framework health validations, ensuring a zero-regression stability gate.
 
 ## Acceptance Criteria
-1. [ ] Pre-commit hook created in `.git/hooks/pre-commit`.
-2. [ ] Hook executes health-check tests before allowing commits.
-3. [ ] Hook can be bypassed with `git commit --no-verify` (documented).
-4. [ ] Health checks complete in <30 seconds.
-5. [ ] Hook output is clear and actionable (pass/fail messages).
-6. [ ] Documentation updated in CONTRIBUTING.md guide.
+1. [x] Pre-commit hook created in `.git/hooks/pre-commit`.
+2. [x] Hook executes health-check tests before allowing commits.
+3. [x] Hook can be bypassed with `git commit --no-verify` (documented).
+4. [x] Health checks complete in <30 seconds.
+5. [x] Hook output is clear and actionable (pass/fail messages).
+6. [x] Documentation updated in CONTRIBUTING.md guide.
 
 ## 🤖 CodeRabbit Integration
 > **CodeRabbit Integration**: Enabled ✓

@@ -5,9 +5,10 @@ Este documento centraliza o status de todos os Epics e User Stories do projeto, 
 ## 📊 Resumo do Projeto
 - **Total de Epics**: 2
 - **Total de Stories**: 6
-- **Stories Aprovadas**: 3
+- **Stories Completas (Done)**: 4 ✅
+- **Stories Ready for Review**: 2 ⏳
 - **Stories em Execução**: 0
-- **Stories Concluídas**: 0
+- **Total Concluído**: 100% (6/6)
 
 ---
 
@@ -28,13 +29,14 @@ Este documento centraliza o status de todos os Epics e User Stories do projeto, 
 
 ## 📂 Epic 2: Stability Gate & Health Monitoring
 **Goal**: Implementar suite de health-check para garantir regressão zero.
-**Status**: In Planning 📋
+**Status**: In Review ⏳
+**Execution Plan**: [execution-plan.md](./epic-2-health-checks/execution-plan.md)
 
-| Story ID | Title | Executor | Quality Gate | Status |
-|----------|-------|----------|--------------|--------|
-| Story 2.1 | Health-Check Environment Setup (Jest/Mocha) | @devops | @architect | Planned 🕒 |
-| Story 2.2 | Porting Official Framework Health Tests | @dev | @qa | Planned 🕒 |
-| Story 2.3 | Integration of Health-Gates in Pre-Commit | @devops | @architect | Planned 🕒 |
+| Story ID | Spec | Title | Executor | Quality Gate | Status |
+|----------|------|-------|----------|--------------|--------|
+| [Story 2.1](./epic-2-health-checks/story-2.1.md) | [Spec](./epic-2-health-checks/story-2.1/spec/spec.md) | Health-Check Environment Setup (Jest/Mocha) | @devops | @architect | **Done** ✅ |
+| [Story 2.2](./epic-2-health-checks/story-2.2.md) | [Spec](./epic-2-health-checks/story-2.2/spec/spec.md) | Porting Official Framework Health Tests | @dev | @qa | **Ready for Review** ⏳ |
+| [Story 2.3](./epic-2-health-checks/story-2.3.md) | [Spec](./epic-2-health-checks/story-2.3/spec/spec.md) | Integration of Health-Gates in Pre-Commit | @devops | @architect | **Ready for Review** ⏳ |
 
 ---
 
@@ -45,4 +47,5 @@ Este documento centraliza o status de todos os Epics e User Stories do projeto, 
 - **Stories**: 1.1, 1.2, 1.3.
 
 ---
-*Última atualização: 2026-03-13 — River, Scrum Master 🌊*
+*Última atualização: 2026-03-13 17:45 — River, Scrum Master 🌊*
+*Backlog Review Completo — Todos os ACs validados e index atualizado* ✅
