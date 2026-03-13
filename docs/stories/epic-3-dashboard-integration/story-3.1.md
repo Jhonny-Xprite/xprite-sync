@@ -3,7 +3,7 @@ story:
   id: "3.1"
   epic: "3"
   title: "Setup Inicial - Integração Base do Dashboard"
-  status: "Specified"
+  status: "Ready for Review"
   created: "2026-03-13"
   created_by: "@sm (River)"
 
@@ -37,12 +37,12 @@ clickup:
 
 ## 🎯 Acceptance Criteria
 
-- [ ] **AC 3.1.1:** Dashboard repository is successfully integrated into the project (either as Git submodule, monorepo, or standalone module)
-- [ ] **AC 3.1.2:** All environment variables for dashboard (dev, staging, production) are documented and configured
-- [ ] **AC 3.1.3:** Dashboard build pipeline successfully compiles the dashboard locally (build time < 30s)
-- [ ] **AC 3.1.4:** Dashboard is accessible at `http://localhost:3000/dashboard` in development environment
-- [ ] **AC 3.1.5:** All dashboard dependencies are properly managed (no version conflicts with main project)
-- [ ] **AC 3.1.6:** Documentation updated: setup guide for developers and deployment instructions
+- [x] **AC 3.1.1:** Dashboard repository is successfully integrated into the project (either as Git submodule, monorepo, or standalone module)
+- [x] **AC 3.1.2:** All environment variables for dashboard (dev, staging, production) are documented and configured
+- [x] **AC 3.1.3:** Dashboard build pipeline successfully compiles the dashboard locally (build time < 30s)
+- [x] **AC 3.1.4:** Dashboard is accessible at `http://localhost:3000/dashboard` in development environment
+- [x] **AC 3.1.5:** All dashboard dependencies are properly managed (no version conflicts with main project)
+- [x] **AC 3.1.6:** Documentation updated: setup guide for developers and deployment instructions
 
 ## Spec Pipeline Artifacts
 
