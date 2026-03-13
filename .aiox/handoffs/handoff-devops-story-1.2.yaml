@@ -17,7 +17,7 @@ context: |
 
 request: "Prepare for push/PR once Story 1.1 also clears. Stage/commit locally; do not push until instructed."
 last_command: "*gate 1.2"
-consumed: false
+consumed: true
 timestamp: "2026-03-13T19:20:00-03:00"
 priority: high
 suggested_next_step: "*push"

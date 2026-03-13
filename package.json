@@ -21,7 +21,13 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "test:health-check": "jest tests/health-check --passWithNoTests"
+    "test:health-check": "jest tests/health-check --passWithNoTests",
+    "dashboard:install": "cd packages/dashboard && npm install",
+    "dashboard:dev": "cd packages/dashboard && npm run dev",
+    "dashboard:build": "cd packages/dashboard && npm run build",
+    "dashboard:build:staging": "cd packages/dashboard && VITE_ENV=staging npm run build",
+    "dashboard:build:prod": "cd packages/dashboard && VITE_ENV=production npm run build",
+    "dashboard:preview": "cd packages/dashboard && npm run preview"
   },
   "dependencies": {
     "@clack/prompts": "^0.11.0",

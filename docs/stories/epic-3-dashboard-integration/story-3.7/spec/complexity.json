@@ -1,0 +1,32 @@
+{
+  "storyId": "3.7",
+  "assessedAt": "2026-03-13T20:55:00Z",
+  "assessedBy": "@aiox-master (Orion) as @architect",
+  "result": "STANDARD",
+  "overridden": false,
+  "dimensions": {
+    "scope": {
+      "score": 3,
+      "notes": "Requires cross-cutting changes in API, agents, and database client wrappers."
+    },
+    "integration": {
+      "score": 4,
+      "notes": "Complex context propagation across async boundaries and network calls."
+    },
+    "infrastructure": {
+      "score": 3,
+      "notes": "Requires OTel collector setup and logging backend config."
+    },
+    "knowledge": {
+      "score": 3,
+      "notes": "Specific knowledge of OTel APIs and distributed systems tracing."
+    },
+    "risk": {
+      "score": 2,
+      "notes": "Main risk is performance overhead and log bloat."
+    }
+  },
+  "totalScore": 15,
+  "pipelinePhases": ["gather", "assess", "research", "spec", "critique", "plan"],
+  "estimatedEffort": "1-2 weeks"
+}

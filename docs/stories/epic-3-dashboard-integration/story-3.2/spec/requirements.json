@@ -1,0 +1,122 @@
+{
+  "storyId": "3.2",
+  "gatheredAt": "2026-03-13T18:20:00Z",
+  "source": "existing",
+  "gatheredBy": "@aiox-master (Orion)",
+  "elicitationVersion": "2.0",
+  "functional": [
+    {
+      "id": "FR-1",
+      "description": "Establish a stable WebSocket or Supabase Realtime connection between backend and dashboard.",
+      "priority": "P0",
+      "rationale": "Base for real-time updates.",
+      "acceptance": ["AC-3.2.1"]
+    },
+    {
+      "id": "FR-2",
+      "description": "Ensure metric updates flow with < 100ms latency (p95).",
+      "priority": "P0",
+      "rationale": "System responsiveness.",
+      "acceptance": ["AC-3.2.2"]
+    },
+    {
+      "id": "FR-3",
+      "description": "Implement automatic reconnection with exponential backoff.",
+      "priority": "P1",
+      "rationale": "System reliability.",
+      "acceptance": ["AC-3.2.3"]
+    },
+    {
+      "id": "FR-4",
+      "description": "Prevent memory leaks in subscription and cleanup logic.",
+      "priority": "P0",
+      "rationale": "System stability.",
+      "acceptance": ["AC-3.2.4"]
+    },
+    {
+      "id": "FR-5",
+      "description": "Define and document a versioned message format.",
+      "priority": "P1",
+      "rationale": "Protocol consistency.",
+      "acceptance": ["AC-3.2.5"]
+    },
+    {
+      "id": "FR-6",
+      "description": "Implement error handling for network/timeout/invalid message scenarios.",
+      "priority": "P1",
+      "rationale": "Fault tolerance.",
+      "acceptance": ["AC-3.2.6"]
+    },
+    {
+      "id": "FR-7",
+      "description": "Support reactive UI updates in the dashboard frontend.",
+      "priority": "P1",
+      "rationale": "UX for monitoring.",
+      "acceptance": ["AC-3.2.7"]
+    },
+    {
+      "id": "FR-8",
+      "description": "Verify that real-time data matches the database source of truth.",
+      "priority": "P1",
+      "rationale": "Data integrity.",
+      "acceptance": ["AC-3.2.8"]
+    }
+  ],
+  "nonFunctional": [
+    {
+      "id": "NFR-1",
+      "category": "performance",
+      "description": "Support 1000+ metrics per second.",
+      "metric": "throughput > 1000/s"
+    },
+    {
+      "id": "NFR-2",
+      "category": "security",
+      "description": "Authenticate connections via JWT and enforce RLS policies.",
+      "metric": "100% authenticated connections"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "CON-1",
+      "type": "technical",
+      "description": "Use Supabase Realtime (recommended) or custom WebSocket.",
+      "impact": "Decides technology stack for data flow."
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "ASM-1",
+      "description": "Story 3.1 is completed and dashboard is accessible.",
+      "risk": "high"
+    }
+  ],
+  "domainModel": [
+    {
+      "entity": "RealTimeStream",
+      "description": "Stream of agent metrics and system status.",
+      "relationships": ["Bound to Dashboard Sessions"]
+    }
+  ],
+  "interactions": [
+    {
+      "flow": "Live Monitoring",
+      "description": "User opens dashboard -> Subscribes to channels -> UI updates on DB change.",
+      "states": ["Connecting", "Live", "Reconnecting", "Offline"]
+    }
+  ],
+  "edgeCases": [
+    {
+      "scenario": "Network partition between backend and Supabase.",
+      "handling": "Buffer messages or warn user of stale data.",
+      "severity": "medium"
+    }
+  ],
+  "terminology": [
+    {
+      "term": "Supabase Realtime",
+      "definition": "Elixir-based broadcasting service for PostgreSQL changes."
+    }
+  ],
+  "openQuestions": []
+}

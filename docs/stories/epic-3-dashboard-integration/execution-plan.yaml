@@ -1,0 +1,114 @@
+---
+epic:
+  id: "3"
+  title: "Integração Completa do Dashboard Synkra AIOX"
+  status: "PLANNING"
+  created: "2026-03-13"
+  owner: "@pm (Morgan)"
+
+  goal: |
+    Integrar o dashboard Synkra AIOX no projeto para oferecer observabilidade
+    completa em tempo real: métricas de agentes AI, infraestrutura de sistema,
+    workflows, usuários e logs distribuídos com suporte a real-time updates.
+
+  description: |
+    ## Contexto Existente
+    - **Projeto Base:** Sistema full-stack AIOX para orquestração de agentes AI.
+    - **Stack:** Node.js, React, Supabase, Redis, OpenTelemetry, Docker.
+    - **Estratégia:** Observabilidade nativa via interceptores e monitoramento de OS.
+
+  stories:
+    - story_number: 3.1
+      title: "Setup Inicial - Integração Base do Dashboard"
+      status: "Specified"
+      priority: "P0"
+      dependencies: []
+      executor: "@dev"
+    - story_number: 3.3
+      title: "Schema & RLS Policies para Dashboard"
+      status: "Specified"
+      priority: "P0"
+      dependencies: []
+      executor: "@data-engineer"
+    - story_number: 3.8
+      title: "CI/CD Integration & Deployment"
+      status: "Specified"
+      priority: "P0"
+      dependencies: ["3.1"]
+      executor: "@devops"
+    - story_number: 3.2
+      title: "Integração de Dados em Tempo Real"
+      status: "Specified"
+      priority: "P0"
+      dependencies: ["3.1", "3.3"]
+      executor: "@dev"
+    - story_number: 3.4
+      title: "Agent Metrics & Observability"
+      status: "Specified"
+      priority: "P1"
+      dependencies: ["3.2", "3.3"]
+      executor: "@dev"
+    - story_number: 3.5
+      title: "System & Infrastructure Metrics"
+      status: "Specified"
+      priority: "P1"
+      dependencies: ["3.2", "3.3"]
+      executor: "@dev"
+    - story_number: 3.6
+      title: "Caching & Performance Optimization"
+      status: "Specified"
+      priority: "P1"
+      dependencies: ["3.2"]
+      executor: "@dev"
+    - story_number: 3.7
+      title: "Distributed Tracing & Logging"
+      status: "Specified"
+      priority: "P2"
+      dependencies: ["3.2"]
+      executor: "@architect"
+    - story_number: 3.9
+      title: "Documentation & User Guide"
+      status: "Specified"
+      priority: "P2"
+      dependencies: ["3.1", "3.2", "3.4", "3.5", "3.8"]
+      executor: "@devops"
+
+  execution_waves:
+    wave_1:
+      name: "Foundation & Infrastructure"
+      stories: ["3.1", "3.3", "3.8"]
+      timeline: "Week 1-2"
+      executors: ["@dev", "@data-engineer", "@devops"]
+      description: "Setup base, banco de dados e pipeline de deploy automatizado."
+    
+    wave_2:
+      name: "Intelligence & Data Flow"
+      stories: ["3.2", "3.4", "3.5"]
+      timeline: "Week 2-3"
+      executors: ["@dev"]
+      description: "Fluxo real-time e motores de métricas de agentes e infraestrutura."
+      depends_on: ["wave_1"]
+
+    wave_3:
+      name: "Optimization & Observability"
+      stories: ["3.6", "3.7"]
+      timeline: "Week 3-4"
+      executors: ["@dev", "@architect"]
+      description: "Cache de performance e rastreamento distribuído (OTel)."
+      depends_on: ["wave_2"]
+
+    wave_4:
+      name: "Handover & Documentation"
+      stories: ["3.9"]
+      timeline: "Week 4-5"
+      executors: ["@devops"]
+      description: "Guias de uso e troubleshooting completos."
+      depends_on: ["wave_3"]
+
+  metadata:
+    estimated_total_effort: "60-100 story points"
+    estimated_timeline: "4-6 weeks"
+    risk_level: "MEDIUM"
+    next_steps:
+      - "Wave 1 - Iniciar implementação das stories 3.1, 3.3 e 3.8."
+      - "Monitorar integridade do schema (3.3) antes de escalar Wave 2."

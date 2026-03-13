@@ -1,0 +1,108 @@
+storyId: "3.4"
+createdAt: "2026-03-13T19:15:00Z"
+createdBy: "@aiox-master (Orion) as @architect"
+status: pending
+complexity: STANDARD
+estimatedEffort: "2-4 days"
+
+dependencies: []
+
+phases:
+  - id: phase-1
+    name: Core Instrumentation
+    description: Implement the agent interceptor pattern and metrics collection base.
+    subtasks:
+      - id: "1.1"
+        description: "Create AgentInterceptor base class to wrap agent execution"
+        service: backend
+        files:
+          - packages/core/src/agents/interceptor.ts
+        verification:
+          type: command
+          command: "npm run typecheck"
+        status: pending
+
+      - id: "1.2"
+        description: "Integrate interceptor with BaseAgent execution lifecycle"
+        service: backend
+        files:
+          - packages/core/src/agents/base-agent.ts
+        verification:
+          type: command
+          command: "npm run test:core -- --grep 'AgentInterceptor'"
+        status: pending
+
+  - id: phase-2
+    name: Metrics Processing
+    description: Implement batching and persistence logic.
+    subtasks:
+      - id: "2.1"
+        description: "Develop MetricsManager with buffer and 5s flushing cycle"
+        service: backend
+        files:
+          - packages/api/src/services/metrics.ts
+        verification:
+          type: command
+          command: "npm run typecheck"
+        status: pending
+
+      - id: "2.2"
+        description: "Habilitar tabelas de métricas e subscrição Realtime no Supabase"
+        service: database
+        files:
+          - supabase/migrations/agent_metrics_schema.sql
+        verification:
+          type: command
+          command: "npm run db:smoke-test"
+        status: pending
+
+  - id: phase-3
+    name: Frontend Visualization
+    description: Implement agent metrics dashboard pages and widgets.
+    subtasks:
+      - id: "3.1"
+        description: "Create Agent Metrics list and detail pages in Dashboard"
+        service: frontend
+        files:
+          - packages/dashboard/src/pages/Agents.tsx
+          - packages/dashboard/src/pages/AgentDetail.tsx
+        verification:
+          type: browser
+          url: "http://localhost:3000/dashboard/agents"
+          actions: ["Verify agent list loads"]
+        status: pending
+
+      - id: "3.2"
+        description: "Integrate real-time charts for agent latency and success rate"
+        service: frontend
+        files:
+          - packages/dashboard/src/components/AgentCharts.tsx
+        verification:
+          type: browser
+          url: "http://localhost:3000/dashboard/agents"
+          actions: ["Verify charts update live"]
+        status: pending
+
+  - id: phase-4
+    name: Alerting & Retention
+    description: Configure alerts and data cleanup.
+    subtasks:
+      - id: "4.1"
+        description: "Implement alert triggers for agent execution failures"
+        service: backend
+        files:
+          - packages/api/src/services/alerts.ts
+        verification:
+          type: command
+          command: "npm run test:api -- --grep 'Alerts'"
+        status: pending
+
+      - id: "4.2"
+        description: "Setup Postgres cron or worker for 30-day metrics retention"
+        service: database
+        files:
+          - supabase/migrations/metrics_retention.sql
+        verification:
+          type: command
+          command: "npm run db:smoke-test"
+        status: pending

@@ -1,0 +1,110 @@
+storyId: "3.2"
+createdAt: "2026-03-13T18:45:00Z"
+createdBy: "@aiox-master (Orion) as @architect"
+status: pending
+complexity: STANDARD
+estimatedEffort: "3-5 days"
+
+dependencies:
+  - name: "@supabase/supabase-js"
+    version: "^2.0.0"
+    purpose: Realtime and Database client
+
+phases:
+  - id: phase-1
+    name: Database Setup
+    description: Enable Realtime and security policies.
+    subtasks:
+      - id: "1.1"
+        description: "Enable Realtime replication for agent_metrics and system_status tables"
+        service: database
+        files:
+          - supabase/migrations/realtime_setup.sql
+        verification:
+          type: command
+          command: "npm run db:smoke-test"
+        status: pending
+
+      - id: "1.2"
+        description: "Configure RLS policies for real-time subscription security"
+        service: database
+        files:
+          - supabase/migrations/rls_realtime.sql
+        verification:
+          type: command
+          command: "npm run db:rls-audit"
+        status: pending
+
+  - id: phase-2
+    name: Backend Implementation
+    description: Implement real-time broadcasting logic.
+    subtasks:
+      - id: "2.1"
+        description: "Create RealtimeService to handle message broadcasting"
+        service: backend
+        files:
+          - packages/api/src/services/realtime.ts
+        verification:
+          type: command
+          command: "npm run typecheck"
+        status: pending
+
+      - id: "2.2"
+        description: "Integrate broadcasting into metric collection endpoints"
+        service: backend
+        files:
+          - packages/api/src/controllers/metrics.ts
+        verification:
+          type: api
+          url: "http://localhost:3000/api/metrics"
+          expectedStatus: 200
+        status: pending
+
+  - id: phase-3
+    name: Frontend Implementation
+    description: Reactive Dashboard updates.
+    subtasks:
+      - id: "3.1"
+        description: "Implement useRealtime custom hook with cleanup logic"
+        service: frontend
+        files:
+          - packages/dashboard/src/hooks/useRealtime.ts
+        verification:
+          type: command
+          command: "cd packages/dashboard && npm run typecheck"
+        status: pending
+
+      - id: "3.2"
+        description: "Connect main dashboard widgets to real-time hook"
+        service: frontend
+        files:
+          - packages/dashboard/src/components/MetricWidget.tsx
+        verification:
+          type: browser
+          url: "http://localhost:3000/dashboard"
+          actions: ["Verify widget updates on DB change"]
+        status: pending
+
+  - id: phase-4
+    name: Quality & Testing
+    description: Performance and reliability verification.
+    subtasks:
+      - id: "4.1"
+        description: "Verify latency and throughput requirements"
+        service: backend
+        files:
+          - tests/performance/realtime_latency.spec.ts
+        verification:
+          type: command
+          command: "npm run test:perf"
+        status: pending
+
+      - id: "4.2"
+        description: "Perform memory leak audit on dashboard subscritions"
+        service: frontend
+        files:
+          - tests/qa/memory_leak.spec.ts
+        verification:
+          type: manual
+          instructions: "Open Chrome DevTools -> Memory -> Heap Snapshot after 10 mins of live updates."
+        status: pending

@@ -7,6 +7,15 @@ project:
   name: "Synkra AIOX"
   type: "aiox-development"
   description: "AI-Orchestrated System for Full Stack Development"
+  structure_standard: "2.0"
+
+# Project Structure Mappings
+structure:
+  framework: ".aiox-core"
+  docs: "docs"
+  extensions: "extensions"
+  repositories: "repositories"
+  knowledge: "knowledge"
 
 # Development Story Location
 devStoryLocation: "docs/stories"
@@ -97,5 +106,41 @@ features:
   code_intelligence: true
   orchestration: true
 
-version: "3.0"
+# Inventory of tracked project assets
+inventory:
+  framework:
+    version: "3.0"
+    stats:
+      agents: 12
+      tasks: 203
+      templates: 45
+      checklists: 16
+      scripts: 85
+      schemas: 5
+    compliance: "✅ 100% - All AIOX-CORE v5.0.3 Assets Validated"
+  project:
+    epics:
+      - id: 1
+        name: "Asset Restoration & Operational Compliance"
+        path: "docs/stories/epic-1-asset-restoration"
+        status: "PASS"
+      - id: 2
+        name: "Health Checks & Stability Gate"
+        path: "docs/stories/epic-2-health-checks"
+        status: "PASS"
+      - id: 3
+        name: "Dashboard Integration"
+        path: "docs/stories"
+        status: "IN_PROGRESS"
+    active_stories:
+      - id: "3.1"
+        title: "Setup Inicial - Integração Base do Dashboard"
+        path: "docs/stories/3.1.story.md"
+        status: "Draft"
+      - id: "3.2"
+        title: "Real-time Data Flow"
+        path: "docs/stories/3.2.story.md"
+        status: "Draft"
+
+version: "3.3"
 lastUpdated: "2026-03-13"

@@ -1,0 +1,90 @@
+storyId: "3.5"
+createdAt: "2026-03-13T19:45:00Z"
+createdBy: "@aiox-master (Orion) as @architect"
+status: pending
+complexity: STANDARD
+estimatedEffort: "1-2 weeks"
+
+dependencies:
+  - name: "os-utils"
+    version: "latest"
+    purpose: OS metrics collection
+  - name: "prom-client"
+    version: "latest"
+    purpose: Prometheus metrics export
+
+phases:
+  - id: phase-1
+    name: Metric Collection Service
+    description: Implement the background service for system and DB metrics.
+    subtasks:
+      - id: "1.1"
+        description: "Develop InfraMonitor service to sample CPU, Mem, and DB stats every 10s"
+        service: backend
+        files:
+          - packages/api/src/services/infra.ts
+        verification:
+          type: command
+          command: "npm run typecheck"
+        status: pending
+
+      - id: "1.2"
+        description: "Create the system_metrics table and partitioning/retention script"
+        service: database
+        files:
+          - supabase/migrations/system_metrics_schema.sql
+        verification:
+          type: command
+          command: "npm run db:smoke-test"
+        status: pending
+
+  - id: phase-2
+    name: Export & Alerting
+    description: Setup Prometheus endpoint and resource thresholds alerts.
+    subtasks:
+      - id: "2.1"
+        description: "Implement /metrics endpoint using prom-client"
+        service: backend
+        files:
+          - packages/api/src/routes/metrics.ts
+        verification:
+          type: api
+          url: "http://localhost:3000/metrics"
+          expectedStatus: 200
+        status: pending
+
+      - id: "2.2"
+        description: "Implement resource threshold checks and alert triggers"
+        service: backend
+        files:
+          - packages/api/src/services/infra-alerts.ts
+        verification:
+          type: command
+          command: "npm run test:api -- --grep 'InfraAlerts'"
+        status: pending
+
+  - id: phase-3
+    name: Infra Dashboard
+    description: Visualization of infrastructure health.
+    subtasks:
+      - id: "3.1"
+        description: "Create System Infrastructure page with real-time graphs"
+        service: frontend
+        files:
+          - packages/dashboard/src/pages/Infra.tsx
+        verification:
+          type: browser
+          url: "http://localhost:3000/dashboard/infra"
+          actions: ["Verify graphs display system data"]
+        status: pending
+
+      - id: "3.2"
+        description: "Add status indicators for CPU/RAM/Disk health"
+        service: frontend
+        files:
+          - packages/dashboard/src/components/InfraStatus.tsx
+        verification:
+          type: browser
+          url: "http://localhost:3000/dashboard/infra"
+          actions: ["Verify health indicators update"]
+        status: pending

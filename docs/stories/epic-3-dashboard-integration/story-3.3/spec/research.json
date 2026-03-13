@@ -1,0 +1,31 @@
+{
+  "storyId": "3.3",
+  "researchedAt": "2026-03-13T21:55:00Z",
+  "researchedBy": "@aiox-master (Orion) as @analyst",
+  "dependencies": [],
+  "technologies": [
+    {
+      "name": "Postgres Partitioning (Future)",
+      "usage": "For scaling metrics tables beyond 10M+ rows."
+    }
+  ],
+  "verifiedClaims": [
+    {
+      "claim": "RLS performance in Supabase is optimized when using subqueries against team_members correctly.",
+      "verified": true,
+      "source": "Supabase Performance Guides"
+    }
+  ],
+  "unverifiedClaims": [
+    {
+      "claim": "The current teams structure uses a direct team_id in auth.users metadata.",
+      "notes": "Need to check if we use a helper function for team resolution in RLS."
+    }
+  ],
+  "implementationPatterns": [
+    {
+      "name": "Audit Logging",
+      "description": "Using JSONB for changes attribute in user_activity."
+    }
+  ]
+}

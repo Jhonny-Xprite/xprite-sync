@@ -3,7 +3,8 @@
 ## Table of Contents
 
 - [AIOX-CORE Stabilization PRD](#table-of-contents)
-  - [01. Global Objective](./01-global-objective.md)
+  - [00. Global Strategy (Master)](./00-prd-master.md)
+- [01. Global Objective](./01-global-objective.md)
   - [02. Requirements (Simplified)](./02-requirements-simplified.md)
   - [03. Research Benchmarks (Alignment v5.0.3)](./03-research-benchmarks-alignment-v503.md)
   - [04. Execution Roadmap (Step-by-Step)](./04-execution-roadmap-step-by-step.md)

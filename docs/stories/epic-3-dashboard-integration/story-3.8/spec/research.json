@@ -1,0 +1,42 @@
+{
+  "storyId": "3.8",
+  "researchedAt": "2026-03-13T20:30:00Z",
+  "researchedBy": "@aiox-master (Orion) as @analyst",
+  "dependencies": [
+    {
+      "name": "docker",
+      "version": "latest",
+      "status": "verified",
+      "source": "Infrastructure"
+    }
+  ],
+  "technologies": [
+    {
+      "name": "GitHub Actions",
+      "usage": "Workflow orchestration."
+    },
+    {
+      "name": "Multi-stage Docker Builds",
+      "usage": "Creating lean production images."
+    }
+  ],
+  "verifiedClaims": [
+    {
+      "claim": "Multi-stage builds can reduce image size by up to 90%.",
+      "verified": true,
+      "source": "Docker Documentation"
+    }
+  ],
+  "unverifiedClaims": [
+    {
+      "claim": "Deployment to production takes < 5 minutes.",
+      "notes": "Depends on registry speed and health check durations."
+    }
+  ],
+  "implementationPatterns": [
+    {
+      "name": "GitFlow / Feature Branching",
+      "description": "Trigger builds on PR and deployments on merge to main/develop."
+    }
+  ]
+}

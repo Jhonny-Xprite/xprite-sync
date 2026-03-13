@@ -1,0 +1,94 @@
+{
+  "storyId": "3.7",
+  "gatheredAt": "2026-03-13T20:50:00Z",
+  "source": "existing",
+  "gatheredBy": "@aiox-master (Orion)",
+  "elicitationVersion": "2.0",
+  "functional": [
+    {
+      "id": "FR-1",
+      "description": "Integrate OpenTelemetry SDK for distributed tracing across services.",
+      "priority": "P0",
+      "rationale": "High-level debugging and observability.",
+      "acceptance": ["AC-3.7.1", "AC-3.7.2"]
+    },
+    {
+      "id": "FR-2",
+      "description": "Propagate Correlation IDs across all asynchronous and synchronous boundaries.",
+      "priority": "P1",
+      "rationale": "Track requests through the entire system.",
+      "acceptance": ["AC-3.7.3", "AC-3.7.5"]
+    },
+    {
+      "id": "FR-3",
+      "description": "Implement structured JSON logging with correlation context.",
+      "priority": "P1",
+      "rationale": "Log analysis and consistent formatting.",
+      "acceptance": ["AC-3.7.4"]
+    },
+    {
+      "id": "FR-4",
+      "description": "Expose basic trace information in the dashboard.",
+      "priority": "P2",
+      "rationale": "Integrated debugging view.",
+      "acceptance": ["AC-3.7.6"]
+    }
+  ],
+  "nonFunctional": [
+    {
+      "id": "NFR-1",
+      "category": "performance",
+      "description": "Tracing overhead must be < 10%.",
+      "metric": "overhead < 10%"
+    },
+    {
+      "id": "NFR-2",
+      "category": "observability",
+      "description": "Support configurable sampling strategy (head-based).",
+      "metric": "sampling configuration available"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "CON-1",
+      "type": "technical",
+      "description": "Use OpenTelemetry standards.",
+      "impact": "Decides the tracing protocol."
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "ASM-1",
+      "description": "A collector (Jaeger/OTel Collector) is available or will be provisioned.",
+      "risk": "medium"
+    }
+  ],
+  "domainModel": [
+    {
+      "entity": "Trace",
+      "description": "A collection of spans representing a full request execution path.",
+      "attributes": ["traceId", "spans", "startTime", "endTime"]
+    }
+  ],
+  "interactions": [
+    {
+      "flow": "Request Tracing",
+      "description": "Request enters API -> Create Root Span -> Pass TraceId to Agent -> Agent Creates Child Span -> DB Query creates child span.",
+      "states": ["Starting", "Propagating", "Finishing", "Exporting"]
+    }
+  ],
+  "edgeCases": [
+    {
+      "scenario": "Loss of connection to Trace Collector.",
+      "handling": "Buffer traces locally (memory limit) or drop silently to avoid impacting application health.",
+      "severity": "low"
+    }
+  ],
+  "terminology": [
+    {
+      "term": "Span",
+      "definition": "The basic building block of a trace, representing a single unit of work."
+    }
+  ],
+  "openQuestions": []
+}

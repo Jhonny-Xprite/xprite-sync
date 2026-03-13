@@ -1,0 +1,51 @@
+{
+  "storyId": "3.2",
+  "researchedAt": "2026-03-13T18:30:00Z",
+  "researchedBy": "@aiox-master (Orion) as @analyst",
+  "dependencies": [
+    {
+      "name": "@supabase/supabase-js",
+      "version": "^2.0.0",
+      "status": "verified",
+      "source": "Official Supabase documentation"
+    }
+  ],
+  "technologies": [
+    {
+      "name": "Supabase Realtime (Postgres Changes)",
+      "usage": "Listen to INSERT/UPDATE on metric tables."
+    },
+    {
+      "name": "Supabase Realtime (Broadcast)",
+      "usage": "Low-latency ephemeral updates (e.g., typing, cursor, transient alerts)."
+    }
+  ],
+  "verifiedClaims": [
+    {
+      "claim": "useEffect cleanup is mandatory to prevent redundant subscriptions.",
+      "verified": true,
+      "source": "Supabase & React Community Best Practices"
+    },
+    {
+      "claim": "RLS policies are enforced at the Realtime server level.",
+      "verified": true,
+      "source": "Supabase Security Guide"
+    }
+  ],
+  "unverifiedClaims": [
+    {
+      "claim": "Maximum throughput of 1000 msg/sec per connection.",
+      "notes": "Depends on Supabase plan and payload size. Need benchmarking."
+    }
+  ],
+  "implementationPatterns": [
+    {
+      "name": "Hook Subscription Pattern",
+      "description": "Create useRealtimeSubscription hook that handles subscribe/unsubscribe on mount/unmount."
+    },
+    {
+      "name": "Throttling Pattern",
+      "description": "Use lodash.throttle or similar for high-frequency metric broadcasts."
+    }
+  ]
+}

@@ -3,7 +3,8 @@
 ## Table of Contents
 
 - [AIOX-CORE Brownfield Architecture Document](#table-of-contents)
-  - [01. Introduction](./01-introduction.md)
+  - [00. Master Design Document](./00-architecture-master.md)
+- [01. Introduction](./01-introduction.md)
   - [02. Quick Reference](./02-quick-reference.md)
   - [03. High Level Architecture](./03-high-level-architecture.md)
     - [Technical Stack](./03-high-level-architecture.md#technical-stack)

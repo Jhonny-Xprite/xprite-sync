@@ -1,0 +1,105 @@
+{
+  "storyId": "3.6",
+  "gatheredAt": "2026-03-13T19:50:00Z",
+  "source": "existing",
+  "gatheredBy": "@aiox-master (Orion)",
+  "elicitationVersion": "2.0",
+  "functional": [
+    {
+      "id": "FR-1",
+      "description": "Implement Redis-based caching for dashboard queries and real-time data.",
+      "priority": "P0",
+      "rationale": "Improve responsiveness under high load.",
+      "acceptance": ["AC-3.6.1", "AC-3.6.2"]
+    },
+    {
+      "id": "FR-2",
+      "description": "Implement cache invalidation logic ensuring updates propagate within 5s.",
+      "priority": "P1",
+      "rationale": "Maintain data consistency.",
+      "acceptance": ["AC-3.6.3"]
+    },
+    {
+      "id": "FR-3",
+      "description": "Implement graceful degradation if Redis is unavailable.",
+      "priority": "P1",
+      "rationale": "System resilience.",
+      "acceptance": ["AC-3.6.7"]
+    },
+    {
+      "id": "FR-4",
+      "description": "Document and make cache TTL strategy configurable.",
+      "priority": "P2",
+      "rationale": "Maintainability and tuning.",
+      "acceptance": ["AC-3.6.8"]
+    }
+  ],
+  "nonFunctional": [
+    {
+      "id": "NFR-1",
+      "category": "performance",
+      "description": "Dashboard p95 latency must be < 200ms with caching.",
+      "metric": "p95 latency < 200ms"
+    },
+    {
+      "id": "NFR-2",
+      "category": "performance",
+      "description": "Cache hit rate must be > 70% under typical load.",
+      "metric": "hit rate > 70%"
+    },
+    {
+      "id": "NFR-3",
+      "category": "performance",
+      "description": "Cache miss impact must be < 500ms.",
+      "metric": "miss penalty < 500ms"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "CON-1",
+      "type": "technical",
+      "description": "Use Redis for caching.",
+      "impact": "Decides the infra dependency."
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "ASM-1",
+      "description": "A Redis instance is available or can be easily provisioned in the deployment environment.",
+      "risk": "low"
+    }
+  ],
+  "domainModel": [
+    {
+      "entity": "CacheRecord",
+      "description": "Stored version of a query result in Redis.",
+      "attributes": ["key", "value", "ttl", "lastValidated"]
+    }
+  ],
+  "interactions": [
+    {
+      "flow": "Cached Query Flow",
+      "description": "Request -> Check Redis -> (Hit: Return) | (Miss: Query DB -> Set Redis -> Return).",
+      "states": ["Checking", "Hit", "Miss", "Updating"]
+    }
+  ],
+  "edgeCases": [
+    {
+      "scenario": "Redis Connection Failure",
+      "handling": "Log warning and bypass cache, querying database directly.",
+      "severity": "medium"
+    },
+    {
+      "scenario": "Cache Stampede",
+      "handling": "Implement mutex (setnx) or short background revalidation.",
+      "severity": "low"
+    }
+  ],
+  "terminology": [
+    {
+      "term": "TTL",
+      "definition": "Time To Live - duration for which a cache entry is valid."
+    }
+  ],
+  "openQuestions": []
+}

@@ -1,0 +1,87 @@
+{
+  "storyId": "3.3",
+  "gatheredAt": "2026-03-13T21:45:00Z",
+  "source": "existing",
+  "gatheredBy": "@aiox-master (Orion)",
+  "elicitationVersion": "2.0",
+  "functional": [
+    {
+      "id": "FR-1",
+      "description": "Create schema for `agent_metrics`, `system_metrics`, `workflow_logs`, and `user_activity`.",
+      "priority": "P0",
+      "rationale": "Foundation for analytical storage.",
+      "acceptance": ["AC-3.3.1"]
+    },
+    {
+      "id": "FR-2",
+      "description": "Implement Row Level Security (RLS) to ensure data isolation per team.",
+      "priority": "P0",
+      "rationale": "Multi-tenant security compliance.",
+      "acceptance": ["AC-3.3.3", "AC-3.3.4"]
+    },
+    {
+      "id": "FR-3",
+      "description": "Establish indexes for high-frequency queries.",
+      "priority": "P1",
+      "rationale": "Performance target < 200ms.",
+      "acceptance": ["AC-3.3.2"]
+    }
+  ],
+  "nonFunctional": [
+    {
+      "id": "NFR-1",
+      "category": "security",
+      "description": "RLS must prevent any cross-team data leakage.",
+      "metric": "zero leakage in penetration tests"
+    },
+    {
+      "id": "NFR-2",
+      "category": "performance",
+      "description": "Main metrics queries must respond in < 200ms with 1M rows.",
+      "metric": "latency < 200ms"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "CON-1",
+      "type": "technical",
+      "description": "Use Supabase/PostgreSQL native features.",
+      "impact": "Locks to PostgreSQL ecosystem."
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "ASM-1",
+      "description": "The `teams` and `team_members` tables exist as defined in previous epics.",
+      "risk": "low"
+    }
+  ],
+  "domainModel": [
+    {
+      "entity": "AgentMetric",
+      "description": "Time-series data for AI Agent execution.",
+      "attributes": ["agent_id", "team_id", "status", "latency_ms"]
+    }
+  ],
+  "interactions": [
+    {
+      "flow": "Secure Query",
+      "description": "User requests metrics -> Postgres checks auth.uid() -> Joins with team_members -> Filters rows.",
+      "states": ["Authenticated", "Authorized", "Result Set"]
+    }
+  ],
+  "edgeCases": [
+    {
+      "scenario": "User with no team membership.",
+      "handling": "RLS returns empty set (correct behavior).",
+      "severity": "low"
+    }
+  ],
+  "terminology": [
+    {
+      "term": "RLS",
+      "definition": "Row Level Security - a security feature in Postgres."
+    }
+  ],
+  "openQuestions": []
+}

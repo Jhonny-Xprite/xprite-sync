@@ -1,0 +1,57 @@
+storyId: "3.9"
+createdAt: "2026-03-13T21:40:00Z"
+createdBy: "@aiox-master (Orion) as @architect"
+status: pending
+complexity: SIMPLE
+estimatedEffort: "3-5 days"
+
+phases:
+  - id: phase-1
+    name: Core Documentation
+    description: README and Setup guides.
+    subtasks:
+      - id: "1.1"
+        description: "Atualizar README.md principal e README do pacote dashboard com arquitetura"
+        service: infra
+        files:
+          - README.md
+          - packages/dashboard/README.md
+        verification:
+          type: manual
+          instructions: "Review READMEs for clarity and ensure diagrams render correctly."
+        status: pending
+
+      - id: "1.2"
+        description: "Criar DASHBOARD_SETUP.md detalhando requisitos e passos de instalação"
+        service: infra
+        files:
+          - docs/DASHBOARD_SETUP.md
+        verification:
+          type: manual
+          instructions: "Follow the setup guide from scratch in a clean environment."
+        status: pending
+
+  - id: phase-2
+    name: User & Dev Guides
+    description: Operational and technical documentation.
+    subtasks:
+      - id: "2.1"
+        description: "Implementar DASHBOARD_USER_GUIDE.md com walkthrough de funcionalidades"
+        service: infra
+        files:
+          - docs/DASHBOARD_USER_GUIDE.md
+        verification:
+          type: manual
+          instructions: "Verify screenshots match current UI state."
+        status: pending
+
+      - id: "2.2"
+        description: "Escrever DASHBOARD_API.md e DASHBOARD_TROUBLESHOOTING.md"
+        service: infra
+        files:
+          - docs/DASHBOARD_API.md
+          - docs/DASHBOARD_TROUBLESHOOTING.md
+        verification:
+          type: manual
+          instructions: "Ensure API endpoints are documented with examples."
+        status: pending

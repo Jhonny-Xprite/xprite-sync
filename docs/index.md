@@ -8,13 +8,22 @@
 ```
 docs/
 ├── index.md                          (this file)
+├── framework/                        (framework governance)
+│   ├── source-tree.md                Structure & governance
+│   ├── coding-standards.md           Code conventions
+│   ├── tech-stack.md                 Tech decisions
+│   └── contributing.md               Dev & Contribution guide
 ├── stories/                          (development stories)
 │   └── epic-1-asset-restoration/     (Epic 1: Asset Restoration)
 │       ├── story-1.1.md              [Done] Core Skill & Agent Checklist Restoration
 │       ├── story-1.2.md              [Done] Infrastructure Utility Script Porting
 │       └── story-1.3.md              [Done] Final Compliance Validation
 ├── architecture/                     (system architecture docs)
+│   ├── 00-architecture-master.md     Master Design
+│   └── project-decisions/            (ADR Decision Logs)
 ├── prd/                             (product requirements)
+│   └── 00-prd-master.md              Global Objectives
+├── research/                        (analyst research hub)
 └── qa/                              (quality assurance reports)
 ```
 
@@ -74,10 +83,13 @@ Documentation index update  → ✅ PASS (this index)
 
 ## Related Documentation
 
-- Architecture: `docs/architecture/`
-- PRD: `docs/prd/`
-- QA Reports: `docs/qa/`
-- Stories: `docs/stories/`
+- **Framework Governance:** [docs/framework/](./framework/source-tree.md)
+- **Project Decisions (ADR):** [docs/architecture/project-decisions/decision-logs-index.md](./architecture/project-decisions/decision-logs-index.md)
+- **Analytics Research:** [docs/research/](./research/index.md)
+- **Architecture & Architecture Shards:** [docs/architecture/](./architecture/index.md)
+- **PRD & PRD Shards:** [docs/prd/](./prd/index.md)
+- **QA Strategy & Reports:** [docs/qa/](./qa/index.md)
+- **Stories & Backlog:** [docs/stories/](./stories/index.md)
 
 ---
 

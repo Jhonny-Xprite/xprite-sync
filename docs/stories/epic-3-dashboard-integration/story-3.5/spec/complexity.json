@@ -1,0 +1,32 @@
+{
+  "storyId": "3.5",
+  "assessedAt": "2026-03-13T19:25:00Z",
+  "assessedBy": "@aiox-master (Orion) as @architect",
+  "result": "STANDARD",
+  "overridden": false,
+  "dimensions": {
+    "scope": {
+      "score": 3,
+      "notes": "Includes backend collection services, Prometheus integration, and new dashboard infra views."
+    },
+    "integration": {
+      "score": 4,
+      "notes": "Requires interfacing with OS-level hooks and potentially external monitoring tools."
+    },
+    "infrastructure": {
+      "score": 3,
+      "notes": "Involves setting up metric storage, rotation, and alerting logic."
+    },
+    "knowledge": {
+      "score": 2,
+      "notes": "Standard DevOps observability practices."
+    },
+    "risk": {
+      "score": 2,
+      "notes": "Low risk to core functionality, but critical for stability monitoring."
+    }
+  },
+  "totalScore": 14,
+  "pipelinePhases": ["gather", "assess", "research", "spec", "critique", "plan"],
+  "estimatedEffort": "1-2 weeks (including monitoring setup)"
+}

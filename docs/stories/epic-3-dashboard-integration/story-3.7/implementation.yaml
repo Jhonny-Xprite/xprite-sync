@@ -1,0 +1,91 @@
+storyId: "3.7"
+createdAt: "2026-03-13T21:15:00Z"
+createdBy: "@aiox-master (Orion) as @architect"
+status: pending
+complexity: STANDARD
+estimatedEffort: "1-2 weeks"
+
+dependencies:
+  - name: "@opentelemetry/api"
+    version: "latest"
+    purpose: Tracing API
+  - name: "@opentelemetry/sdk-node"
+    version: "latest"
+    purpose: OTel SDK for Node.js
+  - name: "pino"
+    version: "latest"
+    purpose: Structured JSON logging
+
+phases:
+  - id: phase-1
+    name: Core Tracing Setup
+    description: Initialize OpenTelemetry and logging infrastructure.
+    subtasks:
+      - id: "1.1"
+        description: "Implementar tracing.ts para configurar o OTel SDK e exportadores"
+        service: backend
+        files:
+          - packages/api/src/tracing.ts
+        verification:
+          type: command
+          command: "npm run typecheck"
+        status: pending
+
+      - id: "1.2"
+        description: "Implementar logger estruturado com Pino integrando IDs de trace"
+        service: backend
+        files:
+          - packages/api/src/utils/logger.ts
+        verification:
+          type: command
+          command: "npm run test:api -- --grep 'Logger'"
+        status: pending
+
+  - id: phase-2
+    name: Service Instrumentation
+    description: Add tracing and logging to agents and API routes.
+    subtasks:
+      - id: "2.1"
+        description: "Carregar tracing.ts no entrypoint da API (index.ts/main.ts)"
+        service: backend
+        files:
+          - packages/api/src/index.ts
+        verification:
+          type: manual
+          instructions: "Start the API and verify that OTel SDK initialized messages appear."
+        status: pending
+
+      - id: "2.2"
+        description: "Adicionar spans manuais e logs estruturados na classe BaseAgent"
+        service: backend
+        files:
+          - packages/core/src/agents/base-agent.ts
+        verification:
+          type: command
+          command: "npm run test:core -- --grep 'Tracing'"
+        status: pending
+
+  - id: phase-3
+    name: Propagation & Validation
+    description: Ensure traces flow across all system boundaries.
+    subtasks:
+      - id: "3.1"
+        description: "Validar propagação de Correlation IDs em chamadas assíncronas"
+        service: backend
+        files:
+          - packages/api/src/services/realtime.ts
+        verification:
+          type: command
+          command: "npm run test:api -- --grep 'Propagation'"
+        status: pending
+
+      - id: "3.2"
+          description: "Configurar amostragem head-based e limpar logs sensíveis"
+          service: backend
+          files:
+            - packages/api/src/tracing.ts
+            - packages/api/src/utils/logger.ts
+          verification:
+            type: manual
+            instructions: "Verify that logs in production format do not contain PII and follow JSON structure."
+          status: pending

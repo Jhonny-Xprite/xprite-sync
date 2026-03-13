@@ -1,0 +1,48 @@
+{
+  "storyId": "3.7",
+  "researchedAt": "2026-03-13T21:00:00Z",
+  "researchedBy": "@aiox-master (Orion) as @analyst",
+  "dependencies": [
+    {
+      "name": "@opentelemetry/api",
+      "version": "latest",
+      "status": "verified",
+      "source": "npm"
+    },
+    {
+      "name": "@opentelemetry/sdk-node",
+      "version": "latest",
+      "status": "verified",
+      "source": "npm"
+    }
+  ],
+  "technologies": [
+    {
+      "name": "OpenTelemetry SDK",
+      "usage": "Core tracing and metric collection."
+    },
+    {
+      "name": "Winston / Pino",
+      "usage": "Structured JSON logging."
+    }
+  ],
+  "verifiedClaims": [
+    {
+      "claim": "OpenTelemetry auto-instrumentation covers common HTTP and Postgres clients.",
+      "verified": true,
+      "source": "OTel documentation"
+    }
+  ],
+  "unverifiedClaims": [
+    {
+      "claim": "Tracing overhead is < 10%.",
+      "notes": "Depends on the number of spans per request. Sampling is crucial."
+    }
+  ],
+  "implementationPatterns": [
+    {
+      "name": "Sidecar Collector",
+      "description": "Export traces to a local OTel collector to minimize app latency."
+    }
+  ]
+}

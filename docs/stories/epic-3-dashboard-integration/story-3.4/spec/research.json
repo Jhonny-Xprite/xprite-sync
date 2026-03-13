@@ -1,0 +1,42 @@
+{
+  "storyId": "3.4",
+  "researchedAt": "2026-03-13T19:00:00Z",
+  "researchedBy": "@aiox-master (Orion) as @analyst",
+  "dependencies": [
+    {
+      "name": "perf_hooks",
+      "version": "builtin",
+      "status": "verified",
+      "source": "Node.js core"
+    }
+  ],
+  "technologies": [
+    {
+      "name": "Node.js Performance Hooks",
+      "usage": "Precise measurement of agent execution time."
+    },
+    {
+      "name": "PostgreSQL Partitioning (Future)",
+      "usage": "Handling large amounts of historical metric data if retention grows."
+    }
+  ],
+  "verifiedClaims": [
+    {
+      "claim": "Batching writes significantly reduces DB transaction overhead.",
+      "verified": true,
+      "source": "High Performance Postgres documentation"
+    }
+  ],
+  "unverifiedClaims": [
+    {
+      "claim": "Memory measurement overhead is negligible.",
+      "notes": "v8.getHeapStatistics() is fast, but full memory usage checks can be slower."
+    }
+  ],
+  "implementationPatterns": [
+    {
+      "name": "Middleware Pattern",
+      "description": "Wrap agent `run` or `execute` methods to automatically capture metrics."
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+storyId: "3.6"
+createdAt: "2026-03-13T20:15:00Z"
+createdBy: "@aiox-master (Orion) as @architect"
+status: pending
+complexity: STANDARD
+estimatedEffort: "3-5 days"
+
+dependencies:
+  - name: "ioredis"
+    version: "^5.0.0"
+    purpose: Redis client
+
+phases:
+  - id: phase-1
+    name: Redis Integration
+    description: Initial Redis client setup and connection management.
+    subtasks:
+      - id: "1.1"
+        description: "Habilitar instância Redis e configurar env vars no .env.example"
+        service: infra
+        files:
+          - .env.example
+          - packages/api/.env.example
+        verification:
+          type: command
+          command: "ls .env.example"
+        status: pending
+
+      - id: "1.2"
+        description: "Implementar CacheService para abstrair operações do Redis"
+        service: backend
+        files:
+          - packages/api/src/services/cache.ts
+        verification:
+          type: command
+          command: "npm run typecheck"
+        status: pending
+
+  - id: phase-2
+    name: Backend Implementation
+    description: Apply caching to core API routes and query results.
+    subtasks:
+      - id: "2.1"
+        description: "Implementar middleware de cache para interceptar requisições GET"
+        service: backend
+        files:
+          - packages/api/src/middleware/cache.ts
+        verification:
+          type: command
+          command: "npm run test:api -- --grep 'CacheMiddleware'"
+        status: pending
+
+      - id: "2.2"
+        description: "Aplicar cache-aside nos controllers de métricas e status"
+        service: backend
+        files:
+          - packages/api/src/controllers/metrics.ts
+        verification:
+          type: api
+          url: "http://localhost:3000/api/metrics"
+          expectedStatus: 200
+        status: pending
+
+  - id: phase-3
+    name: Invalidation & Resilience
+    description: Handle updates and failover scenarios.
+    subtasks:
+      - id: "3.1"
+        description: "Implementar listeners para invalidação de cache em escritas no banco"
+        service: backend
+        files:
+          - packages/api/src/services/cache-invalidator.ts
+        verification:
+          type: command
+          command: "npm run test:api -- --grep 'Invalidation'"
+        status: pending
+
+      - id: "3.2"
+        description: "Testar e validar degradação graciosa com Redis offline"
+        service: infra
+        files:
+          - packages/api/src/services/cache.ts
+        verification:
+          type: manual
+          instructions: "Stop Redis service and verify API still returns data from DB."
+        status: pending

@@ -1,0 +1,69 @@
+storyId: "3.3"
+createdAt: "2026-03-13T22:10:00Z"
+createdBy: "@aiox-master (Orion) as @architect"
+status: pending
+complexity: STANDARD
+estimatedEffort: "3-5 days"
+
+phases:
+  - id: phase-1
+    name: Schema Development
+    description: Creation of core dashboard tables and relationships.
+    subtasks:
+      - id: "1.1"
+        description: "Criar migration SQL para as tabelas agent_metrics e system_metrics"
+        service: database
+        files:
+          - supabase/migrations/20260313_dashboard_metrics.sql
+        verification:
+          type: command
+          command: "npm run db:smoke-test"
+        status: pending
+
+      - id: "1.2"
+        description: "Criar migration SQL para as tabelas workflow_logs e user_activity"
+        service: database
+        files:
+          - supabase/migrations/20260313_dashboard_logs.sql
+        verification:
+          type: command
+          command: "npm run db:smoke-test"
+        status: pending
+
+  - id: phase-2
+    name: Security & RLS
+    description: Implementation and testing of Row Level Security policies.
+    subtasks:
+      - id: "2.1"
+        description: "Aplicar políticas de RLS para isolamento de times em todas as novas tabelas"
+        service: database
+        files:
+          - supabase/migrations/20260313_dashboard_rls.sql
+        verification:
+          type: manual
+          instructions: "Connect as restricted user and verify that teams cannot see each other's metrics."
+        status: pending
+
+      - id: "2.2"
+        description: "Implementar índices de performance para consultas de séries temporais"
+        service: database
+        files:
+          - supabase/migrations/20260313_dashboard_indexes.sql
+        verification:
+          type: manual
+          instructions: "Run EXPLAIN ANALYZE on metrics queries with sample data."
+        status: pending
+
+  - id: phase-3
+    name: Maintenance & Retention
+    description: Data lifecycle management.
+    subtasks:
+      - id: "3.1"
+        description: "Implementar script ou Postgres Cron para limpeza de dados (retenção de 30 dias)"
+        service: database
+        files:
+          - supabase/migrations/20260313_dashboard_retention.sql
+        verification:
+          type: manual
+          instructions: "Verify older records are deleted as expected."
+        status: pending

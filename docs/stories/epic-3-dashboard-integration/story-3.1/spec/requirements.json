@@ -1,0 +1,120 @@
+{
+  "storyId": "3.1",
+  "gatheredAt": "2026-03-13T17:50:00Z",
+  "source": "existing",
+  "gatheredBy": "@aiox-master (Orion)",
+  "elicitationVersion": "2.0",
+  "functional": [
+    {
+      "id": "FR-1",
+      "description": "Integrate the Synkra AIOX Dashboard repository into the project (submodule/monorepo/standalone).",
+      "priority": "P0",
+      "rationale": "Base foundation for observability.",
+      "acceptance": ["AC-3.1.1"]
+    },
+    {
+      "id": "FR-2",
+      "description": "Configure environment variables for dev, staging, and production.",
+      "priority": "P0",
+      "rationale": "Required for external service connections (API, Supabase, etc).",
+      "acceptance": ["AC-3.1.2"]
+    },
+    {
+      "id": "FR-3",
+      "description": "Setup build pipeline to compile dashboard locally.",
+      "priority": "P0",
+      "rationale": "Enable development and deployment.",
+      "acceptance": ["AC-3.1.3"]
+    },
+    {
+      "id": "FR-4",
+      "description": "Provide access to the dashboard at http://localhost:3000/dashboard in dev.",
+      "priority": "P1",
+      "rationale": "UX for developers during implementation.",
+      "acceptance": ["AC-3.1.4"]
+    },
+    {
+      "id": "FR-5",
+      "description": "Manage dependencies to avoid version conflicts.",
+      "priority": "P1",
+      "rationale": "Maintain system stability.",
+      "acceptance": ["AC-3.1.5"]
+    },
+    {
+      "id": "FR-6",
+      "description": "Create setup and deployment documentation (DASHBOARD.md).",
+      "priority": "P2",
+      "rationale": "Knowledge transfer and reproducibility.",
+      "acceptance": ["AC-3.1.6"]
+    }
+  ],
+  "nonFunctional": [
+    {
+      "id": "NFR-1",
+      "category": "performance",
+      "description": "Dashboard build time should be under 30 seconds.",
+      "metric": "time < 30s"
+    },
+    {
+      "id": "NFR-2",
+      "category": "usability",
+      "description": "Dashboard must be accessible and error-free on startup.",
+      "metric": "zero console errors"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "CON-1",
+      "type": "technical",
+      "description": "Source repository: https://github.com/SynkraAI/aiox-dashboard",
+      "impact": "Requires github access and submodule management."
+    },
+    {
+      "id": "CON-2",
+      "type": "technical",
+      "description": "Node.js version 18+.",
+      "impact": "Runtime environment dependency."
+    },
+    {
+      "id": "CON-3",
+      "type": "business",
+      "description": "Integration strategy must be documented (Submodule recommended).",
+      "impact": "Affects repository architecture."
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "ASM-1",
+      "description": "The dashboard repository is public or access is already granted.",
+      "risk": "medium"
+    }
+  ],
+  "domainModel": [
+    {
+      "entity": "Dashboard",
+      "description": "Frontend monitoring interface.",
+      "relationships": ["Integrated into Project Root"]
+    }
+  ],
+  "interactions": [
+    {
+      "flow": "Developer Setup",
+      "description": "Clone project -> Install deps -> Setup .env -> Run 'npm run dev' -> Access dashboard.",
+      "states": ["Loading", "Connected", "Error"]
+    }
+  ],
+  "edgeCases": [
+    {
+      "scenario": "Port 3000 already in use.",
+      "handling": "Allow configuration of port via .env.",
+      "severity": "low"
+    }
+  ],
+  "terminology": [
+    {
+      "term": "AIOX Dashboard",
+      "definition": "The official Synkra monitoring UI for the AIOX core system."
+    }
+  ],
+  "openQuestions": []
+}

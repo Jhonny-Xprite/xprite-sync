@@ -1,0 +1,42 @@
+{
+  "storyId": "3.6",
+  "researchedAt": "2026-03-13T20:00:00Z",
+  "researchedBy": "@aiox-master (Orion) as @analyst",
+  "dependencies": [
+    {
+      "name": "ioredis",
+      "version": "^5.0.0",
+      "status": "verified",
+      "source": "npm"
+    }
+  ],
+  "technologies": [
+    {
+      "name": "Redis (Cache-aside)",
+      "usage": "Storing frequent query results."
+    }
+  ],
+  "verifiedClaims": [
+    {
+      "claim": "ioredis supports reliable failover and cluster mode.",
+      "verified": true,
+      "source": "ioredis documentation"
+    }
+  ],
+  "unverifiedClaims": [
+    {
+      "claim": "Hit rate > 70% is achievable for this dashboard workload.",
+      "notes": "Depends on user frequency and data volatility. Needs load testing."
+    }
+  ],
+  "implementationPatterns": [
+    {
+      "name": "Cache-aside (Lazy Loading)",
+      "description": "Application checks cache first, then DB, then populates cache."
+    },
+    {
+      "name": "Passive Invalidation",
+      "description": "Use TTL for most records to ensure eventual consistency."
+    }
+  ]
+}

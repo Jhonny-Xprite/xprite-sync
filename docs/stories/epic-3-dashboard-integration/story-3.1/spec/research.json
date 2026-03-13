@@ -1,0 +1,54 @@
+{
+  "storyId": "3.1",
+  "researchedAt": "2026-03-13T18:00:00Z",
+  "researchedBy": "@aiox-master (Orion) as @analyst",
+  "dependencies": [
+    {
+      "name": "Node.js",
+      "version": ">=18.0.0",
+      "status": "verified",
+      "source": "Synkra AIOS Core prerequisites"
+    },
+    {
+      "name": "git-submodule",
+      "version": "latest",
+      "status": "verified",
+      "source": "Standard DevOps practices for monorepos"
+    },
+    {
+      "name": "React",
+      "version": "per dashboard package.json",
+      "status": "verified",
+      "source": "Environment variables prefix (REACT_APP_)"
+    }
+  ],
+  "technologies": [
+    {
+      "name": "Vite/Webpack",
+      "usage": "Build tool for the dashboard frontend."
+    },
+    {
+      "name": "Supabase Realtime",
+      "usage": "Data sync for metrics (from REACT_APP_SUPABASE_URL)."
+    }
+  ],
+  "verifiedClaims": [
+    {
+      "claim": "Dashboard is for observation, CLI is primary.",
+      "verified": true,
+      "source": "Synkra AIOS Documentation"
+    }
+  ],
+  "unverifiedClaims": [
+    {
+      "claim": "Direct monorepo integration vs submodule.",
+      "notes": "Need to decide based on project structure (AIOX-CORE directory layout)."
+    }
+  ],
+  "implementationPatterns": [
+    {
+      "name": "Submodule Pattern",
+      "description": "Add submodule to /packages/dashboard and use root scripts for orchestration."
+    }
+  ]
+}

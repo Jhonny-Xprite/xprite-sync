@@ -4,7 +4,7 @@
     "workspace": "D:/Jhonny Xprite - 2026/AIOX-CORE (PACKAGE)/Xprite-Sync-True",
     "agents": {
         "enabled": true,
-        "directory": ".antigravity\\agents",
+        "directory": "extensions\\skills",
         "default": "aiox-master"
     },
     "rules": {

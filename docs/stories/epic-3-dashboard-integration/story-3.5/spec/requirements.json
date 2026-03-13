@@ -1,0 +1,101 @@
+{
+  "storyId": "3.5",
+  "gatheredAt": "2026-03-13T19:20:00Z",
+  "source": "existing",
+  "gatheredBy": "@aiox-master (Orion)",
+  "elicitationVersion": "2.0",
+  "functional": [
+    {
+      "id": "FR-1",
+      "description": "Collect host resources metrics (CPU %, Memory %, Disk %, Network I/O).",
+      "priority": "P0",
+      "rationale": "Infrastructure health monitoring.",
+      "acceptance": ["AC-3.5.2"]
+    },
+    {
+      "id": "FR-2",
+      "description": "Monitor database health (connection count, query latency).",
+      "priority": "P0",
+      "rationale": "Ensure data layer availability.",
+      "acceptance": ["AC-3.5.2", "AC-3.5.7"]
+    },
+    {
+      "id": "FR-3",
+      "description": "Store system metrics in the database every 10 seconds.",
+      "priority": "P0",
+      "rationale": "Historical analysis and graphing.",
+      "acceptance": ["AC-3.5.3", "AC-3.5.4"]
+    },
+    {
+      "id": "FR-4",
+      "description": "Display system metrics with interactive graphs in the dashboard.",
+      "priority": "P1",
+      "rationale": "Observability UI for DevOps.",
+      "acceptance": ["AC-3.5.5"]
+    },
+    {
+      "id": "FR-5",
+      "description": "Configure alerts for critical resource thresholds (CPU > 80%, Memory > 85%, Disk > 90%).",
+      "priority": "P1",
+      "rationale": "System stability prevention.",
+      "acceptance": ["AC-3.5.6"]
+    }
+  ],
+  "nonFunctional": [
+    {
+      "id": "NFR-1",
+      "category": "reliability",
+      "description": "Metric collection should not fail if external monitoring services (Prometheus) are down.",
+      "metric": "autonomous collection fallback"
+    },
+    {
+      "id": "NFR-2",
+      "category": "performance",
+      "description": "Minimal impact on system resources (~1-2% CPU overhead).",
+      "metric": "cpu overhead < 2%"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "CON-1",
+      "type": "technical",
+      "description": "Use Prometheus or StatsD client for collection.",
+      "impact": "Standardizes metric export protocol."
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "ASM-1",
+      "description": "The executing environment allows access to OS-level resource information.",
+      "risk": "low"
+    }
+  ],
+  "domainModel": [
+    {
+      "entity": "SystemMetric",
+      "description": "Record of host and infrastructure health at a point in time.",
+      "attributes": ["timestamp", "cpu_load", "mem_free", "disk_usage", "db_active_connections"]
+    }
+  ],
+  "interactions": [
+    {
+      "flow": "Background Collection",
+      "description": "Cron/Timer triggers -> Gather OS data -> Gather DB data -> Write to Local DB -> Export to Prometheus.",
+      "states": ["Idle", "Sampling", "Persisting", "Exporting"]
+    }
+  ],
+  "edgeCases": [
+    {
+      "scenario": "Disk full, cannot write metrics.",
+      "handling": "Log error to console and suppress further writes to avoid cascade failure.",
+      "severity": "high"
+    }
+  ],
+  "terminology": [
+    {
+      "term": "Prometheus",
+      "definition": "A popular open-source monitoring and alerting toolkit."
+    }
+  ],
+  "openQuestions": []
+}

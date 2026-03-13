@@ -1,0 +1,82 @@
+storyId: "3.8"
+createdAt: "2026-03-13T20:45:00Z"
+createdBy: "@aiox-master (Orion) as @architect"
+status: pending
+complexity: STANDARD
+estimatedEffort: "5-8 days"
+
+dependencies: []
+
+phases:
+  - id: phase-1
+    name: Dockerization
+    description: Create efficient Docker images for the dashboard.
+    subtasks:
+      - id: "1.1"
+        description: "Desenvolver Dockerfile multi-stage para gerar bundle de produção leve"
+        service: infra
+        files:
+          - packages/dashboard/Dockerfile
+        verification:
+          type: command
+          command: "docker build -t aiox-dashboard:test packages/dashboard"
+        status: pending
+
+      - id: "1.2"
+        description: "Configurar scripts de build e package.json para otimização de produção"
+        service: frontend
+        files:
+          - packages/dashboard/package.json
+        verification:
+          type: command
+          command: "cd packages/dashboard && npm run build"
+        status: pending
+
+  - id: phase-2
+    name: CI Workflow
+    description: Implement GitHub Actions for build and test.
+    subtasks:
+      - id: "2.1"
+        description: "Criar workflow dashboard-ci.yml com stages de lint, test e build"
+        service: infra
+        files:
+          - .github/workflows/dashboard-ci.yml
+        verification:
+          type: manual
+          instructions: "Push work to GitHub and verify Actions tab triggers and passes."
+        status: pending
+
+      - id: "2.2"
+        description: "Configurar publicação da imagem no Registry (GHCR/DockerHub)"
+        service: infra
+        files:
+          - .github/workflows/dashboard-ci.yml
+        verification:
+          type: manual
+          instructions: "Verify image appears in the registry after a successful merge."
+        status: pending
+
+  - id: phase-3
+    name: CD Workflow & Rollback
+    description: Automate deployments and rollback procedures.
+    subtasks:
+      - id: "3.1"
+        description: "Implementar deploy automático para Staging em merges na develop"
+        service: infra
+        files:
+          - .github/workflows/dashboard-ci.yml
+        verification:
+          type: api
+          url: "http://staging.aiox.io/health"
+          expectedStatus: 200
+        status: pending
+
+      - id: "3.2"
+        description: "Configurar gatilho manual para Produção e script de rollback"
+        service: infra
+        files:
+          - .github/workflows/dashboard-ci.yml
+        verification:
+          type: manual
+          instructions: "Execute a manual promotion to Production and then perform a dry-run rollback."
+        status: pending

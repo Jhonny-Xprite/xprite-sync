@@ -1,0 +1,48 @@
+{
+  "storyId": "3.5",
+  "researchedAt": "2026-03-13T19:30:00Z",
+  "researchedBy": "@aiox-master (Orion) as @analyst",
+  "dependencies": [
+    {
+      "name": "os-utils",
+      "version": "latest",
+      "status": "verified",
+      "source": "npm"
+    },
+    {
+      "name": "prom-client",
+      "version": "latest",
+      "status": "verified",
+      "source": "npm"
+    }
+  ],
+  "technologies": [
+    {
+      "name": "Prometheus",
+      "usage": "Standard metric scraping and storage."
+    },
+    {
+      "name": "Grafana (Optional/Future)",
+      "usage": "Alternative dashboarding for system-level metrics."
+    }
+  ],
+  "verifiedClaims": [
+    {
+      "claim": "prom-client is the standard for Node.js Prometheus integration.",
+      "verified": true,
+      "source": "Multiple DevOps best practice guides"
+    }
+  ],
+  "unverifiedClaims": [
+    {
+      "claim": "OS-level disk I/O metrics are consistently available across OS types via Node.",
+      "notes": "May vary between Windows and Linux. May need OS-specific libraries if requirements get very granular."
+    }
+  ],
+  "implementationPatterns": [
+    {
+      "name": "Push vs Pull",
+      "description": "System will use Pull (Prometheus scrapes) for infra metrics and Push (Direct to DB) for dashboard real-time data."
+    }
+  ]
+}

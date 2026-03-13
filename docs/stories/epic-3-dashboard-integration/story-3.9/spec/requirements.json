@@ -1,0 +1,82 @@
+{
+  "storyId": "3.9",
+  "gatheredAt": "2026-03-13T21:20:00Z",
+  "source": "existing",
+  "gatheredBy": "@aiox-master (Orion)",
+  "elicitationVersion": "2.0",
+  "functional": [
+    {
+      "id": "FR-1",
+      "description": "Create comprehensive README.md with architecture diagrams.",
+      "priority": "P0",
+      "rationale": "Base project understanding.",
+      "acceptance": ["AC-3.9.1"]
+    },
+    {
+      "id": "FR-2",
+      "description": "Document setup guide (env vars, installation).",
+      "priority": "P0",
+      "rationale": "Enable others to run the project.",
+      "acceptance": ["AC-3.9.2"]
+    },
+    {
+      "id": "FR-3",
+      "description": "Create user guide and feature walkthrough.",
+      "priority": "P1",
+      "rationale": "End-user enablement.",
+      "acceptance": ["AC-3.9.3", "AC-3.9.8"]
+    },
+    {
+      "id": "FR-4",
+      "description": "Write developer guide and API reference.",
+      "priority": "P1",
+      "rationale": "Enable contribution and integration.",
+      "acceptance": ["AC-3.9.4", "AC-3.9.6"]
+    },
+    {
+      "id": "FR-5",
+      "description": "Create troubleshooting guide.",
+      "priority": "P2",
+      "rationale": "Self-service support.",
+      "acceptance": ["AC-3.9.5"]
+    }
+  ],
+  "nonFunctional": [
+    {
+      "id": "NFR-1",
+      "category": "usability",
+      "description": "Documentation must be clear, searchable, and include screenshots.",
+      "metric": "all features have examples"
+    }
+  ],
+  "constraints": [],
+  "assumptions": [
+    {
+      "id": "ASM-1",
+      "description": "All core dashboard features from Epic 3 are implemented and stable enough for screenshots.",
+      "risk": "medium"
+    }
+  ],
+  "domainModel": [
+    {
+      "entity": "Document",
+      "description": "A piece of structured technical information.",
+      "attributes": ["title", "audience", "content", "version"]
+    }
+  ],
+  "interactions": [
+    {
+      "flow": "Onboarding Flow",
+      "description": "Visit README -> Go to Setup Guide -> Complete Install -> Go to User Guide -> Use Features.",
+      "states": ["Searching", "Reading", "Applying", "Mastering"]
+    }
+  ],
+  "edgeCases": [],
+  "terminology": [
+    {
+      "term": "Markdown",
+      "definition": "Lightweight markup language used for all documentation."
+    }
+  ],
+  "openQuestions": []
+}

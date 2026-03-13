@@ -1,0 +1,94 @@
+{
+  "storyId": "3.8",
+  "gatheredAt": "2026-03-13T20:20:00Z",
+  "source": "existing",
+  "gatheredBy": "@aiox-master (Orion)",
+  "elicitationVersion": "2.0",
+  "functional": [
+    {
+      "id": "FR-1",
+      "description": "Create GitHub Actions workflow for automated dashboard builds.",
+      "priority": "P0",
+      "rationale": "Base for CI.",
+      "acceptance": ["AC-3.8.1", "AC-3.8.2"]
+    },
+    {
+      "id": "FR-2",
+      "description": "Build and push Docker image for the dashboard to a registry.",
+      "priority": "P1",
+      "rationale": "Containerization and portability.",
+      "acceptance": ["AC-3.8.3"]
+    },
+    {
+      "id": "FR-3",
+      "description": "Automate deployment to staging and implement manual promotion to production.",
+      "priority": "P0",
+      "rationale": "Controlled release flow.",
+      "acceptance": ["AC-3.8.4", "AC-3.8.5"]
+    },
+    {
+      "id": "FR-4",
+      "description": "Implement and test a rollback strategy.",
+      "priority": "P1",
+      "rationale": "Disaster recovery.",
+      "acceptance": ["AC-3.8.6"]
+    }
+  ],
+  "nonFunctional": [
+    {
+      "id": "NFR-1",
+      "category": "performance",
+      "description": "Dashboard build time must be < 30s.",
+      "metric": "build time < 30s"
+    },
+    {
+      "id": "NFR-2",
+      "category": "observability",
+      "description": "All deployments must be logged and traceable.",
+      "metric": "100% deployment traceability"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "CON-1",
+      "type": "technical",
+      "description": "Use GitHub Actions for orchestration.",
+      "impact": "Decides the CI platform."
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "ASM-1",
+      "description": "Required secrets (Docker registry, deployment keys) are available in GitHub settings.",
+      "risk": "medium"
+    }
+  ],
+  "domainModel": [
+    {
+      "entity": "Pipeline",
+      "description": "Automated series of steps to build/test/deploy.",
+      "attributes": ["trigger", "status", "duration", "artifacts"]
+    }
+  ],
+  "interactions": [
+    {
+      "flow": "Deployment Flow",
+      "description": "Code Push -> Build -> Test -> Docker Push -> Deploy Staging -> Approval -> Deploy Production.",
+      "states": ["Queued", "Running", "Succeeded", "Failed", "Pending Approval"]
+    }
+  ],
+  "edgeCases": [
+    {
+      "scenario": "Pipeline failure mid-deployment.",
+      "handling": "Alert on Slack/Email and block further steps; keep old version running.",
+      "severity": "high"
+    }
+  ],
+  "terminology": [
+    {
+      "term": "Blue-Green Deployment",
+      "definition": "A deployment strategy with two identical environments for zero-downtime releases."
+    }
+  ],
+  "openQuestions": []
+}

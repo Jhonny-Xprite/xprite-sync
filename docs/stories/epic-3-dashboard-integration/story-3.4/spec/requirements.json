@@ -1,0 +1,101 @@
+{
+  "storyId": "3.4",
+  "gatheredAt": "2026-03-13T18:50:00Z",
+  "source": "existing",
+  "gatheredBy": "@aiox-master (Orion)",
+  "elicitationVersion": "2.0",
+  "functional": [
+    {
+      "id": "FR-1",
+      "description": "Capture execution metrics for all agent invocations (latency, success/failure, resource usage).",
+      "priority": "P0",
+      "rationale": "Base for agent observability.",
+      "acceptance": ["AC-3.4.1", "AC-3.4.6"]
+    },
+    {
+      "id": "FR-2",
+      "description": "Store metrics in the database within 1 second of collection.",
+      "priority": "P0",
+      "rationale": "Data persistence and availability.",
+      "acceptance": ["AC-3.4.2"]
+    },
+    {
+      "id": "FR-3",
+      "description": "Display live agent status and historical performance in the dashboard.",
+      "priority": "P1",
+      "rationale": "System monitoring UI.",
+      "acceptance": ["AC-3.4.3", "AC-3.4.4"]
+    },
+    {
+      "id": "FR-4",
+      "description": "Trigger alerts for agent failures or errors.",
+      "priority": "P1",
+      "rationale": "Proactive system health management.",
+      "acceptance": ["AC-3.4.5"]
+    },
+    {
+      "id": "FR-5",
+      "description": "Apply metrics retention policy of 30 days.",
+      "priority": "P2",
+      "rationale": "Database storage management.",
+      "acceptance": ["AC-3.4.8"]
+    }
+  ],
+  "nonFunctional": [
+    {
+      "id": "NFR-1",
+      "category": "performance",
+      "description": "Collection overhead must be < 5ms per agent execution.",
+      "metric": "overhead < 5ms"
+    },
+    {
+      "id": "NFR-2",
+      "category": "performance",
+      "description": "Real-time delivery latency must be < 100ms.",
+      "metric": "latency < 100ms"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "CON-1",
+      "type": "technical",
+      "description": "Async batch writing (every 5s) to avoid blocking execution.",
+      "impact": "Requires buffering/queueing logic."
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "ASM-1",
+      "description": "Agent execution can be wrapped in a middleware or decorator.",
+      "risk": "low"
+    }
+  ],
+  "domainModel": [
+    {
+      "entity": "AgentMetric",
+      "description": "Data record of a single agent execution.",
+      "attributes": ["agentId", "status", "latency", "itemsProcessed", "errorMsg"]
+    }
+  ],
+  "interactions": [
+    {
+      "flow": "Agent Execution Flow",
+      "description": "Start execution -> Start Timer -> Execute Logic -> End Timer -> Capture Result -> Batch to DB.",
+      "states": ["Executing", "Captured", "Batched", "Stored"]
+    }
+  ],
+  "edgeCases": [
+    {
+      "scenario": "Database write failure during batching.",
+      "handling": "Log error locally and retry next cycle.",
+      "severity": "medium"
+    }
+  ],
+  "terminology": [
+    {
+      "term": "Batching",
+      "definition": "Grouping multiple metric records before writing to DB to reduce I/O overhead."
+    }
+  ],
+  "openQuestions": []
+}
