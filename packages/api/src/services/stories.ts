@@ -24,16 +24,53 @@ export interface StoriesResponse {
 }
 
 class StoriesService {
-  private docsStoriesPath = path.resolve(process.cwd(), 'docs', 'stories');
+  // Resolve docs/stories from project root
+  // When npm run dev is executed from packages/api, cwd is packages/api
+  // We need to go up to root, then into docs/stories
+  private docsStoriesPath = (() => {
+    const cwd = process.cwd();
+    // If cwd is packages/api, go up to root
+    if (cwd.includes('packages' + path.sep + 'api')) {
+      return path.resolve(cwd, '..', '..', 'docs', 'stories');
+    }
+    // Otherwise assume we're at root
+    return path.resolve(cwd, 'docs', 'stories');
+  })();
+
+  /**
+   * Recursively find all .story.md files
+   */
+  private findStoryFiles(dir: string, fileList: string[] = []): string[] {
+    try {
+      const files = fs.readdirSync(dir);
+      for (const file of files) {
+        const filePath = path.join(dir, file);
+        const stat = fs.statSync(filePath);
+        if (stat.isDirectory()) {
+          this.findStoryFiles(filePath, fileList);
+        } else if (file.endsWith('.story.md')) {
+          fileList.push(filePath);
+        }
+      }
+    } catch (error) {
+      console.error(`[Stories] Error reading directory ${dir}:`, error);
+    }
+    return fileList;
+  }
 
   /**
    * Read all story files from docs/stories directory
    */
   private async readStoryFiles(): Promise<string[]> {
     try {
-      const pattern = path.join(this.docsStoriesPath, '**', '*.story.md');
-      const files = await glob(pattern, { nodir: true });
-      return files.filter(f => f.includes('story.md'));
+      // Check if directory exists
+      if (!fs.existsSync(this.docsStoriesPath)) {
+        console.error('Stories directory not found:', this.docsStoriesPath);
+        return [];
+      }
+
+      // Use recursive directory traversal to find all .story.md files
+      return this.findStoryFiles(this.docsStoriesPath);
     } catch (error) {
       console.error('Error reading story files:', error);
       return [];

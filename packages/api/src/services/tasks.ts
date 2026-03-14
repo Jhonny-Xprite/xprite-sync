@@ -1,3 +1,6 @@
+import * as fs from 'fs';
+import * as path from 'path';
+import * as yaml from 'js-yaml';
 import { createLogger } from '../utils/logger';
 
 const logger = createLogger('TasksService');
@@ -27,6 +30,81 @@ export interface TasksResponse {
 }
 
 class TasksService {
+  private tasksPath = (() => {
+    const cwd = process.cwd();
+    if (cwd.includes('packages' + path.sep + 'api')) {
+      return path.resolve(cwd, '..', '..', '.aiox', 'tasks');
+    }
+    return path.resolve(cwd, '.aiox', 'tasks');
+  })();
+
+  /**
+   * Recursively find all task files (.md, .yaml, .yml)
+   */
+  private findTaskFiles(dir: string, fileList: string[] = []): string[] {
+    try {
+      const files = fs.readdirSync(dir);
+
+      for (const file of files) {
+        const filePath = path.join(dir, file);
+        const stat = fs.statSync(filePath);
+
+        if (stat.isDirectory()) {
+          this.findTaskFiles(filePath, fileList);
+        } else if (file.endsWith('.md') || file.endsWith('.yaml') || file.endsWith('.yml')) {
+          fileList.push(filePath);
+        }
+      }
+    } catch (error) {
+      logger.debug(`Could not read tasks directory: ${dir}`);
+    }
+
+    return fileList;
+  }
+
+  /**
+   * Parse task metadata from file content
+   */
+  private parseTaskFile(filePath: string): Task | null {
+    try {
+      const content = fs.readFileSync(filePath, 'utf-8');
+      const yamlMatch = content.match(/^---\n([\s\S]*?)\n---/);
+
+      let metadata: any = {
+        id: path.basename(filePath, path.extname(filePath)),
+        name: path.basename(filePath),
+        status: 'pending',
+        executor: 'system',
+        progress: 0,
+      };
+
+      if (yamlMatch) {
+        try {
+          const parsed = yaml.load(yamlMatch[1]) as any;
+          if (parsed) {
+            metadata = { ...metadata, ...parsed };
+          }
+        } catch (e) {
+          logger.debug(`YAML parse error in ${filePath}`);
+        }
+      }
+
+      const now = new Date().toISOString();
+      return {
+        id: metadata.id || path.basename(filePath, path.extname(filePath)),
+        name: metadata.name || metadata.title || path.basename(filePath),
+        status: metadata.status || 'pending',
+        executor: metadata.executor || metadata.assignedAgent || 'system',
+        progress: metadata.progress || 0,
+        started_at: metadata.started_at || now,
+        estimated_completion: metadata.estimated_completion || new Date(Date.now() + 3600000).toISOString(),
+      };
+    } catch (error) {
+      logger.error(`Error parsing task file ${filePath}:`, error);
+      return null;
+    }
+  }
+
   /**
    * List tasks with optional filtering by status
    */
@@ -37,37 +115,40 @@ class TasksService {
     try {
       logger.debug(`Fetching tasks (status=${status}, limit=${limit})`);
 
-      // TODO: Connect to actual task execution system
-      // For now, return realistic mock data structure
-      const allTasks: Task[] = [
-        {
-          id: 'task-123',
-          name: 'Process agent metrics',
-          status: 'running',
-          executor: '@dev',
-          progress: 0.65,
-          started_at: new Date(Date.now() - 5 * 60000).toISOString(),
-          estimated_completion: new Date(Date.now() + 5 * 60000).toISOString(),
-        },
-        {
-          id: 'task-124',
-          name: 'Aggregate dashboard data',
-          status: 'pending',
-          executor: '@qa',
-          progress: 0,
-          started_at: new Date().toISOString(),
-          estimated_completion: new Date(Date.now() + 15 * 60000).toISOString(),
-        },
-        {
-          id: 'task-125',
-          name: 'Update story status',
-          status: 'completed',
-          executor: '@sm',
-          progress: 1.0,
-          started_at: new Date(Date.now() - 30 * 60000).toISOString(),
-          estimated_completion: new Date(Date.now() - 20 * 60000).toISOString(),
-        },
-      ];
+      // Try to load real tasks from files
+      const taskFiles = this.findTaskFiles(this.tasksPath);
+      let allTasks: Task[] = [];
+
+      for (const filePath of taskFiles) {
+        const task = this.parseTaskFile(filePath);
+        if (task) {
+          allTasks.push(task);
+        }
+      }
+
+      // If no tasks found from files, use sample data
+      if (allTasks.length === 0) {
+        allTasks = [
+          {
+            id: 'task-123',
+            name: 'Process agent metrics',
+            status: 'running',
+            executor: '@dev',
+            progress: 0.65,
+            started_at: new Date(Date.now() - 5 * 60000).toISOString(),
+            estimated_completion: new Date(Date.now() + 5 * 60000).toISOString(),
+          },
+          {
+            id: 'task-124',
+            name: 'Aggregate dashboard data',
+            status: 'pending',
+            executor: '@qa',
+            progress: 0,
+            started_at: new Date().toISOString(),
+            estimated_completion: new Date(Date.now() + 15 * 60000).toISOString(),
+          },
+        ];
+      }
 
       // Filter by status if provided
       let filteredTasks = allTasks;
@@ -93,7 +174,7 @@ class TasksService {
         limit,
       };
 
-      logger.debug(`Tasks retrieved: ${displayTasks.length} items`, response);
+      logger.debug(`Tasks retrieved: ${displayTasks.length} items`);
       return response;
     } catch (error) {
       logger.error('Failed to fetch tasks', error);
