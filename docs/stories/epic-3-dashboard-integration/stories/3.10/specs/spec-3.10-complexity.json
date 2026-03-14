@@ -1,0 +1,43 @@
+{
+  "story_id": "3.10",
+  "title": "Agent Metrics Real-Time",
+  "complexity_assessment": {
+    "scope": {
+      "score": 2,
+      "rationale": "Only 2-3 frontend files modified (AgentsMonitor, AgentMonitorCard, useApiMetrics hook). Minimal changes.",
+      "files_affected": 3
+    },
+    "integration": {
+      "score": 1,
+      "rationale": "Single API endpoint (/api/metrics) already exists and returns real data. No new integrations needed.",
+      "external_apis": 0
+    },
+    "infrastructure": {
+      "score": 1,
+      "rationale": "No backend work needed. Existing metricsService handles all polling. Frontend-only implementation.",
+      "changes_needed": 0
+    },
+    "knowledge": {
+      "score": 2,
+      "rationale": "Follows established pattern: Hook → useQuery → Component. Team familiar with React Query and dashboard patterns.",
+      "novel_patterns": 0
+    },
+    "risk": {
+      "score": 1,
+      "rationale": "Low-risk story. No data mutations, read-only metrics display. API already proven working.",
+      "criticality": "low"
+    }
+  },
+  "total_score": 7,
+  "average_score": 1.4,
+  "complexity_class": "SIMPLE",
+  "reasoning": "Brownfield enhancement: wiring existing pieces together. metricsService already exists and polls. Just connect to component. No backend work needed. Follows proven patterns. Low risk.",
+  "phases_to_execute": [
+    "GATHER (Phase 1)",
+    "WRITE SPEC (Phase 3)",
+    "CRITIQUE (Phase 4)"
+  ],
+  "estimated_effort": "3-5 story points",
+  "estimated_duration_hours": 2,
+  "recommendation": "Fast-track as foundation story. Unblocks other Wave 5 stories by demonstrating real-data pattern."
+}

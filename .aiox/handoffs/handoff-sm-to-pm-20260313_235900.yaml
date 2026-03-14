@@ -1,0 +1,111 @@
+handoff:
+  from_agent: "sm"
+  to_agent: "pm"
+  timestamp: "2026-03-13T23:59:00Z"
+  status: "active"
+
+  context:
+    epic_id: "3"
+    epic_title: "Dashboard Integration"
+    wave: "5"
+    task: "Executar Spec Pipeline em todos os 6 stories (3.10-3.15)"
+    reason: "Validar e especificar stories antes de @dev implementar"
+
+  story_context:
+    stories_drafted: 6
+    story_range: "3.10 to 3.15"
+    stories:
+      - id: "3.10"
+        title: "Agent Metrics Real-Time"
+        points: "5-8"
+        status: "drafted"
+      - id: "3.11"
+        title: "Stories & Squads Real Reading"
+        points: "8-13"
+        status: "drafted"
+      - id: "3.12"
+        title: "GitHub Integration"
+        points: "5-8"
+        status: "drafted"
+      - id: "3.13"
+        title: "Engine/Tasks/Workflows"
+        points: "13-21"
+        status: "drafted"
+      - id: "3.14"
+        title: "Hand-offs Monitoring"
+        points: "5-8"
+        status: "drafted"
+      - id: "3.15"
+        title: "Agent Memory Visualization"
+        points: "8-13"
+        status: "drafted"
+
+    total_effort: "49-81 points"
+    timeline: "4 semanas (1 story + 2x2 paralelo + 1 grande + 2x2 paralelo)"
+
+  critical_context:
+    - "Dashboard JÁ TEM muita infraestrutura desenvolvida"
+    - "Não é greenfield - é brownfield/enhancement"
+    - "Objetivo: substituir dados MOCK por dados REAIS e FUNCIONAIS"
+    - "API em :3000 já retorna dados reais do Supabase"
+    - "Supabase conectado e funcional"
+    - "Precisa conectar pontos existentes + criar novos endpoints"
+    - "Não é 'construir Dashboard do zero', é 'tornar dados reais'"
+
+  decisions_made:
+    - "Wave 5 focado em observabilidade completa (9 pilares)"
+    - "Cada story inclui: user story, ACs, technical details, hints, testing checklist"
+    - "Pattern consistente: Hook → Service → Component (frontend)"
+    - "Pattern consistente: Service → Endpoint → Error handling (backend)"
+    - "3.10 é foundation (tudo existe, só wire); 3.11-3.15 precisam novos endpoints"
+
+  files_modified:
+    - "docs/stories/epic-3-dashboard-integration/epic.md"
+    - "docs/stories/epic-3-dashboard-integration/INDEX.md"
+    - "docs/stories/epic-3-dashboard-integration/WAVE5_PROGRESS.md"
+    - "docs/stories/epic-3-dashboard-integration/DRAFTS_SUMMARY.md"
+    - "docs/stories/epic-3-dashboard-integration/stories/3.10.story.md"
+    - "docs/stories/epic-3-dashboard-integration/stories/3.11.story.md"
+    - "docs/stories/epic-3-dashboard-integration/stories/3.12.story.md"
+    - "docs/stories/epic-3-dashboard-integration/stories/3.13.story.md"
+    - "docs/stories/epic-3-dashboard-integration/stories/3.14.story.md"
+    - "docs/stories/epic-3-dashboard-integration/stories/3.15.story.md"
+
+  blockers: []
+
+  next_action: |
+    @pm (Morgan) - EXECUTAR SPEC PIPELINE
+
+    1. Rodar *execute-epic com spec-pipeline em todos os 6 stories
+    2. Output esperado: 6 arquivos de spec (um por story)
+    3. IMPORTANTE: Lembrar que:
+       - Dashboard JÁ EXISTE (não é novo projeto)
+       - Muita infraestrutura JÁ está pronta
+       - Objetivo é dados REAIS + FUNCIONAIS, não nova arquitetura
+       - 3.10 é "easy win" (apenas connect existing pieces)
+       - 3.11-3.15 precisam novos endpoints no backend
+    4. Specs devem clarificar a diferença entre "brownfield enhancement" vs "greenfield"
+    5. Validar que cada story tem acceptance criteria testável
+
+  context_notes: |
+    Wave 5 Mission: Transformar Dashboard em Observabilidade 360° do AIOX
+
+    Critérios de Sucesso (Usuário Final):
+    ✅ 0. Dashboard totalmente funcional (UI)
+    ✅ 1. Agents lendo corretamente (dados reais)
+    ✅ 2. Squads lendo corretamente
+    ✅ 3. Stories lendo corretamente
+    ✅ 4. GitHub integrado
+    ✅ 5. Engine funcional
+    ✅ 6. Tasks funcionais
+    ✅ 7. Workflows funcionais
+    ✅ 8. Hand-offs funcionais
+    ✅ 9. Memórias funcionais
+
+    Wave 5 Stories (todas as 6) implementam esses 9 pilares.
+
+  consumed: false
+
+---
+timestamp: "2026-03-13T23:59:00Z"
+version: "1.0"

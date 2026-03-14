@@ -1,0 +1,100 @@
+{
+  "story_id": "3.13",
+  "title": "Engine, Tasks & Workflows Functional",
+  "user_story": "As an orchestration engineer managing AIOX system, I want to see Engine status, active Tasks, and running Workflows on Dashboard, so that I can monitor system health and understand execution queue.",
+  "story_points": "13-21",
+  "priority": "HIGH",
+  "epic_id": "3",
+  "owner": "@dev",
+  "acceptance_criteria": {
+    "engine": [
+      "Dashboard Engine card displays: worker pool status (X/Y active), queue size, CPU/memory/uptime",
+      "Color coding: green (healthy), yellow (degraded), red (critical)",
+      "Links to Engine Workspace for detailed view",
+      "Auto-refreshes every 10 seconds"
+    ],
+    "tasks": [
+      "Dashboard Tasks card shows: total active tasks, tasks by status (pending/running/completed/failed)",
+      "Recent task execution log (last 5 tasks)",
+      "Each task shows: name, status, executor, progress %",
+      "Task cards clickable → opens TaskOrchestrator",
+      "Quick stats: 12 pending | 3 running | 45 completed today"
+    ],
+    "workflows": [
+      "Dashboard Workflows card displays: active count, running workflows with progress",
+      "Recent workflow history (last 5)",
+      "Each workflow: name, status, progress %, estimated time remaining",
+      "Workflow cards clickable → opens WorkflowView",
+      "Status indicators: running (blue), paused (yellow), failed (red), completed (green)",
+      "Quick stats: 2 running | 1 paused | 8 completed"
+    ],
+    "real_time": [
+      "All data fetches from backend in real-time (not mock)",
+      "Auto-refresh interval configurable (default 10 seconds)",
+      "Manual refresh button",
+      "Loading skeletons while fetching",
+      "Error handling: shows Engine unavailable if API fails"
+    ]
+  },
+  "technical_scope": {
+    "frontend_files": [
+      "packages/dashboard/src/components/dashboard/CockpitDashboard.tsx",
+      "packages/dashboard/src/components/orchestration/TaskOrchestrator.tsx",
+      "packages/dashboard/src/components/engine/ (existing components)",
+      "packages/dashboard/src/components/workflow/ (existing components)",
+      "packages/dashboard/src/hooks/useEngine.ts",
+      "packages/dashboard/src/hooks/useTaskHistory.ts",
+      "packages/dashboard/src/hooks/useWorkflows.ts"
+    ],
+    "backend_files": [
+      "packages/api/src/services/engine.ts",
+      "packages/api/src/services/tasks.ts",
+      "packages/api/src/services/workflows.ts",
+      "packages/api/src/index.ts (3 new endpoints)"
+    ]
+  },
+  "api_endpoints": [
+    {
+      "path": "/api/engine/status",
+      "method": "GET",
+      "fields": ["status", "pool.active_workers", "pool.total_workers", "pool.queue_size", "health.cpu_percentage", "health.memory_percentage", "last_check"]
+    },
+    {
+      "path": "/api/tasks/list",
+      "method": "GET",
+      "query": "?status=active&limit=20",
+      "fields": ["id", "name", "status", "executor", "progress", "started_at", "estimated_completion"]
+    },
+    {
+      "path": "/api/workflows/list",
+      "method": "GET",
+      "query": "?status=active&limit=20",
+      "fields": ["id", "name", "status", "progress", "started_at", "estimated_completion", "total_steps", "completed_steps"]
+    }
+  ],
+  "dependencies": {
+    "systems": [
+      "Task execution system working",
+      "Workflow execution system working",
+      "Engine health monitoring available"
+    ],
+    "patterns": [
+      "Story 3.11 (Stories/Squads) — for similar real data patterns"
+    ]
+  },
+  "blockers": [],
+  "testing_strategy": [
+    "curl http://localhost:3000/api/engine/status returns valid JSON",
+    "curl http://localhost:3000/api/tasks/list returns active tasks",
+    "curl http://localhost:3000/api/workflows/list returns workflows",
+    "Frontend loads Engine/Tasks/Workflows data",
+    "Dashboard cards display real statistics",
+    "Auto-refresh working (10-second interval)",
+    "Error handling shows message if API fails",
+    "Color coding correct (green/yellow/red)",
+    "Links navigate to correct views",
+    "TypeScript compilation passes",
+    "Tests passing",
+    "E2E: Dashboard → Engine page navigation works"
+  ]
+}

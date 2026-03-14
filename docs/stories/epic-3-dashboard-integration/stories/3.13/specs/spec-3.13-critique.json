@@ -1,0 +1,89 @@
+{
+  "story_id": "3.13",
+  "title": "Engine, Tasks & Workflows Functional",
+  "qa_gate_checklist": {
+    "acceptance_criteria_testability": {
+      "passed": true,
+      "score": 5,
+      "rationale": "All ACs testable. Engine health metrics verifiable via API. Queue size testable. Task progress verifiable in UI. Workflow progress verifiable. Color coding testable. Auto-refresh verifiable in DevTools."
+    },
+    "no_invented_features": {
+      "passed": true,
+      "score": 5,
+      "rationale": "Every requirement traces to explicit AC. Engine/Tasks/Workflows are existing systems. No invented features — just surface existing data. Status color mapping is standard practice."
+    },
+    "pattern_consistency": {
+      "passed": true,
+      "score": 5,
+      "rationale": "Follows Hook → useQuery → Component pattern from 3.10, 3.11, 3.12. Three separate hooks (useEngine, useTasks, useWorkflows). Consistent with other stories."
+    },
+    "brownfield_context_respected": {
+      "passed": true,
+      "score": 5,
+      "rationale": "Updates existing dashboard components. Uses existing Engine/Task/Workflow systems (doesn't reinvent). Respects system architecture and existing patterns."
+    },
+    "real_data_emphasis": {
+      "passed": true,
+      "score": 5,
+      "rationale": "All data from real Engine/Task/Workflow systems (no mocks). Testing emphasizes real system data. Statistics calculated from actual queue state."
+    },
+    "backend_frontend_scope_clarity": {
+      "passed": true,
+      "score": 5,
+      "rationale": "Backend scope: 3 services + 3 endpoints. Frontend scope: 3 hooks + updated components. Clean separation. Slightly larger scope than 3.10-3.12 but well-defined."
+    }
+  },
+  "verdict": "APPROVED",
+  "overall_score": 5.0,
+  "reasoning": "Story 3.13 is COMPLEX (18/25 pts) but well-scoped. Specification is detailed with clear implementation roadmap. Largest story in Wave 5. CRITICAL RECOMMENDATION: Consider splitting into 3.13a (Engine only, 5-8 pts) and 3.13b (Tasks+Workflows, 8-13 pts) to improve velocity and reduce per-story scope. As written, it's approvable but represents significant work. No revisions needed if team capacity allows single large story.",
+  "critical_notes": [
+    "COMPLEX story (18/25 pts) — largest in Wave 5",
+    "RECOMMENDATION: Split into 3.13a (Engine) and 3.13b (Tasks+Workflows)",
+    "Blocks 3.14 (Hand-offs) — schedule carefully",
+    "Depends on 3.11 approval for pattern consistency",
+    "Requires understanding of Engine/Task/Workflow internals",
+    "Performance-critical: 10-second polling must not overload API"
+  ],
+  "approved_for_development": true,
+  "estimated_dev_duration_hours": 8,
+  "ready_for_dev": false,
+  "ready_for_dev_reason": "Depends on 3.11 approval AND recommend splitting story first",
+  "dev_notes": [
+    "If keeping as single story: break into 3 phases (Engine, Tasks, Workflows)",
+    "If splitting: 3.13a (Engine only), then 3.13b (Tasks+Workflows)",
+    "Start with Engine service (simplest, good foundation)",
+    "Then Tasks service (requires queue understanding)",
+    "Then Workflows service (requires workflow state understanding)",
+    "Test each endpoint with curl before frontend integration",
+    "Implement error boundaries for graceful API failure handling",
+    "Use staleTime=9s with 10s refetchInterval to prevent redundant fetches",
+    "Color coding: verify accessibility (text + color, not color-only)",
+    "Progress calculation: test with edge cases (0%, 100%, partial)"
+  ],
+  "potential_blockers": [
+    "Engine/Task/Workflow data sources must be available and queryable",
+    "Progress calculation logic may require system knowledge",
+    "Performance: 10s polling on 3 endpoints × dashboard instances may be heavy",
+    "Status enum consistency (what values are valid?)"
+  ],
+  "split_story_recommendation": {
+    "enabled": true,
+    "suggested_split": [
+      {
+        "story_id": "3.13a",
+        "title": "Engine Status Real-Time",
+        "story_points": "5-8",
+        "scope": "Engine health card only (worker pool, queue size, CPU/memory/uptime)",
+        "ac_count": 4
+      },
+      {
+        "story_id": "3.13b",
+        "title": "Tasks & Workflows Functional",
+        "story_points": "8-13",
+        "scope": "Tasks card + Workflows card (lists, stats, progress tracking)",
+        "ac_count": 5,
+        "dependency": "3.13a"
+      }
+    ]
+  }
+}

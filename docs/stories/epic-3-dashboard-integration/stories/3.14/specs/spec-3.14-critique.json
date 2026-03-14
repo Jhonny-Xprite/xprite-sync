@@ -1,0 +1,65 @@
+{
+  "story_id": "3.14",
+  "title": "Hand-offs Functional & Monitored",
+  "qa_gate_checklist": {
+    "acceptance_criteria_testability": {
+      "passed": true,
+      "score": 5,
+      "rationale": "All ACs testable. Timeline visualization verifiable in browser. Hand-off details testable via modal click. Auto-refresh testable in DevTools. Error handling testable by removing directory."
+    },
+    "no_invented_features": {
+      "passed": true,
+      "score": 5,
+      "rationale": "Every feature traces to explicit AC or hand-off specification. Timeline visualization is standard pattern. No invented features."
+    },
+    "pattern_consistency": {
+      "passed": true,
+      "score": 5,
+      "rationale": "Follows Hook → useQuery → Component pattern from 3.10-3.13. File reading similar to 3.11. Backend endpoint pattern consistent."
+    },
+    "brownfield_context_respected": {
+      "passed": true,
+      "score": 5,
+      "rationale": "Reads real hand-off files from .aiox/handoffs/. Does not mock agent collaboration. Respects existing hand-off format."
+    },
+    "real_data_emphasis": {
+      "passed": true,
+      "score": 5,
+      "rationale": "Explicitly reads real .aiox/handoffs/ files. No mock hand-offs. Shows actual agent-to-agent transfers from project."
+    },
+    "backend_frontend_scope_clarity": {
+      "passed": true,
+      "score": 5,
+      "rationale": "Backend scope: file reading + YAML parsing + 2 endpoints. Frontend scope: 3 components + hook + service. Clear separation."
+    }
+  },
+  "verdict": "APPROVED",
+  "overall_score": 5.0,
+  "reasoning": "Story 3.14 is SIMPLE-to-STANDARD (9/25 pts). File reading pattern matches 3.11. Timeline visualization is well-designed. Specification clear and testable. Can run in parallel with 3.15. No revisions needed. Ready for development after 3.13.",
+  "critical_notes": [
+    "Schedule after 3.13 approval (depends on 3.13)",
+    "Can run in parallel with 3.15 (independent stories)",
+    "File reading pattern matches 3.11 (Stories/Squads)",
+    "Real hand-off data source is critical (no mocks)",
+    "Timeline visualization is key UI component"
+  ],
+  "approved_for_development": true,
+  "estimated_dev_duration_hours": 3,
+  "ready_for_dev": false,
+  "ready_for_dev_reason": "Depends on 3.13 approval",
+  "dev_notes": [
+    "Start with backend service (file reading + YAML parsing)",
+    "Verify .aiox/handoffs/ directory exists and is readable",
+    "Test endpoint with curl before connecting frontend",
+    "Implement timeline visualization (vertical line + nodes)",
+    "Status color: green (completed), blue (in-progress), red (failed)",
+    "Timestamps: use relative format ('5 min ago')",
+    "Modal for details should show full hand-off context",
+    "Error handling: show 'No hand-offs yet' if directory empty"
+  ],
+  "potential_blockers": [
+    ".aiox/handoffs/ directory may not exist in development environment",
+    "Hand-off YAML format must match specification",
+    "Timeline visualization may require CSS styling (vertical line)"
+  ]
+}

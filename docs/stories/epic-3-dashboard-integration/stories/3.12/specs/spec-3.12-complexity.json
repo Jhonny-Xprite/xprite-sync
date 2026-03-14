@@ -1,0 +1,44 @@
+{
+  "story_id": "3.12",
+  "title": "GitHub Integration",
+  "complexity_assessment": {
+    "scope": {
+      "score": 3,
+      "rationale": "5-6 files affected: new GitHub service + endpoint, frontend service, component update. Moderate scope.",
+      "files_affected": 6
+    },
+    "integration": {
+      "score": 3,
+      "rationale": "GitHub API integration required. Single external API (GitHub) but multiple endpoints (commits, PRs, branches).",
+      "external_apis": 1
+    },
+    "infrastructure": {
+      "score": 2,
+      "rationale": "Backend endpoints for three GitHub data types. Moderate work: API client setup, response transformation.",
+      "changes_needed": 1
+    },
+    "knowledge": {
+      "score": 2,
+      "rationale": "GitHub API is well-documented. Team has GITHUB_TOKEN already. Octokit or GitHub CLI usage is standard.",
+      "novel_patterns": 0
+    },
+    "risk": {
+      "score": 2,
+      "rationale": "Low risk. GitHub API is stable. Rate limiting is known issue (mitigated by caching). Auth already configured.",
+      "criticality": "low"
+    }
+  },
+  "total_score": 12,
+  "average_score": 2.4,
+  "complexity_class": "STANDARD",
+  "reasoning": "STANDARD complexity (12/25 pts). External API integration (GitHub) adds moderate complexity. Pattern is Hook → useQuery → Component (same as 3.10, 3.11). No novel patterns. Can run in parallel with 3.11 (no dependencies).",
+  "phases_to_execute": [
+    "GATHER (Phase 1)",
+    "ASSESS (Phase 2)",
+    "WRITE SPEC (Phase 3)",
+    "CRITIQUE (Phase 4)"
+  ],
+  "estimated_effort": "5-8 story points",
+  "estimated_duration_hours": 3,
+  "recommendation": "Can run in parallel with 3.11. Independent of other stories. External API integration is straightforward with GitHub CLI (already authenticated in project)."
+}

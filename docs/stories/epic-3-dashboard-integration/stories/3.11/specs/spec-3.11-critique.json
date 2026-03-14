@@ -1,0 +1,65 @@
+{
+  "story_id": "3.11",
+  "title": "Stories & Squads Real Reading",
+  "qa_gate_checklist": {
+    "acceptance_criteria_testability": {
+      "passed": true,
+      "score": 5,
+      "rationale": "All ACs testable. 'StoryWorkspace displays stories from project (not FALLBACK_STORIES)' verified by checking for FALLBACK_STORIES import. 'Kanban board columns reflect actual story status' verifiable by UI inspection. 'Stories grouped by epic' — count groups visually."
+    },
+    "no_invented_features": {
+      "passed": true,
+      "score": 5,
+      "rationale": "Every requirement traces to explicit AC. Backend endpoint design matches pattern in 3.10. File reading from docs/stories/ is existing project structure. No invented features."
+    },
+    "pattern_consistency": {
+      "passed": true,
+      "score": 4,
+      "rationale": "Follows Hook → useQuery → Component pattern from 3.10. Adds backend endpoint (new for Wave 5 but consistent across 3.11-3.13). Minor variation from 3.10: includes backend work. Still consistent."
+    },
+    "brownfield_context_respected": {
+      "passed": true,
+      "score": 5,
+      "rationale": "Updates existing StoryWorkspace and SquadsView components. Removes FALLBACK_STORIES (hardcoded data). Respects project structure (docs/stories/ directory). No reinvention of squad management."
+    },
+    "real_data_emphasis": {
+      "passed": true,
+      "score": 5,
+      "rationale": "Explicitly eliminates all mock story data. Every story comes from actual .story.md files. SquadsView displays real squads. Testing emphasizes real project data."
+    },
+    "backend_frontend_scope_clarity": {
+      "passed": true,
+      "score": 5,
+      "rationale": "Backend scope clear: new /api/stories endpoint, file system read, YAML parsing. Frontend scope clear: 3 files updated (hook, component services). No ambiguity. Clean separation."
+    }
+  },
+  "verdict": "APPROVED",
+  "overall_score": 4.83,
+  "reasoning": "Story 3.11 is well-scoped STANDARD story (13/25 pts). It builds on 3.10 pattern and applies same Hook → useQuery → Component approach but adds backend file I/O. Specification is detailed with clear testing strategy. Depends on 3.10 approval for pattern consistency. No revisions needed. Ready for development after 3.10.",
+  "critical_notes": [
+    "Schedule after 3.10 approval (same pattern, slightly more complex)",
+    "YAML parsing adds moderate complexity but is standard operation",
+    "Removing FALLBACK_STORIES is critical — must be complete deletion",
+    "File paths must be relative from project root",
+    "Story status inference from checklist is key complexity — test with real story files"
+  ],
+  "approved_for_development": true,
+  "estimated_dev_duration_hours": 4,
+  "ready_for_dev": false,
+  "ready_for_dev_reason": "Depends on 3.10 approval and merge",
+  "dev_notes": [
+    "Start with backend service (file reading and YAML parsing)",
+    "Test endpoint with curl before connecting frontend",
+    "Verify story files are readable from backend (docs/stories/ path)",
+    "Test with actual story files from project (3.1-3.15)",
+    "Implement status inference by counting [ ] vs [x] in AC section",
+    "Use existing Kanban/board component if available",
+    "Remove all FALLBACK_STORIES imports and usages",
+    "Test filtering on real data (epic=3, status=in-progress, etc.)"
+  ],
+  "potential_blockers": [
+    "Story file parsing may fail if frontmatter format varies",
+    "Status inference may be inaccurate if AC section format changes",
+    "Squad data source must be defined (API or file-based?)"
+  ]
+}

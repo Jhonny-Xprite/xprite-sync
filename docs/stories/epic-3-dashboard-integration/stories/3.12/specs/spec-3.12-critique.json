@@ -1,0 +1,64 @@
+{
+  "story_id": "3.12",
+  "title": "GitHub Integration",
+  "qa_gate_checklist": {
+    "acceptance_criteria_testability": {
+      "passed": true,
+      "score": 5,
+      "rationale": "All ACs testable. GitHub API calls verifiable via curl. Link clicks testable in browser. Auto-refresh verifiable in DevTools. Error handling testable by disconnecting API."
+    },
+    "no_invented_features": {
+      "passed": true,
+      "score": 5,
+      "rationale": "Every requirement traces to explicit AC. GitHub API endpoints are standard (commits, PRs, branches). No invented features beyond dashboard integration."
+    },
+    "pattern_consistency": {
+      "passed": true,
+      "score": 5,
+      "rationale": "Follows Hook → useQuery → Component pattern from 3.10, 3.11. Includes backend endpoint (new for Wave 5 but consistent across 3.11-3.13). Pattern is consistent."
+    },
+    "brownfield_context_respected": {
+      "passed": true,
+      "score": 5,
+      "rationale": "Updates existing GitHubView component. Uses existing GITHUB_TOKEN from .env. No new infrastructure — just GitHub API integration. Respects existing patterns."
+    },
+    "real_data_emphasis": {
+      "passed": true,
+      "score": 5,
+      "rationale": "Explicitly fetches real GitHub data (commits, PRs, branches). No mock data. Testing emphasizes real GitHub repository (SynkraAI/aiox-core)."
+    },
+    "backend_frontend_scope_clarity": {
+      "passed": true,
+      "score": 5,
+      "rationale": "Backend scope: 3 endpoints for GitHub API integration. Frontend scope: service + hook + component update. Clear separation. No ambiguity."
+    }
+  },
+  "verdict": "APPROVED",
+  "overall_score": 5.0,
+  "reasoning": "Story 3.12 is well-scoped STANDARD story (12/25 pts). External API integration is straightforward with GitHub CLI. Specification is clear with detailed testing strategy. Can run in parallel with 3.11 (no dependencies). No revisions needed. Ready for development after 3.10.",
+  "critical_notes": [
+    "Can run in parallel with 3.11 (independent story)",
+    "GITHUB_TOKEN must be configured before development",
+    "GitHub CLI must be authenticated (usually already true)",
+    "5-minute polling respects GitHub rate limits",
+    "External API dependency — may be rate-limited in testing"
+  ],
+  "approved_for_development": true,
+  "estimated_dev_duration_hours": 3,
+  "ready_for_dev": true,
+  "dev_notes": [
+    "Verify GITHUB_TOKEN exists in .env",
+    "Test GitHub CLI: gh api repos/SynkraAI/aiox-core/commits",
+    "Implement service methods using GitHub CLI via execSync",
+    "Test each endpoint with curl before connecting frontend",
+    "Handle GitHub API rate limiting (implement caching with staleTime)",
+    "Use relative timestamps (formatRelativeTime utility)",
+    "Test error cases: invalid token, no internet, etc.",
+    "Verify links open correct GitHub URLs in new tab"
+  ],
+  "potential_blockers": [
+    "GITHUB_TOKEN missing in .env — must add before development",
+    "GitHub API rate limiting — careful during testing",
+    "GitHub CLI may not be installed — fallback to Octokit"
+  ]
+}

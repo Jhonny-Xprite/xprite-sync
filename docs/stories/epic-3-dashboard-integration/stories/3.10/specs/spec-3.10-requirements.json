@@ -1,0 +1,86 @@
+{
+  "story_id": "3.10",
+  "title": "Agent Metrics Real-Time",
+  "user_story": "As a project manager observing the AIOX dashboard, I want to see real agent metrics from Supabase (not mock data), so that I can monitor actual agent performance and understand what's happening in my system in real-time.",
+  "story_points": "5-8",
+  "priority": "HIGHEST",
+  "epic_id": "3",
+  "owner": "@dev",
+  "acceptance_criteria": {
+    "primary": [
+      "Dashboard AgentsMonitor displays agents from GET /api/metrics endpoint",
+      "Each agent card shows: agent name/ID, status (running/idle/offline), latency_ms, success_rate%, cpu_percentage, memory_usage_mb",
+      "Data updates automatically every 5 seconds via polling",
+      "Last updated X seconds ago timestamp visible on AgentsMonitor",
+      "Live Data badge/indicator appears when data is real (not mock)",
+      "Loading skeleton shows while fetching data from API",
+      "Error toast/alert displays if API call fails",
+      "Graceful fallback shows when API is unavailable"
+    ],
+    "secondary": [
+      "Manual Refresh Now button to force immediate update",
+      "Agent status changes trigger subtle animation",
+      "Hover tooltip shows full agent details",
+      "Sort agents by status, latency, or success_rate",
+      "Color coding: green (healthy), yellow (degraded), red (offline)"
+    ]
+  },
+  "technical_scope": {
+    "frontend_files": [
+      "packages/dashboard/src/components/agents-monitor/AgentsMonitor.tsx",
+      "packages/dashboard/src/components/agents-monitor/AgentMonitorCard.tsx",
+      "packages/dashboard/src/hooks/useApiMetrics.ts (NEW)",
+      "packages/dashboard/src/hooks/useAgents.ts"
+    ],
+    "backend_files": [
+      "packages/api/src/services/metrics.ts (already exists)"
+    ]
+  },
+  "api_endpoint": {
+    "method": "GET",
+    "path": "/api/metrics",
+    "query_params": ["agentId (optional)", "limit (default 10)"],
+    "response_schema": {
+      "data": [
+        {
+          "id": "agent-1",
+          "agent_id": "@dev",
+          "team_id": "uuid",
+          "status": "running|idle|offline",
+          "latency_ms": 156,
+          "success_rate": 99.3,
+          "error_count": 1,
+          "processed_count": 12450,
+          "memory_usage_mb": 512,
+          "cpu_percentage": 48.5,
+          "recorded_at": "ISO8601 timestamp"
+        }
+      ],
+      "total": 5,
+      "limit": 10
+    }
+  },
+  "dependencies": {
+    "backend": [
+      "API running on :3000",
+      "Supabase connected",
+      "/api/metrics endpoint returning real data"
+    ],
+    "frontend": [
+      "metricsService created",
+      "React Query configured",
+      "Dashboard running on :5175"
+    ]
+  },
+  "blockers": [],
+  "testing_strategy": [
+    "curl http://localhost:3000/api/metrics returns real data",
+    "Dashboard loads AgentsMonitor without errors",
+    "Agents display with correct data from Supabase",
+    "Data refreshes every 5 seconds in browser DevTools",
+    "Last updated X seconds ago increments correctly",
+    "Disconnecting API shows error gracefully",
+    "npm run test passes",
+    "npm run typecheck passes"
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "story_id": "3.14",
+  "title": "Hand-offs Functional & Monitored",
+  "user_story": "As an agent system administrator monitoring orchestration, I want to see hand-off history (when agents passed context to each other), so that I understand agent collaboration patterns and can trace execution flow.",
+  "story_points": "5-8",
+  "priority": "MEDIUM",
+  "epic_id": "3",
+  "owner": "@dev",
+  "acceptance_criteria": {
+    "primary": [
+      "Dashboard Hand-offs card displays recent hand-offs (last 20)",
+      "Timeline visualization showing agent-to-agent transfers",
+      "Each hand-off shows: from_agent, to_agent, timestamp, status",
+      "Hand-off status: completed, in-progress, failed",
+      "Timestamp format: relative (5 minutes ago, 2 hours ago)",
+      "Quick stat: Last hand-off: @pm → @dev (5 min ago)",
+      "Hand-off details clickable → shows full context transferred",
+      "Data fetched from .aiox/handoffs/ directory (real project data)",
+      "Auto-refresh every 30 seconds",
+      "Search/filter hand-offs by agent or date range (optional)"
+    ]
+  },
+  "technical_scope": {
+    "frontend_files": [
+      "packages/dashboard/src/components/handoffs/HandoffMonitor.tsx (NEW)",
+      "packages/dashboard/src/components/handoffs/HandoffTimeline.tsx (NEW)",
+      "packages/dashboard/src/components/handoffs/HandoffCard.tsx (NEW)",
+      "packages/dashboard/src/components/dashboard/DashboardOverview.tsx",
+      "packages/dashboard/src/services/api/handoffs.ts (NEW)",
+      "packages/dashboard/src/hooks/useHandoffs.ts (NEW)"
+    ],
+    "backend_files": [
+      "packages/api/src/services/handoffs.ts (NEW)",
+      "packages/api/src/index.ts (2 new endpoints)"
+    ]
+  },
+  "api_endpoints": [
+    {
+      "path": "/api/handoffs/history",
+      "method": "GET",
+      "query": "?limit=20&from_agent=&to_agent=",
+      "fields": ["from_agent", "to_agent", "timestamp", "status", "story_id", "files_modified_count", "next_action", "consumed"]
+    },
+    {
+      "path": "/api/handoffs/:id",
+      "method": "GET",
+      "fields": ["id", "from_agent", "to_agent", "timestamp", "status", "story_context", "decisions", "files_modified", "blockers"]
+    }
+  ],
+  "dependencies": {
+    "data_source": [
+      ".aiox/handoffs/ directory with YAML files",
+      "Handoff files created by agent orchestration system"
+    ],
+    "patterns": [
+      "Story 3.13 (Engine/Tasks) — for similar patterns"
+    ]
+  },
+  "blockers": [],
+  "testing_strategy": [
+    "Backend endpoint /api/handoffs/history works",
+    "Returns hand-offs from .aiox/handoffs/ directory",
+    "curl http://localhost:3000/api/handoffs/history returns valid JSON",
+    "Frontend loads hand-off data",
+    "Hand-offs displayed in timeline format",
+    "Timestamps show relative time",
+    "Clicking hand-off card shows details",
+    "Status filtering works",
+    "Auto-refresh every 30 seconds",
+    "Error handling if directory missing",
+    "TypeScript compilation passes",
+    "Tests passing"
+  ]
+}

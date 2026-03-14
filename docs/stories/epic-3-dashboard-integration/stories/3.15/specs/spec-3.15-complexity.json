@@ -1,0 +1,44 @@
+{
+  "story_id": "3.15",
+  "title": "Agent Memory Visualization",
+  "complexity_assessment": {
+    "scope": {
+      "score": 4,
+      "rationale": "Large scope: 8 frontend components (tree view, search, viewer, stats), new service, new hook, 3 backend endpoints. Similar to 3.13 but focused on single data source.",
+      "files_affected": 10
+    },
+    "integration": {
+      "score": 1,
+      "rationale": "Single data source: ~/.claude/projects/AIOX-CORE/memory/. No external APIs. Filesystem read only.",
+      "external_apis": 0
+    },
+    "infrastructure": {
+      "score": 2,
+      "rationale": "Backend service reads markdown files, parses metadata, implements search. Moderate complexity. Similar to 3.14.",
+      "changes_needed": 1
+    },
+    "knowledge": {
+      "score": 3,
+      "rationale": "Requires understanding memory file structure and categories. Search implementation (substring matching or fuzzy). Tree view component may add complexity.",
+      "novel_patterns": 1
+    },
+    "risk": {
+      "score": 2,
+      "rationale": "Low risk. Read-only filesystem access. Search may be slow if many files. Graceful error handling if directory missing.",
+      "criticality": "low"
+    }
+  },
+  "total_score": 12,
+  "average_score": 2.4,
+  "complexity_class": "STANDARD",
+  "reasoning": "STANDARD (12/25 pts). Large frontend scope (5 components) adds complexity. File reading + search implementation is straightforward. Can run in parallel with 3.14. Pattern matches 3.11 and 3.14 (file reading). Estimated 8-13 story points.",
+  "phases_to_execute": [
+    "GATHER (Phase 1)",
+    "ASSESS (Phase 2)",
+    "WRITE SPEC (Phase 3)",
+    "CRITIQUE (Phase 4)"
+  ],
+  "estimated_effort": "8-13 story points",
+  "estimated_duration_hours": 5,
+  "recommendation": "Schedule after 3.13. Can run in parallel with 3.14. Last story in Wave 5. Multiple components (tree view, search, viewer) may be time-consuming. Consider reusing existing tree view component if available."
+}

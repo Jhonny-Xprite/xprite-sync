@@ -1,0 +1,105 @@
+{
+  "story_id": "3.11",
+  "title": "Stories & Squads Real Reading",
+  "user_story": "As a product owner managing AIOX project, I want to see real stories and squads from my project on the Dashboard, so that I can track project progress and see actual development status (not placeholder data).",
+  "story_points": "8-13",
+  "priority": "HIGH",
+  "epic_id": "3",
+  "owner": "@dev",
+  "acceptance_criteria": {
+    "stories": [
+      "Dashboard StoryWorkspace displays stories from project (not FALLBACK_STORIES)",
+      "Stories loaded from backend endpoint GET /api/stories or direct filesystem read from docs/stories/epic-*/[0-9]*.story.md",
+      "Each story displays: title, status, priority, story points, assigned executor, progress %",
+      "Kanban board columns reflect actual story status",
+      "Stories grouped by epic with count per status",
+      "Search/filter functionality works on real data",
+      "Story cards link to actual .story.md files in project"
+    ],
+    "squads": [
+      "SquadsView displays real squads from API/backend",
+      "Each squad shows: name, member count, squad type, primary domain, agents assigned",
+      "Squad list updates when new squads added to project",
+      "Agent-to-squad mappings are correct"
+    ]
+  },
+  "technical_scope": {
+    "frontend_files": [
+      "packages/dashboard/src/hooks/useStories.ts",
+      "packages/dashboard/src/hooks/useSquads.ts",
+      "packages/dashboard/src/components/stories/StoryWorkspace.tsx",
+      "packages/dashboard/src/components/squads-view/SquadsView.tsx",
+      "packages/dashboard/src/services/api/stories.ts (NEW)"
+    ],
+    "backend_files": [
+      "packages/api/src/services/stories.ts (NEW)",
+      "packages/api/src/index.ts (add /api/stories endpoint)"
+    ]
+  },
+  "api_endpoints": {
+    "stories": {
+      "method": "GET",
+      "path": "/api/stories",
+      "query_params": ["epic (optional)", "status (optional)", "limit (default 50)"],
+      "response_schema": {
+        "data": [
+          {
+            "id": "3.10",
+            "epic_id": "3",
+            "title": "Agent Metrics Real-Time",
+            "description": "string",
+            "status": "backlog|in-progress|review|done",
+            "priority": "low|medium|high|critical",
+            "effort": "string (e.g., 5-8)",
+            "progress": 0.45,
+            "assigned_executor": "@dev",
+            "created_at": "ISO8601",
+            "updated_at": "ISO8601",
+            "file_path": "docs/stories/epic-3-dashboard-integration/stories/3.10.story.md"
+          }
+        ],
+        "total": 6,
+        "limit": 50
+      }
+    },
+    "squads": {
+      "method": "GET",
+      "path": "/api/squads",
+      "response_schema": {
+        "data": [
+          {
+            "id": "squad-1",
+            "name": "DevOps Squad",
+            "member_count": 2,
+            "squad_type": "orchestrator",
+            "primary_domain": "CI/CD and infrastructure",
+            "agents": ["@devops", "@architect"]
+          }
+        ]
+      }
+    }
+  },
+  "dependencies": {
+    "data_source": [
+      "docs/stories/epic-3-dashboard-integration/stories/ with 15+ .story.md files",
+      "Story YAML frontmatter parseable",
+      "Squad configuration (backend or file-based)"
+    ],
+    "patterns": [
+      "Story 3.10 real-data pattern (Hook → useQuery → Component)"
+    ]
+  },
+  "blockers": [],
+  "testing_strategy": [
+    "curl http://localhost:3000/api/stories returns all 15 stories",
+    "Each story has correct status, priority, effort",
+    "Frontend loads real stories (not FALLBACK_STORIES)",
+    "Kanban board displays stories correctly by status",
+    "SquadsView loads squads from API",
+    "Filtering by epic works",
+    "Filtering by status works",
+    "Story cards link to real .md files",
+    "npm run typecheck passes",
+    "npm test passes"
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "story_id": "3.14",
+  "title": "Hand-offs Functional & Monitored",
+  "complexity_assessment": {
+    "scope": {
+      "score": 3,
+      "rationale": "8 files affected: 3 new frontend components, new hook, new service, 2 backend endpoints. Moderate scope for new feature.",
+      "files_affected": 8
+    },
+    "integration": {
+      "score": 1,
+      "rationale": "Single data source: .aiox/handoffs/ directory. No external APIs. Filesystem read only.",
+      "external_apis": 0
+    },
+    "infrastructure": {
+      "score": 2,
+      "rationale": "Backend service reads and parses YAML files from .aiox/handoffs/. Straightforward file I/O.",
+      "changes_needed": 1
+    },
+    "knowledge": {
+      "score": 2,
+      "rationale": "Requires understanding handoff YAML format. Pattern is similar to 3.11 (file reading + YAML parsing). Team familiar.",
+      "novel_patterns": 0
+    },
+    "risk": {
+      "score": 1,
+      "rationale": "Low risk. Read-only filesystem access. Graceful error handling if directory missing. Non-critical feature.",
+      "criticality": "low"
+    }
+  },
+  "total_score": 9,
+  "average_score": 1.8,
+  "complexity_class": "SIMPLE",
+  "reasoning": "SIMPLE-to-STANDARD (9/25 pts). File reading similar to 3.11 (Stories). Timeline visualization adds slight complexity. Depends on 3.13 approval. Can run in parallel with 3.15.",
+  "phases_to_execute": [
+    "GATHER (Phase 1)",
+    "ASSESS (Phase 2)",
+    "WRITE SPEC (Phase 3)",
+    "CRITIQUE (Phase 4)"
+  ],
+  "estimated_effort": "5-8 story points",
+  "estimated_duration_hours": 3,
+  "recommendation": "Schedule after 3.13. Relatively simple compared to other Wave 5 stories. Can run in parallel with 3.15. Pattern matches 3.11 (file reading + YAML parsing)."
+}

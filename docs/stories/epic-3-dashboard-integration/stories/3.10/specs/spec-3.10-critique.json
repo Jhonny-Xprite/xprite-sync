@@ -1,0 +1,55 @@
+{
+  "story_id": "3.10",
+  "title": "Agent Metrics Real-Time",
+  "qa_gate_checklist": {
+    "acceptance_criteria_testability": {
+      "passed": true,
+      "score": 5,
+      "rationale": "All ACs are specific, measurable, and testable. 'Displays agents from GET /api/metrics endpoint' is testable via API inspection. 'Updates every 5 seconds' is verifiable in DevTools. 'Last updated X seconds ago' is UI-verifiable."
+    },
+    "no_invented_features": {
+      "passed": true,
+      "score": 5,
+      "rationale": "Every feature traces to explicit AC or implementation note. No invented features. Story follows exactly what's in dashboard prototype and API design."
+    },
+    "pattern_consistency": {
+      "passed": true,
+      "score": 5,
+      "rationale": "Follows exact pattern: Hook (useRealAgentMetrics) → useQuery → Component. Same pattern used in 3.11, 3.12, 3.13, 3.14, 3.15. Consistent with existing dashboard patterns (useDashboard, useAgents)."
+    },
+    "brownfield_context_respected": {
+      "passed": true,
+      "score": 5,
+      "rationale": "Explicitly reuses metricsService (not reinventing). Updates existing components (AgentsMonitor, AgentMonitorCard) rather than creating new ones. Respects existing dashboard architecture and styling."
+    },
+    "real_data_emphasis": {
+      "passed": true,
+      "score": 5,
+      "rationale": "Story eliminates all mock data. Every metric comes from Supabase via /api/metrics. Clear 'LIVE' badge distinguishes real data. Testing strategy emphasizes real Supabase data."
+    },
+    "backend_frontend_scope_clarity": {
+      "passed": true,
+      "score": 5,
+      "rationale": "Zero backend work needed (metricsService already exists and returns real data). Frontend work clearly scoped: 3 files modified (AgentsMonitor, AgentMonitorCard, useApiMetrics hook). No ambiguity."
+    }
+  },
+  "verdict": "APPROVED",
+  "overall_score": 4.97,
+  "reasoning": "Story 3.10 is a strong foundation story for Wave 5. It's SIMPLE complexity (7/25 pts), has clear AC, eliminates mock data, and follows proven patterns. Specification is detailed, testing strategy is comprehensive. Foundation for all remaining Wave 5 stories. No revisions needed.",
+  "critical_notes": [
+    "This is the foundation story — approving this unblocks 3.11, 3.12, 3.13, 3.14, 3.15",
+    "metricsService already verified working with real Supabase data",
+    "No architectural conflicts with other stories",
+    "Pattern (Hook → useQuery → Component) is exact match for 3.11-3.15"
+  ],
+  "approved_for_development": true,
+  "estimated_dev_duration_hours": 2,
+  "ready_for_dev": true,
+  "dev_notes": [
+    "Start with useRealAgentMetrics hook first",
+    "Verify metricsService.getAgentMetrics() returns correct schema",
+    "Test API endpoint with curl before connecting to component",
+    "Use existing AgentsSkeleton component for loading state",
+    "Leverage existing error toast pattern from dashboard"
+  ]
+}

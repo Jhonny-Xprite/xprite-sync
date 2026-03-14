@@ -1,0 +1,44 @@
+{
+  "story_id": "3.11",
+  "title": "Stories & Squads Real Reading",
+  "complexity_assessment": {
+    "scope": {
+      "score": 4,
+      "rationale": "Touches 6-7 files: two new files (stories.ts service, useStories hook), updates to existing components (StoryWorkspace, SquadsView), backend endpoint implementation.",
+      "files_affected": 7
+    },
+    "integration": {
+      "score": 2,
+      "rationale": "Two integrations: filesystem (reading .story.md files) and backend API. No external APIs.",
+      "external_apis": 0
+    },
+    "infrastructure": {
+      "score": 2,
+      "rationale": "New backend endpoint /api/stories required. Moderate work: file system read, YAML parsing, filtering logic.",
+      "changes_needed": 1
+    },
+    "knowledge": {
+      "score": 3,
+      "rationale": "Requires YAML parsing, filesystem operations, and story status inference. Slightly more complex than 3.10. Team familiar with these patterns but non-trivial.",
+      "novel_patterns": 1
+    },
+    "risk": {
+      "score": 2,
+      "rationale": "Low-risk. No data mutations. Dependency: story files must exist and be parseable. Fallback: error handling if files missing.",
+      "criticality": "low"
+    }
+  },
+  "total_score": 13,
+  "average_score": 2.6,
+  "complexity_class": "STANDARD",
+  "reasoning": "Brownfield enhancement with moderate scope. Backend work (file system + endpoint) is straightforward. Frontend follows established pattern. YAML parsing adds complexity but is standard library operation. Depends on 3.10 for pattern reference.",
+  "phases_to_execute": [
+    "GATHER (Phase 1)",
+    "ASSESS (Phase 2)",
+    "WRITE SPEC (Phase 3)",
+    "CRITIQUE (Phase 4)"
+  ],
+  "estimated_effort": "8-10 story points",
+  "estimated_duration_hours": 4,
+  "recommendation": "Schedule after 3.10. Same pattern but with backend endpoint. Block on 3.10 approval for pattern consistency."
+}

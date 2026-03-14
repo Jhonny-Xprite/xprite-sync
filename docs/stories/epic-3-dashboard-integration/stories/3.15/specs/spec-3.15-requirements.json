@@ -1,0 +1,94 @@
+{
+  "story_id": "3.15",
+  "title": "Agent Memory Visualization",
+  "user_story": "As an AI orchestration engineer, I want to browse and search agent memory files on Dashboard, so that I can understand what each agent remembers about users, projects, and past interactions.",
+  "story_points": "8-13",
+  "priority": "MEDIUM",
+  "epic_id": "3",
+  "owner": "@dev",
+  "acceptance_criteria": {
+    "primary": [
+      "Dashboard Memory Browser displays list of all agents with memory file counts",
+      "For each agent: show memory categories (user, project, feedback, reference)",
+      "Memory file browser (expandable tree view) showing directory structure",
+      "Lists all .md files organized by category",
+      "Each file shows: size, last modified date",
+      "Clickable files → view full content in modal/viewer",
+      "Search functionality: search across all agent memories",
+      "Search by keyword in file contents",
+      "Filter by agent, category, or date range",
+      "Results show file path and matching context",
+      "Memory content viewer: display markdown formatted",
+      "Highlight search matches",
+      "Copy to clipboard option",
+      "Show file metadata (created, updated, size)",
+      "Real-time updates: Memory list refreshes when new files added",
+      "Shows Last sync: X seconds ago",
+      "Error handling: shows message if memory directory missing"
+    ]
+  },
+  "technical_scope": {
+    "frontend_files": [
+      "packages/dashboard/src/components/memory/MemoryBrowser.tsx (NEW)",
+      "packages/dashboard/src/components/memory/MemoryTreeView.tsx (NEW)",
+      "packages/dashboard/src/components/memory/MemoryViewer.tsx (NEW)",
+      "packages/dashboard/src/components/memory/MemorySearch.tsx (NEW)",
+      "packages/dashboard/src/components/memory/MemoryStats.tsx (NEW)",
+      "packages/dashboard/src/components/dashboard/DashboardOverview.tsx",
+      "packages/dashboard/src/services/api/memory.ts (NEW)",
+      "packages/dashboard/src/hooks/useMemory.ts (NEW)"
+    ],
+    "backend_files": [
+      "packages/api/src/services/memory.ts (NEW)",
+      "packages/api/src/index.ts (3 new endpoints)"
+    ]
+  },
+  "api_endpoints": [
+    {
+      "path": "/api/memory/list",
+      "method": "GET",
+      "query": "?agent=&category=",
+      "fields": ["agent_id", "category", "file_path", "filename", "size_bytes", "created_at", "updated_at", "line_count"]
+    },
+    {
+      "path": "/api/memory/:agent_id/:filename",
+      "method": "GET",
+      "fields": ["filename", "agent_id", "category", "content", "size_bytes", "created_at", "updated_at"]
+    },
+    {
+      "path": "/api/memory/search",
+      "method": "GET",
+      "query": "?query=&agent=&category=",
+      "fields": ["file_path", "agent_id", "matches", "relevance_score"]
+    }
+  ],
+  "dependencies": {
+    "data_source": [
+      "~/.claude/projects/AIOX-CORE/memory/ directory with .md files",
+      "Agent memory files (user_profile.md, feedback*.md, project*.md, reference*.md)"
+    ],
+    "patterns": [
+      "Story 3.13 (Engine/Tasks) — for similar patterns"
+    ]
+  },
+  "blockers": [],
+  "testing_strategy": [
+    "Backend endpoint /api/memory/list works",
+    "Returns memories from ~/.claude/projects/AIOX-CORE/memory/",
+    "curl http://localhost:3000/api/memory/list returns valid JSON",
+    "Memory content endpoint works",
+    "curl http://localhost:3000/api/memory/user_profile.md returns markdown",
+    "Search endpoint works",
+    "curl http://localhost:3000/api/memory/search?query=developer returns matches",
+    "Frontend loads memory list",
+    "Memory browser displays files in tree view",
+    "Clicking file shows content in modal/viewer",
+    "Search highlighting works",
+    "Category filtering works",
+    "Copy to clipboard works",
+    "Auto-refresh every 60 seconds",
+    "Error handling if memory directory missing",
+    "TypeScript compilation passes",
+    "Tests passing"
+  ]
+}

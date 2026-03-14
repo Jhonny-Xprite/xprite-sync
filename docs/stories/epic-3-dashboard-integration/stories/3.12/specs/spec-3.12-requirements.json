@@ -1,0 +1,81 @@
+{
+  "story_id": "3.12",
+  "title": "GitHub Integration",
+  "user_story": "As a developer tracking code changes, I want to see GitHub activity (commits, PRs, branches) on the Dashboard, so that I know what's been deployed and understand code review status.",
+  "story_points": "5-8",
+  "priority": "HIGH",
+  "epic_id": "3",
+  "owner": "@dev",
+  "acceptance_criteria": {
+    "primary": [
+      "GitHubView component displays real GitHub data (not mocks)",
+      "Recent commits shown: message, author, branch, timestamp (relative), link to GitHub",
+      "Pull requests section shows: title, status (open/merged/closed), author, created/merged date, link to GitHub",
+      "Branches displayed: name, last commit message, last updated timestamp, creator",
+      "Data fetched from real GitHub API (not hardcoded)",
+      "Uses GITHUB_TOKEN from .env for authentication",
+      "Auto-refreshes every 5 minutes",
+      "Error handling: shows GitHub unavailable if API fails",
+      "Links open GitHub web interface in new tab"
+    ],
+    "secondary": [
+      "Quick stats: Last commit 2h ago, 2 open PRs, 5 merged this week",
+      "Deployment status integration",
+      "Branch protection status",
+      "Code review requests pending",
+      "CI/CD pipeline status",
+      "Filter PRs by author, status, or date range"
+    ]
+  },
+  "technical_scope": {
+    "frontend_files": [
+      "packages/dashboard/src/components/github/GitHubView.tsx",
+      "packages/dashboard/src/services/api/github.ts (NEW)",
+      "packages/dashboard/src/hooks/useDashboard.ts (optional)"
+    ],
+    "backend_files": [
+      "packages/api/src/services/github.ts (NEW)",
+      "packages/api/src/index.ts (add /api/github/* endpoints)"
+    ]
+  },
+  "api_endpoints": {
+    "commits": {
+      "path": "/api/github/commits",
+      "query": "?limit=10",
+      "fields": ["message", "author", "sha", "timestamp", "url", "branch"]
+    },
+    "prs": {
+      "path": "/api/github/prs",
+      "query": "?status=all",
+      "fields": ["title", "number", "status", "author", "created_at", "merged_at", "url", "reviews_pending"]
+    },
+    "branches": {
+      "path": "/api/github/branches",
+      "fields": ["name", "last_commit", "last_updated", "creator", "url"]
+    }
+  },
+  "dependencies": {
+    "auth": [
+      "GITHUB_TOKEN in .env (already configured)"
+    ],
+    "external": [
+      "GitHub API access (authenticated with GITHUB_TOKEN)",
+      "GitHub repository: SynkraAI/aiox-core"
+    ]
+  },
+  "blockers": [],
+  "testing_strategy": [
+    "GITHUB_TOKEN configured in .env",
+    "Backend endpoint /api/github/commits returns real commits",
+    "Backend endpoint /api/github/prs returns real PRs",
+    "Backend endpoint /api/github/branches returns branches",
+    "GitHubView component loads without errors",
+    "Recent commits display correctly",
+    "PRs show correct status",
+    "Links to GitHub are clickable",
+    "Error handling shows message if GitHub API fails",
+    "Auto-refresh working every 5 minutes",
+    "npm run typecheck passes",
+    "npm test passes"
+  ]
+}

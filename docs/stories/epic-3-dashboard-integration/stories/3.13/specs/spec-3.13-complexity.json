@@ -1,0 +1,44 @@
+{
+  "story_id": "3.13",
+  "title": "Engine, Tasks & Workflows Functional",
+  "complexity_assessment": {
+    "scope": {
+      "score": 5,
+      "rationale": "Largest scope in Wave 5. 10+ files touched: 3 new backend services, 3 new endpoints, 3 hooks, 3 card components. Spans Engine + Tasks + Workflows.",
+      "files_affected": 12
+    },
+    "integration": {
+      "score": 3,
+      "rationale": "Three integration points: Engine system, Task execution system, Workflow system. All internal (no external APIs).",
+      "external_apis": 0
+    },
+    "infrastructure": {
+      "score": 3,
+      "rationale": "Three backend services required. Must query existing task/workflow queues. Moderate work per service.",
+      "changes_needed": 3
+    },
+    "knowledge": {
+      "score": 4,
+      "rationale": "Requires deep understanding of Engine/Task/Workflow systems. Team familiar but complex. Progress calculation non-trivial.",
+      "novel_patterns": 2
+    },
+    "risk": {
+      "score": 3,
+      "rationale": "Moderate risk. System health indicators critical (color coding must be accurate). Queue size accuracy important. Performance impact if polling too frequent.",
+      "criticality": "high"
+    }
+  },
+  "total_score": 18,
+  "average_score": 3.6,
+  "complexity_class": "COMPLEX",
+  "reasoning": "COMPLEX story (18/25 pts). Largest in Wave 5 spanning 3 systems. Requires understanding Engine/Task/Workflow internals. Recommendation: Consider splitting into 2 stories (3.13a Engine, 3.13b Tasks+Workflows). Currently estimated 13-21 points (realistic). Highest technical complexity. Team familiar with patterns but implementation is substantial.",
+  "phases_to_execute": [
+    "GATHER (Phase 1)",
+    "ASSESS (Phase 2)",
+    "WRITE SPEC (Phase 3)",
+    "CRITIQUE (Phase 4)"
+  ],
+  "estimated_effort": "13-21 story points",
+  "estimated_duration_hours": 8,
+  "recommendation": "COMPLEX — Consider splitting: 3.13a (Engine only, 5-8 pts) then 3.13b (Tasks+Workflows, 8-13 pts). Can also keep as single large story if team capacity allows. Schedule after 3.11 approval. Blocks 3.14 (Hand-offs)."
+}
