@@ -21,9 +21,9 @@ Transformar a VPS (`92.112.176.118`) em um **braço operacional do AIOX** — da
 ## Planned Stories
 | Story ID | Título | Executor | Quality Gate | Status |
 |----------|--------|----------|--------------|--------|
-| Story 4.1 | Ponte SSH Base — AIOX ganha acesso à VPS | `@devops` | `@architect` | 🏃 In Progress |
-| Story 4.2 | Gestão de Modelos & Resource Bridging (Ollama) | `@devops` / `@qa` | `@architect` | ⏳ Pendente |
-| Story 4.3 | Consciência & Saúde da VPS (DevSecOps Agent) | `@devops` / `@qa` | `@architect` | ⏳ Pendente |
+| Story 4.1 | Ponte SSH Base — AIOX ganha acesso à VPS | `@devops` | `@architect` | ✅ DONE |
+| Story 4.2 | Gestão de Modelos & Resource Bridging (Ollama) | `@devops` / `@qa` | `@architect` | ✅ DONE |
+| Story 4.3 | Consciência & Saúde da VPS (DevSecOps Agent) | `@devops` / `@qa` | `@architect` | ✅ DONE |
 
 ## Risk Mitigation
 - **Risco:** Sobrecarga de RAM durante inferência Ollama (limite 8GB).
@@ -35,9 +35,9 @@ Transformar a VPS (`92.112.176.118`) em um **braço operacional do AIOX** — da
 - **Rollback:** Git revert; mudanças de infraestrutura são aditivas e reversíveis.
 
 ## Definition of Done
-- [ ] AIOX executa comandos na VPS sem intervenção manual do usuário.
-- [ ] Modelos fracos removidos; família Qwen 3.5 (`0.8b`, `2b`) instalada e funcional.
-- [ ] AIOX consegue orquestrar a integração Obsidian ↔ Ollama do zero.
-- [ ] Health report da VPS executável via `npm run vps:health` com indicadores semafóricos.
-- [ ] Alertas de RAM (> 80%) e disco funcionando com thresholds configuráveis.
-- [ ] Zero credenciais sensíveis no histórico Git.
+- [x] AIOX executa comandos na VPS sem intervenção manual do usuário.
+- [x] Modelos fracos removidos; família Qwen 3.5 (`0.8b`, `2b`) instalada e funcional.
+- [x] AIOX consegue orquestrar a integração Obsidian ↔ Ollama do zero.
+- [x] Health report da VPS executável via `npm run vps:health` com indicadores semafóricos.
+- [x] Alertas de RAM (> 80%) e disco funcionando com thresholds configuráveis.
+- [x] Zero credenciais sensíveis no histórico Git.

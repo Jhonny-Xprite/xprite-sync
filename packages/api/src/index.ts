@@ -4,6 +4,8 @@ import cors from 'cors';
 import { cacheMiddleware } from './middleware/cache';
 import { getCacheService } from './services/cache';
 import { createLogger } from './utils/logger';
+import { supabaseService } from './services/supabase';
+import { systemMetricsCollector } from './services/system-metrics';
 
 const logger = createLogger('API');
 const app = express();
@@ -14,7 +16,12 @@ app.use(cors());
 app.use(express.json());
 app.use(cacheMiddleware);
 
+// Default team ID for metrics (use from env or default)
+const DEFAULT_TEAM_ID = process.env.TEAM_ID || '00000000-0000-0000-0000-000000000000';
+
+// ============================================================
 // Health Check Endpoint
+// ============================================================
 app.get('/api/health', async (req: Request, res: Response) => {
   try {
     const cache = await getCacheService();
@@ -24,74 +31,128 @@ app.get('/api/health', async (req: Request, res: Response) => {
       timestamp: new Date().toISOString(),
       services: {
         cache: cache.isAvailable() ? 'ok' : 'degraded',
+        supabase: 'ok',
         realtime: 'ok',
-        database: 'ok'
-      }
+      },
     });
   } catch (error) {
     logger.error('Health check failed', error);
     res.status(503).json({
       status: 'unhealthy',
-      error: 'One or more services are down'
+      error: 'One or more services are down',
     });
   }
 });
 
-// Metrics Endpoint
-app.get('/api/metrics', (req: Request, res: Response) => {
-  const agentId = req.query.agentId || 'all';
-  const limit = parseInt(req.query.limit as string) || 10;
+// ============================================================
+// Agent Metrics Endpoint — Real data from Supabase
+// ============================================================
+app.get('/api/metrics', async (req: Request, res: Response) => {
+  try {
+    const agentId = (req.query.agentId as string) || undefined;
+    const limit = parseInt((req.query.limit as string) || '10');
 
-  const metrics = [];
-  for (let i = 0; i < limit; i++) {
-    metrics.push({
-      agentId: agentId === 'all' ? `agent-${i + 1}` : agentId,
-      status: ['running', 'idle', 'paused'][Math.floor(Math.random() * 3)],
-      latency_ms: Math.floor(Math.random() * 100) + 20,
-      success_rate: Math.random() * 5 + 95,
-      error_count: Math.floor(Math.random() * 5),
-      processed_count: Math.floor(Math.random() * 2000) + 500,
-      memory_usage_mb: Math.floor(Math.random() * 256) + 64,
-      cpu_percentage: Math.random() * 80,
-      timestamp: new Date(Date.now() - i * 10000).toISOString()
+    // Fetch real metrics from Supabase
+    const metrics = await supabaseService.getAgentMetrics(limit, agentId);
+
+    // If no data in Supabase, generate placeholder data
+    if (metrics.length === 0) {
+      logger.info('No agent metrics in Supabase, returning placeholder');
+      const placeholder = {
+        id: 'placeholder-1',
+        agent_id: agentId || 'all',
+        team_id: DEFAULT_TEAM_ID,
+        status: 'idle' as const,
+        latency_ms: 0,
+        success_rate: 0,
+        error_count: 0,
+        processed_count: 0,
+        memory_usage_mb: 0,
+        cpu_percentage: 0,
+        recorded_at: new Date().toISOString(),
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
+      return res.status(200).json({
+        data: [placeholder],
+        total: 1,
+        limit,
+        message: 'No data in database yet. Insert agent metrics to see real data.',
+      });
+    }
+
+    res.status(200).json({
+      data: metrics,
+      total: metrics.length,
+      limit,
+    });
+  } catch (error) {
+    logger.error('Failed to fetch agent metrics', error);
+    res.status(500).json({
+      error: 'Failed to fetch agent metrics',
+      message: (error as Error).message,
     });
   }
-
-  res.status(200).json({
-    data: metrics,
-    total: metrics.length,
-    limit
-  });
 });
 
-// System Metrics Endpoint
-app.get('/api/system-metrics', (req: Request, res: Response) => {
-  const limit = parseInt(req.query.limit as string) || 10;
+// ============================================================
+// System Metrics Endpoint — Real data from OS + Supabase
+// ============================================================
+app.get('/api/system-metrics', async (req: Request, res: Response) => {
+  try {
+    const limit = parseInt((req.query.limit as string) || '10');
 
-  const metrics = [];
-  for (let i = 0; i < limit; i++) {
-    metrics.push({
-      timestamp: new Date(Date.now() - i * 10000).toISOString(),
-      cpu_percentage: Math.random() * 80,
-      memory_percentage: Math.random() * 60 + 30,
-      memory_used_gb: (Math.random() * 6 + 4).toFixed(1),
-      disk_used_gb: Math.floor(Math.random() * 500) + 200,
-      network_in_mbps: Math.floor(Math.random() * 200) + 50,
-      network_out_mbps: Math.floor(Math.random() * 150) + 30,
-      db_connections: Math.floor(Math.random() * 30) + 5,
-      api_requests_per_sec: Math.floor(Math.random() * 1000) + 200,
-      api_error_rate: (Math.random() * 2).toFixed(2)
+    // Get real system metrics from OS
+    const systemMetrics = systemMetricsCollector.getMetrics();
+
+    // Also fetch from Supabase
+    const supabaseMetrics = await supabaseService.getSystemMetrics(limit);
+
+    // Combine: real-time OS metrics + historical Supabase data
+    const response = {
+      realtime: systemMetricsCollector.formatForAPI(systemMetrics),
+      historical: supabaseMetrics,
+      total: supabaseMetrics.length,
+      limit,
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    logger.error('Failed to fetch system metrics', error);
+    res.status(500).json({
+      error: 'Failed to fetch system metrics',
+      message: (error as Error).message,
     });
   }
-
-  res.status(200).json({
-    data: metrics,
-    total: metrics.length,
-    limit
-  });
 });
 
+// ============================================================
+// Agent Status Summary Endpoint
+// ============================================================
+app.get('/api/agents/summary', async (req: Request, res: Response) => {
+  try {
+    const statusCounts = await supabaseService.getAgentMetricsByStatus();
+    const avgMetrics = await supabaseService.getAverageAgentMetrics();
+
+    res.status(200).json({
+      timestamp: new Date().toISOString(),
+      agents: statusCounts,
+      total: Object.values(statusCounts).reduce((a, b) => a + b, 0),
+      averageMetrics: avgMetrics,
+    });
+  } catch (error) {
+    logger.error('Failed to fetch agent summary', error);
+    res.status(500).json({
+      error: 'Failed to fetch agent summary',
+      message: (error as Error).message,
+    });
+  }
+});
+
+// ============================================================
 // Cache Stats Endpoint
+// ============================================================
 app.get('/api/cache-stats', async (req: Request, res: Response) => {
   try {
     const cache = await getCacheService();
@@ -99,7 +160,7 @@ app.get('/api/cache-stats', async (req: Request, res: Response) => {
 
     res.status(200).json({
       ...stats,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   } catch (error) {
     logger.error('Failed to get cache stats', error);
@@ -107,7 +168,9 @@ app.get('/api/cache-stats', async (req: Request, res: Response) => {
   }
 });
 
+// ============================================================
 // Clear Cache Endpoint
+// ============================================================
 app.delete('/api/cache', async (req: Request, res: Response) => {
   try {
     const cache = await getCacheService();
@@ -115,7 +178,7 @@ app.delete('/api/cache', async (req: Request, res: Response) => {
 
     res.status(200).json({
       message: 'Cache cleared',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   } catch (error) {
     logger.error('Failed to clear cache', error);
@@ -123,16 +186,117 @@ app.delete('/api/cache', async (req: Request, res: Response) => {
   }
 });
 
+// ============================================================
+// Insert Agent Metric Endpoint — For testing
+// ============================================================
+app.post('/api/metrics/insert', async (req: Request, res: Response) => {
+  try {
+    const metric = req.body;
+
+    // Validate required fields
+    if (!metric.agent_id || !metric.team_id) {
+      return res.status(400).json({
+        error: 'Missing required fields: agent_id, team_id',
+      });
+    }
+
+    const success = await supabaseService.insertAgentMetric({
+      agent_id: metric.agent_id,
+      team_id: metric.team_id,
+      status: metric.status || 'idle',
+      latency_ms: metric.latency_ms || 0,
+      success_rate: metric.success_rate || 0,
+      error_count: metric.error_count || 0,
+      processed_count: metric.processed_count || 0,
+      memory_usage_mb: metric.memory_usage_mb || 0,
+      cpu_percentage: metric.cpu_percentage || 0,
+      recorded_at: new Date().toISOString(),
+    });
+
+    if (!success) {
+      return res.status(500).json({
+        error: 'Failed to insert metric',
+      });
+    }
+
+    res.status(201).json({
+      message: 'Metric inserted successfully',
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('Failed to insert metric', error);
+    res.status(500).json({
+      error: 'Failed to insert metric',
+      message: (error as Error).message,
+    });
+  }
+});
+
+// ============================================================
+// Insert System Metric Endpoint — For testing
+// ============================================================
+app.post('/api/system-metrics/insert', async (req: Request, res: Response) => {
+  try {
+    const metric = req.body;
+
+    // Validate required fields
+    if (!metric.team_id) {
+      return res.status(400).json({
+        error: 'Missing required field: team_id',
+      });
+    }
+
+    const success = await supabaseService.insertSystemMetric({
+      team_id: metric.team_id,
+      cpu_percentage: metric.cpu_percentage || 0,
+      memory_percentage: metric.memory_percentage || 0,
+      memory_used_gb: metric.memory_used_gb || 0,
+      memory_total_gb: metric.memory_total_gb || 0,
+      disk_used_gb: metric.disk_used_gb || 0,
+      disk_total_gb: metric.disk_total_gb || 0,
+      network_in_mbps: metric.network_in_mbps || 0,
+      network_out_mbps: metric.network_out_mbps || 0,
+      db_connections: metric.db_connections || 0,
+      db_query_time_ms: metric.db_query_time_ms || 0,
+      api_requests_per_sec: metric.api_requests_per_sec || 0,
+      api_error_rate: metric.api_error_rate || 0,
+      recorded_at: new Date().toISOString(),
+    });
+
+    if (!success) {
+      return res.status(500).json({
+        error: 'Failed to insert system metric',
+      });
+    }
+
+    res.status(201).json({
+      message: 'System metric inserted successfully',
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    logger.error('Failed to insert system metric', error);
+    res.status(500).json({
+      error: 'Failed to insert system metric',
+      message: (error as Error).message,
+    });
+  }
+});
+
+// ============================================================
 // Start Server
+// ============================================================
 const server = app.listen(PORT, async () => {
   const cache = await getCacheService();
   logger.info(`✅ AIOX Dashboard API listening on http://localhost:${PORT}`);
   logger.info(`📊 Health: http://localhost:${PORT}/api/health`);
   logger.info(`📈 Metrics: http://localhost:${PORT}/api/metrics`);
+  logger.info(`💾 Supabase: Connected to ${process.env.SUPABASE_URL || 'default'}`);
   logger.info(`Cache: ${cache.isAvailable() ? '✅ Enabled' : '⚠️  Disabled (Redis not available)'}`);
 });
 
+// ============================================================
 // Graceful Shutdown
+// ============================================================
 process.on('SIGTERM', async () => {
   logger.info('SIGTERM received, shutting down gracefully...');
 

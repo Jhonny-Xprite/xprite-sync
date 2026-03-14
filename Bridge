@@ -1,11 +1,11 @@
 total 4194392
-drwxr-xr-x  22 root root       4096 Feb  7 06:54 .
-drwxr-xr-x  22 root root       4096 Feb  7 06:54 ..
+drwxr-xr-x  22 root root       4096 Mar 13 22:56 .
+drwxr-xr-x  22 root root       4096 Mar 13 22:56 ..
 lrwxrwxrwx   1 root root          7 Apr 22  2024 bin -> usr/bin
 drwxr-xr-x   2 root root       4096 Feb 26  2024 bin.usr-is-merged
 drwxr-xr-x   5 root root       4096 Feb 25 06:17 boot
-drwxr-xr-x  19 root root       3940 Feb  7 06:47 dev
-drwxr-xr-x 110 root root       4096 Mar 13 06:57 etc
+drwxr-xr-x  19 root root       3940 Mar 13 22:56 dev
+drwxr-xr-x 111 root root       4096 Mar 13 23:16 etc
 drwxr-xr-x   3 root root       4096 Apr 24  2025 home
 lrwxrwxrwx   1 root root          7 Apr 22  2024 lib -> usr/lib
 drwxr-xr-x   2 root root       4096 Apr  8  2024 lib.usr-is-merged
@@ -14,16 +14,16 @@ drwx------   2 root root      16384 Apr  3  2025 lost+found
 drwxr-xr-x   2 root root       4096 Apr  3  2025 media
 drwxr-xr-x   2 root root       4096 Apr  3  2025 mnt
 drwxr-xr-x   3 root root       4096 Apr 24  2025 opt
-dr-xr-xr-x 353 root root          0 Feb  7 06:47 proc
-drwx------  12 root root       4096 Feb  2 01:48 root
-drwxr-xr-x  33 root root       1100 Mar 13 22:43 run
+dr-xr-xr-x 342 root root          0 Mar 13 22:56 proc
+drwx------  13 root root       4096 Mar 13 22:51 root
+drwxr-xr-x  30 root root        940 Mar 13 23:29 run
 lrwxrwxrwx   1 root root          8 Apr 22  2024 sbin -> usr/sbin
 drwxr-xr-x   2 root root       4096 Mar 31  2024 sbin.usr-is-merged
 drwxr-xr-x   2 root root       4096 Apr 24  2025 snap
 drwxr-xr-x   2 root root       4096 Apr  3  2025 srv
 -rw-------   1 root root 4294967296 Feb  7 06:54 swapfile
-dr-xr-xr-x  13 root root          0 Feb  7 06:47 sys
-drwxrwxrwt  13 root root       4096 Mar 13 22:43 tmp
+dr-xr-xr-x  13 root root          0 Mar 13 22:56 sys
+drwxrwxrwt  12 root root       4096 Mar 13 23:29 tmp
 drwxr-xr-x  12 root root       4096 Apr  3  2025 usr
 drwxr-xr-x  13 root root       4096 Apr 24  2025 var
 n[AIOX] - de Comunicacao Ativa e Autenticada!
