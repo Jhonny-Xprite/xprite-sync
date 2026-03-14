@@ -1,5 +1,3 @@
-import { execSync } from 'child_process';
-
 export interface Commit {
   message: string;
   author: string;
@@ -47,30 +45,69 @@ export interface BranchesResponse {
 }
 
 class GitHubService {
-  private owner = 'SynkraAI';
-  private repo = 'aiox-core';
+  private owner = process.env.GITHUB_OWNER || 'SynkraAI';
+  private repo = process.env.GITHUB_REPO || 'aiox-core';
+  private token = process.env.GITHUB_TOKEN;
+  private baseURL = 'https://api.github.com';
+
+  /**
+   * Make authenticated GitHub API call
+   */
+  private async fetchGitHub(endpoint: string, params: Record<string, string | number> = {}): Promise<any> {
+    if (!this.token) {
+      throw new Error('GITHUB_TOKEN environment variable not set');
+    }
+
+    // Build URL with query parameters
+    const url = new URL(`${this.baseURL}${endpoint}`);
+    Object.entries(params).forEach(([key, value]) => {
+      url.searchParams.append(key, String(value));
+    });
+
+    try {
+      const response = await fetch(url.toString(), {
+        headers: {
+          'Authorization': `token ${this.token}`,
+          'Accept': 'application/vnd.github.v3+json',
+          'User-Agent': 'AIOX-Dashboard-API',
+        },
+      });
+
+      if (!response.ok) {
+        console.error(`GitHub API error: ${response.status} ${response.statusText}`);
+        return null;
+      }
+
+      return response.json();
+    } catch (error) {
+      console.error('Error calling GitHub API:', error);
+      return null;
+    }
+  }
 
   /**
    * Get recent commits from repository
    */
   async getRecentCommits(limit: number = 10): Promise<CommitsResponse> {
     try {
-      const query = `repos/${this.owner}/${this.repo}/commits`;
-      const output = execSync(`gh api ${query} --jq '.[0:${limit}]'`, {
-        encoding: 'utf-8',
-      });
+      const endpoint = `/repos/${this.owner}/${this.repo}/commits`;
+      const data = await this.fetchGitHub(endpoint, { per_page: limit });
 
-      const commits = JSON.parse(output).map((commit: any) => ({
+      if (!data) {
+        return { data: [], total: 0, limit };
+      }
+
+      const commits = data.map((commit: any) => ({
         message: commit.commit.message.split('\n')[0],
-        author: commit.commit.author.name,
+        author: commit.commit.author?.name || commit.author?.login || 'Unknown',
         sha: commit.sha.slice(0, 7),
-        timestamp: commit.commit.author.date,
+        timestamp: commit.commit.author?.date || new Date().toISOString(),
         url: commit.html_url,
         branch: 'master', // Default to master, can be enhanced
       }));
 
       return {
-        data: commits,
+        data: commits.slice(0, limit),
         total: commits.length,
         limit,
       };
@@ -86,16 +123,18 @@ class GitHubService {
   async getPullRequests(status: 'open' | 'all' = 'all', limit: number = 20): Promise<PullRequestsResponse> {
     try {
       const state = status === 'all' ? 'all' : 'open';
-      const query = `repos/${this.owner}/${this.repo}/pulls?state=${state}&per_page=${limit}`;
-      const output = execSync(`gh api ${query}`, {
-        encoding: 'utf-8',
-      });
+      const endpoint = `/repos/${this.owner}/${this.repo}/pulls`;
+      const data = await this.fetchGitHub(endpoint, { state, per_page: limit });
 
-      const prs = JSON.parse(output).map((pr: any) => ({
+      if (!data) {
+        return { data: [], total: 0, limit };
+      }
+
+      const prs = data.map((pr: any) => ({
         title: pr.title,
         number: pr.number,
         status: pr.merged_at ? 'merged' : pr.state === 'open' ? 'open' : 'closed',
-        author: pr.user.login,
+        author: pr.user?.login || 'Unknown',
         created_at: pr.created_at,
         merged_at: pr.merged_at,
         url: pr.html_url,
@@ -103,7 +142,7 @@ class GitHubService {
       }));
 
       return {
-        data: prs,
+        data: prs.slice(0, limit),
         total: prs.length,
         limit,
       };
@@ -118,21 +157,23 @@ class GitHubService {
    */
   async getBranches(limit: number = 20): Promise<BranchesResponse> {
     try {
-      const query = `repos/${this.owner}/${this.repo}/branches?per_page=${limit}`;
-      const output = execSync(`gh api ${query}`, {
-        encoding: 'utf-8',
-      });
+      const endpoint = `/repos/${this.owner}/${this.repo}/branches`;
+      const data = await this.fetchGitHub(endpoint, { per_page: limit });
 
-      const branches = JSON.parse(output).map((branch: any) => ({
+      if (!data) {
+        return { data: [], total: 0, limit };
+      }
+
+      const branches = data.map((branch: any) => ({
         name: branch.name,
-        last_commit: branch.commit.message ? branch.commit.message.split('\n')[0] : 'N/A',
-        last_updated: new Date().toISOString(),
-        creator: 'unknown', // Would need additional API call
+        last_commit: branch.commit?.commit?.message?.split('\n')[0] || 'N/A',
+        last_updated: branch.commit?.commit?.committer?.date || new Date().toISOString(),
+        creator: branch.commit?.author?.login || 'unknown',
         url: `https://github.com/${this.owner}/${this.repo}/tree/${branch.name}`,
       }));
 
       return {
-        data: branches,
+        data: branches.slice(0, limit),
         total: branches.length,
         limit,
       };
@@ -147,12 +188,13 @@ class GitHubService {
    */
   async getRepository() {
     try {
-      const query = `repos/${this.owner}/${this.repo}`;
-      const output = execSync(`gh api ${query}`, {
-        encoding: 'utf-8',
-      });
+      const endpoint = `/repos/${this.owner}/${this.repo}`;
+      const repo = await this.fetchGitHub(endpoint);
 
-      const repo = JSON.parse(output);
+      if (!repo) {
+        return null;
+      }
+
       return {
         name: repo.name,
         description: repo.description,
