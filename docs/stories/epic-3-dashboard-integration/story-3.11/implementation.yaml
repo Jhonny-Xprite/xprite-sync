@@ -1,0 +1,154 @@
+storyId: "3.11"
+title: "Stories & Squads Real Reading"
+createdAt: "2026-03-14T09:50:00Z"
+createdBy: "@pm (Morgan)"
+status: pending
+complexity: STANDARD
+estimatedEffort: "8-13 pts (4-6 hours)"
+
+dependencies:
+  - name: docs/stories/ directory
+    location: "docs/stories/epic-*/"
+    purpose: Source of real story data
+    status: exists
+
+  - name: React Query
+    version: "^5.x"
+    purpose: State management
+    status: exists
+
+phases:
+  - id: phase-1
+    name: Backend Endpoint Implementation
+    description: Create /api/stories endpoint
+    subtasks:
+      - id: "1.1"
+        description: "Create StoriesService to read docs/stories/ directory"
+        service: backend
+        files:
+          - packages/api/src/services/stories.ts
+        verification:
+          type: command
+          command: "npm run typecheck"
+        status: pending
+
+      - id: "1.2"
+        description: "Create GET /api/stories endpoint"
+        service: backend
+        files:
+          - packages/api/src/index.ts
+        verification:
+          type: api
+          url: "http://localhost:3000/api/stories"
+          expectedStatus: 200
+        status: pending
+
+      - id: "1.3"
+        description: "Support filtering by epic and status"
+        service: backend
+        files:
+          - packages/api/src/services/stories.ts
+        verification:
+          type: api
+          url: "http://localhost:3000/api/stories?epic=3&status=in-progress"
+          expectedStatus: 200
+        status: pending
+
+  - id: phase-2
+    name: Frontend Hook & Service
+    description: Create hooks to consume stories API
+    subtasks:
+      - id: "2.1"
+        description: "Create storiesService in frontend"
+        service: frontend
+        files:
+          - packages/dashboard/src/services/api/stories.ts
+        verification:
+          type: command
+          command: "npm run typecheck"
+        status: pending
+
+      - id: "2.2"
+        description: "Create useStories hook"
+        service: frontend
+        files:
+          - packages/dashboard/src/hooks/useStories.ts
+        verification:
+          type: command
+          command: "npm run typecheck"
+        status: pending
+
+  - id: phase-3
+    name: Component Integration
+    description: Connect StoryWorkspace to real data
+    subtasks:
+      - id: "3.1"
+        description: "Remove FALLBACK_STORIES from StoryWorkspace"
+        service: frontend
+        files:
+          - packages/dashboard/src/components/stories/StoryWorkspace.tsx
+        verification:
+          type: manual
+          instructions: "Verify no hardcoded fallback data remains"
+        status: pending
+
+      - id: "3.2"
+        description: "Wire useStories hook to StoryWorkspace"
+        service: frontend
+        files:
+          - packages/dashboard/src/components/stories/StoryWorkspace.tsx
+        verification:
+          type: browser
+          url: "http://localhost:5175"
+          actions: ["Navigate to Stories", "Verify real stories display", "Verify Kanban board works"]
+        status: pending
+
+      - id: "3.3"
+        description: "Verify SquadsView loads real squad data"
+        service: frontend
+        files:
+          - packages/dashboard/src/components/squads-view/SquadsView.tsx
+        verification:
+          type: browser
+          url: "http://localhost:5175"
+          actions: ["Navigate to Squads", "Verify real squads display"]
+        status: pending
+
+  - id: phase-4
+    name: Testing & Validation
+    description: Verify real data integration
+    subtasks:
+      - id: "4.1"
+        description: "Test /api/stories endpoint with curl"
+        service: backend
+        verification:
+          type: command
+          command: "curl http://localhost:3000/api/stories?limit=20"
+        status: pending
+
+      - id: "4.2"
+        description: "Unit tests for useStories hook"
+        service: frontend
+        files:
+          - packages/dashboard/src/hooks/useStories.test.ts
+        verification:
+          type: command
+          command: "npm run test"
+        status: pending
+
+      - id: "4.3"
+        description: "Lint & type check pass"
+        service: frontend
+        verification:
+          type: command
+          command: "npm run lint && npm run typecheck"
+        status: pending
+
+      - id: "4.4"
+        description: "E2E: Real stories display in Kanban"
+        service: frontend
+        verification:
+          type: browser
+          url: "http://localhost:5175"
+          actions: ["Verify stories grouped by status", "Verify no mock data", "Verify story counts"]
+        status: pending

@@ -1,0 +1,143 @@
+storyId: "3.12"
+title: "GitHub Integration"
+createdAt: "2026-03-14T09:50:00Z"
+createdBy: "@pm (Morgan)"
+status: pending
+complexity: STANDARD
+estimatedEffort: "5-8 pts (3-4 hours)"
+
+dependencies:
+  - name: GITHUB_TOKEN
+    location: ".env"
+    purpose: GitHub API authentication
+    status: exists
+
+  - name: Octokit or GitHub CLI
+    version: "^21.x or gh cli"
+    purpose: GitHub API client
+    status: needs-install
+
+phases:
+  - id: phase-1
+    name: GitHub API Client Setup
+    description: Create GitHub service
+    subtasks:
+      - id: "1.1"
+        description: "Create GitHubService with Octokit or gh CLI"
+        service: backend
+        files:
+          - packages/api/src/services/github.ts
+        verification:
+          type: command
+          command: "npm run typecheck"
+        status: pending
+
+      - id: "1.2"
+        description: "Implement getRecentCommits method"
+        service: backend
+        files:
+          - packages/api/src/services/github.ts
+        verification:
+          type: manual
+          instructions: "Test: gh api repos/SynkraAI/aiox-core/commits --jq '.[0:10]'"
+        status: pending
+
+  - id: phase-2
+    name: Backend Endpoints
+    description: Create GitHub data endpoints
+    subtasks:
+      - id: "2.1"
+        description: "Create GET /api/github/commits endpoint"
+        service: backend
+        files:
+          - packages/api/src/index.ts
+        verification:
+          type: api
+          url: "http://localhost:3000/api/github/commits?limit=10"
+          expectedStatus: 200
+        status: pending
+
+      - id: "2.2"
+        description: "Create GET /api/github/prs endpoint"
+        service: backend
+        files:
+          - packages/api/src/index.ts
+        verification:
+          type: api
+          url: "http://localhost:3000/api/github/prs"
+          expectedStatus: 200
+        status: pending
+
+      - id: "2.3"
+        description: "Create GET /api/github/branches endpoint"
+        service: backend
+        files:
+          - packages/api/src/index.ts
+        verification:
+          type: api
+          url: "http://localhost:3000/api/github/branches"
+          expectedStatus: 200
+        status: pending
+
+  - id: phase-3
+    name: Frontend Integration
+    description: Wire GitHubView to real data
+    subtasks:
+      - id: "3.1"
+        description: "Create githubService in frontend"
+        service: frontend
+        files:
+          - packages/dashboard/src/services/api/github.ts
+        verification:
+          type: command
+          command: "npm run typecheck"
+        status: pending
+
+      - id: "3.2"
+        description: "Update GitHubView component to use real API"
+        service: frontend
+        files:
+          - packages/dashboard/src/components/github/GitHubView.tsx
+        verification:
+          type: browser
+          url: "http://localhost:5175"
+          actions: ["Navigate to GitHub view", "Verify commits display", "Verify PRs display", "Verify links work"]
+        status: pending
+
+  - id: phase-4
+    name: Testing & Validation
+    description: Verify GitHub data integration
+    subtasks:
+      - id: "4.1"
+        description: "Test GitHub endpoints with curl"
+        service: backend
+        verification:
+          type: command
+          command: "curl http://localhost:3000/api/github/commits && curl http://localhost:3000/api/github/prs"
+        status: pending
+
+      - id: "4.2"
+        description: "Unit tests for githubService"
+        service: frontend
+        files:
+          - packages/dashboard/src/services/api/github.test.ts
+        verification:
+          type: command
+          command: "npm run test"
+        status: pending
+
+      - id: "4.3"
+        description: "Verify all links open GitHub.com correctly"
+        service: frontend
+        verification:
+          type: manual
+          instructions: "Click commit/PR/branch links, verify they open GitHub in new tab"
+        status: pending
+
+      - id: "4.4"
+        description: "Lint & type check pass"
+        service: frontend
+        verification:
+          type: command
+          command: "npm run lint && npm run typecheck"
+        status: pending

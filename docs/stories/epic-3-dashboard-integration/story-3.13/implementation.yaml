@@ -1,0 +1,204 @@
+storyId: "3.13"
+title: "Engine, Tasks & Workflows Functional"
+createdAt: "2026-03-14T09:50:00Z"
+createdBy: "@pm (Morgan)"
+status: pending
+complexity: COMPLEX
+estimatedEffort: "13-21 pts (6-8 hours)"
+note: "RECOMMENDED: Split into 3.13a + 3.13b for better velocity"
+
+dependencies:
+  - name: React Query
+    version: "^5.x"
+    purpose: State management
+    status: exists
+
+  - name: Engine system
+    location: "packages/api/src/engine/"
+    purpose: Task & workflow execution
+    status: exists
+
+phases:
+  - id: phase-1
+    name: Engine Status Endpoint
+    description: Create /api/engine/status
+    subtasks:
+      - id: "1.1"
+        description: "Create EngineService to read worker pool status"
+        service: backend
+        files:
+          - packages/api/src/services/engine.ts
+        verification:
+          type: command
+          command: "npm run typecheck"
+        status: pending
+
+      - id: "1.2"
+        description: "Create GET /api/engine/status endpoint"
+        service: backend
+        files:
+          - packages/api/src/index.ts
+        verification:
+          type: api
+          url: "http://localhost:3000/api/engine/status"
+          expectedStatus: 200
+        status: pending
+
+  - id: phase-2
+    name: Tasks Endpoint
+    description: Create /api/tasks/list
+    subtasks:
+      - id: "2.1"
+        description: "Create TasksService to query active tasks"
+        service: backend
+        files:
+          - packages/api/src/services/tasks.ts
+        verification:
+          type: command
+          command: "npm run typecheck"
+        status: pending
+
+      - id: "2.2"
+        description: "Create GET /api/tasks/list endpoint"
+        service: backend
+        files:
+          - packages/api/src/index.ts
+        verification:
+          type: api
+          url: "http://localhost:3000/api/tasks/list"
+          expectedStatus: 200
+        status: pending
+
+  - id: phase-3
+    name: Workflows Endpoint
+    description: Create /api/workflows/list
+    subtasks:
+      - id: "3.1"
+        description: "Create WorkflowsService to query running workflows"
+        service: backend
+        files:
+          - packages/api/src/services/workflows.ts
+        verification:
+          type: command
+          command: "npm run typecheck"
+        status: pending
+
+      - id: "3.2"
+        description: "Create GET /api/workflows/list endpoint"
+        service: backend
+        files:
+          - packages/api/src/index.ts
+        verification:
+          type: api
+          url: "http://localhost:3000/api/workflows/list"
+          expectedStatus: 200
+        status: pending
+
+  - id: phase-4
+    name: Frontend Hooks
+    description: Create useEngine, useTask, useWorkflows
+    subtasks:
+      - id: "4.1"
+        description: "Create useEngineStatus hook"
+        service: frontend
+        files:
+          - packages/dashboard/src/hooks/useEngineStatus.ts
+        verification:
+          type: command
+          command: "npm run typecheck"
+        status: pending
+
+      - id: "4.2"
+        description: "Create useActiveTasks hook"
+        service: frontend
+        files:
+          - packages/dashboard/src/hooks/useActiveTasks.ts
+        verification:
+          type: command
+          command: "npm run typecheck"
+        status: pending
+
+      - id: "4.3"
+        description: "Create useActiveWorkflows hook"
+        service: frontend
+        files:
+          - packages/dashboard/src/hooks/useActiveWorkflows.ts
+        verification:
+          type: command
+          command: "npm run typecheck"
+        status: pending
+
+  - id: phase-5
+    name: Dashboard Components
+    description: Wire Engine, Tasks, Workflows cards
+    subtasks:
+      - id: "5.1"
+        description: "Wire EngineStatusCard to real data"
+        service: frontend
+        files:
+          - packages/dashboard/src/components/engine/EngineStatusCard.tsx
+        verification:
+          type: browser
+          url: "http://localhost:5175"
+          actions: ["Navigate to Dashboard", "Verify engine status displays"]
+        status: pending
+
+      - id: "5.2"
+        description: "Wire TasksCard to real data"
+        service: frontend
+        files:
+          - packages/dashboard/src/components/orchestration/TasksCard.tsx
+        verification:
+          type: browser
+          url: "http://localhost:5175"
+          actions: ["Verify active tasks display", "Verify stats show"]
+        status: pending
+
+      - id: "5.3"
+        description: "Wire WorkflowsCard to real data"
+        service: frontend
+        files:
+          - packages/dashboard/src/components/workflow/WorkflowsCard.tsx
+        verification:
+          type: browser
+          url: "http://localhost:5175"
+          actions: ["Verify workflows display", "Verify progress bars work"]
+        status: pending
+
+  - id: phase-6
+    name: Testing & Validation
+    description: Verify all endpoints and integrations
+    subtasks:
+      - id: "6.1"
+        description: "Test all 3 endpoints with curl"
+        service: backend
+        verification:
+          type: command
+          command: "curl http://localhost:3000/api/engine/status && curl http://localhost:3000/api/tasks/list && curl http://localhost:3000/api/workflows/list"
+        status: pending
+
+      - id: "6.2"
+        description: "Unit tests for all hooks"
+        service: frontend
+        files:
+          - packages/dashboard/src/hooks/useEngineStatus.test.ts
+        verification:
+          type: command
+          command: "npm run test"
+        status: pending
+
+      - id: "6.3"
+        description: "Lint & type check pass"
+        verification:
+          type: command
+          command: "npm run lint && npm run typecheck"
+        status: pending
+
+      - id: "6.4"
+        description: "E2E: Real engine/tasks/workflows display"
+        service: frontend
+        verification:
+          type: browser
+          url: "http://localhost:5175"
+          actions: ["Verify all 3 cards display real data", "Verify auto-refresh works", "Verify stats update"]
+        status: pending

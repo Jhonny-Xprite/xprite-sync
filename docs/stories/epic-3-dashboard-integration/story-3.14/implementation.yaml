@@ -1,0 +1,153 @@
+storyId: "3.14"
+title: "Hand-offs Monitoring"
+createdAt: "2026-03-14T09:50:00Z"
+createdBy: "@pm (Morgan)"
+status: pending
+complexity: SIMPLE
+estimatedEffort: "5-8 pts (3-4 hours)"
+
+dependencies:
+  - name: ".aiox/handoffs/ directory"
+    location: ".aiox/handoffs/"
+    purpose: Hand-off YAML files
+    status: exists
+
+  - name: js-yaml
+    version: "^4.x"
+    purpose: YAML parsing
+    status: needs-install
+
+phases:
+  - id: phase-1
+    name: Backend Service
+    description: Create hand-off reader service
+    subtasks:
+      - id: "1.1"
+        description: "Create HandoffsService to read .aiox/handoffs/ directory"
+        service: backend
+        files:
+          - packages/api/src/services/handoffs.ts
+        verification:
+          type: command
+          command: "npm run typecheck"
+        status: pending
+
+      - id: "1.2"
+        description: "Parse YAML handoff files"
+        service: backend
+        files:
+          - packages/api/src/services/handoffs.ts
+        verification:
+          type: manual
+          instructions: "Verify YAML parsing works for sample handoff file"
+        status: pending
+
+  - id: phase-2
+    name: Backend Endpoints
+    description: Create /api/handoffs endpoints
+    subtasks:
+      - id: "2.1"
+        description: "Create GET /api/handoffs/history endpoint"
+        service: backend
+        files:
+          - packages/api/src/index.ts
+        verification:
+          type: api
+          url: "http://localhost:3000/api/handoffs/history?limit=20"
+          expectedStatus: 200
+        status: pending
+
+      - id: "2.2"
+        description: "Create GET /api/handoffs/:id endpoint"
+        service: backend
+        files:
+          - packages/api/src/index.ts
+        verification:
+          type: api
+          url: "http://localhost:3000/api/handoffs/handoff-sm-to-pm-20260313_235900"
+          expectedStatus: 200
+        status: pending
+
+  - id: phase-3
+    name: Frontend Integration
+    description: Wire HandoffMonitor component
+    subtasks:
+      - id: "3.1"
+        description: "Create handdoffsService in frontend"
+        service: frontend
+        files:
+          - packages/dashboard/src/services/api/handoffs.ts
+        verification:
+          type: command
+          command: "npm run typecheck"
+        status: pending
+
+      - id: "3.2"
+        description: "Create useHandoffs hook"
+        service: frontend
+        files:
+          - packages/dashboard/src/hooks/useHandoffs.ts
+        verification:
+          type: command
+          command: "npm run typecheck"
+        status: pending
+
+      - id: "3.3"
+        description: "Create HandoffMonitor component with timeline"
+        service: frontend
+        files:
+          - packages/dashboard/src/components/handoffs/HandoffMonitor.tsx
+        verification:
+          type: browser
+          url: "http://localhost:5175"
+          actions: ["Navigate to Dashboard", "Verify hand-off timeline displays"]
+        status: pending
+
+      - id: "3.4"
+        description: "Wire HandoffMonitor to real data"
+        service: frontend
+        files:
+          - packages/dashboard/src/components/dashboard/DashboardOverview.tsx
+        verification:
+          type: browser
+          url: "http://localhost:5175"
+          actions: ["Verify hand-offs displayed", "Verify agent names correct", "Verify timestamps display"]
+        status: pending
+
+  - id: phase-4
+    name: Testing & Validation
+    description: Verify hand-off data integration
+    subtasks:
+      - id: "4.1"
+        description: "Test /api/handoffs endpoints with curl"
+        service: backend
+        verification:
+          type: command
+          command: "curl http://localhost:3000/api/handoffs/history"
+        status: pending
+
+      - id: "4.2"
+        description: "Unit tests for useHandoffs hook"
+        service: frontend
+        files:
+          - packages/dashboard/src/hooks/useHandoffs.test.ts
+        verification:
+          type: command
+          command: "npm run test"
+        status: pending
+
+      - id: "4.3"
+        description: "Lint & type check pass"
+        verification:
+          type: command
+          command: "npm run lint && npm run typecheck"
+        status: pending
+
+      - id: "4.4"
+        description: "E2E: Hand-offs timeline displays real data"
+        service: frontend
+        verification:
+          type: browser
+          url: "http://localhost:5175"
+          actions: ["Verify hand-off timeline displays", "Verify agent names correct", "Verify timestamps accurate"]
+        status: pending

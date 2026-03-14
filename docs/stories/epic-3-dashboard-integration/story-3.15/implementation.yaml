@@ -1,0 +1,205 @@
+storyId: "3.15"
+title: "Agent Memory Visualization"
+createdAt: "2026-03-14T09:50:00Z"
+createdBy: "@pm (Morgan)"
+status: pending
+complexity: STANDARD
+estimatedEffort: "8-13 pts (4-6 hours)"
+
+dependencies:
+  - name: "~/.claude/projects/*/memory/ directory"
+    location: "~/.claude/projects/AIOX-CORE/memory/"
+    purpose: Agent memory files
+    status: exists
+
+  - name: js-yaml
+    version: "^4.x"
+    purpose: YAML frontmatter parsing
+    status: needs-install
+
+  - name: react-markdown
+    version: "^8.x"
+    purpose: Markdown viewer
+    status: likely-exists
+
+phases:
+  - id: phase-1
+    name: Backend Service
+    description: Create memory file reader
+    subtasks:
+      - id: "1.1"
+        description: "Create MemoryService to read agent memory files"
+        service: backend
+        files:
+          - packages/api/src/services/memory.ts
+        verification:
+          type: command
+          command: "npm run typecheck"
+        status: pending
+
+      - id: "1.2"
+        description: "Implement memory file parsing (YAML frontmatter + content)"
+        service: backend
+        files:
+          - packages/api/src/services/memory.ts
+        verification:
+          type: manual
+          instructions: "Verify memory files parse correctly with metadata"
+        status: pending
+
+      - id: "1.3"
+        description: "Implement memory search functionality"
+        service: backend
+        files:
+          - packages/api/src/services/memory.ts
+        verification:
+          type: manual
+          instructions: "Test searching memory files for keywords"
+        status: pending
+
+  - id: phase-2
+    name: Backend Endpoints
+    description: Create /api/memory endpoints
+    subtasks:
+      - id: "2.1"
+        description: "Create GET /api/memory/list endpoint"
+        service: backend
+        files:
+          - packages/api/src/index.ts
+        verification:
+          type: api
+          url: "http://localhost:3000/api/memory/list"
+          expectedStatus: 200
+        status: pending
+
+      - id: "2.2"
+        description: "Create GET /api/memory/:filename endpoint"
+        service: backend
+        files:
+          - packages/api/src/index.ts
+        verification:
+          type: api
+          url: "http://localhost:3000/api/memory/user_profile.md"
+          expectedStatus: 200
+        status: pending
+
+      - id: "2.3"
+        description: "Create GET /api/memory/search endpoint"
+        service: backend
+        files:
+          - packages/api/src/index.ts
+        verification:
+          type: api
+          url: "http://localhost:3000/api/memory/search?query=developer"
+          expectedStatus: 200
+        status: pending
+
+  - id: phase-3
+    name: Frontend Integration
+    description: Create memory browser components
+    subtasks:
+      - id: "3.1"
+        description: "Create memoryService in frontend"
+        service: frontend
+        files:
+          - packages/dashboard/src/services/api/memory.ts
+        verification:
+          type: command
+          command: "npm run typecheck"
+        status: pending
+
+      - id: "3.2"
+        description: "Create useMemory hooks"
+        service: frontend
+        files:
+          - packages/dashboard/src/hooks/useMemory.ts
+        verification:
+          type: command
+          command: "npm run typecheck"
+        status: pending
+
+      - id: "3.3"
+        description: "Create MemoryBrowser component (tree view)"
+        service: frontend
+        files:
+          - packages/dashboard/src/components/memory/MemoryBrowser.tsx
+        verification:
+          type: browser
+          url: "http://localhost:5175"
+          actions: ["Navigate to Memory Browser", "Verify file tree displays"]
+        status: pending
+
+      - id: "3.4"
+        description: "Create MemoryViewer component (modal/viewer)"
+        service: frontend
+        files:
+          - packages/dashboard/src/components/memory/MemoryViewer.tsx
+        verification:
+          type: browser
+          url: "http://localhost:5175"
+          actions: ["Click memory file", "Verify content displays", "Verify markdown renders"]
+        status: pending
+
+      - id: "3.5"
+        description: "Create MemorySearch component"
+        service: frontend
+        files:
+          - packages/dashboard/src/components/memory/MemorySearch.tsx
+        verification:
+          type: browser
+          url: "http://localhost:5175"
+          actions: ["Search for keyword", "Verify results display", "Verify highlighting works"]
+        status: pending
+
+  - id: phase-4
+    name: Dashboard Integration
+    description: Wire MemoryBrowser to dashboard
+    subtasks:
+      - id: "4.1"
+        description: "Add MemoryBrowser to dashboard overview"
+        service: frontend
+        files:
+          - packages/dashboard/src/components/dashboard/DashboardOverview.tsx
+        verification:
+          type: browser
+          url: "http://localhost:5175"
+          actions: ["Verify Memory Browser displays", "Verify can browse files", "Verify can search"]
+        status: pending
+
+  - id: phase-5
+    name: Testing & Validation
+    description: Verify memory integration
+    subtasks:
+      - id: "5.1"
+        description: "Test /api/memory endpoints with curl"
+        service: backend
+        verification:
+          type: command
+          command: "curl http://localhost:3000/api/memory/list && curl http://localhost:3000/api/memory/user_profile.md"
+        status: pending
+
+      - id: "5.2"
+        description: "Unit tests for useMemory hooks"
+        service: frontend
+        files:
+          - packages/dashboard/src/hooks/useMemory.test.ts
+        verification:
+          type: command
+          command: "npm run test"
+        status: pending
+
+      - id: "5.3"
+        description: "Lint & type check pass"
+        verification:
+          type: command
+          command: "npm run lint && npm run typecheck"
+        status: pending
+
+      - id: "5.4"
+        description: "E2E: Memory browser functional"
+        service: frontend
+        verification:
+          type: browser
+          url: "http://localhost:5175"
+          actions: ["Browse memory files", "Search for keywords", "View file content", "Verify markdown renders"]
+        status: pending

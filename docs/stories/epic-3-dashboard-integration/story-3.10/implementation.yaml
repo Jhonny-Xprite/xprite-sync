@@ -1,0 +1,143 @@
+storyId: "3.10"
+title: "Agent Metrics Real-Time"
+createdAt: "2026-03-14T09:50:00Z"
+createdBy: "@pm (Morgan)"
+status: pending
+complexity: SIMPLE
+estimatedEffort: "5-8 pts (2-4 hours)"
+
+dependencies:
+  - name: metricsService
+    location: "packages/dashboard/src/services/api/metrics.ts"
+    purpose: Handle polling and API calls
+    status: exists
+
+  - name: React Query
+    version: "^5.x"
+    purpose: State management and caching
+    status: exists
+
+phases:
+  - id: phase-1
+    name: Frontend Hook Implementation
+    description: Create useRealAgentMetrics hook
+    subtasks:
+      - id: "1.1"
+        description: "Create useRealAgentMetrics hook with refetchInterval"
+        service: frontend
+        files:
+          - packages/dashboard/src/hooks/useRealAgentMetrics.ts
+        verification:
+          type: command
+          command: "npm run typecheck"
+        status: pending
+
+      - id: "1.2"
+        description: "Wire hook to metricsService.getAgentMetrics()"
+        service: frontend
+        files:
+          - packages/dashboard/src/services/api/metrics.ts
+        verification:
+          type: api
+          url: "http://localhost:3000/api/metrics"
+          expectedStatus: 200
+        status: pending
+
+  - id: phase-2
+    name: Component Integration
+    description: Connect AgentsMonitor to real data
+    subtasks:
+      - id: "2.1"
+        description: "Update AgentsMonitor to use useRealAgentMetrics hook"
+        service: frontend
+        files:
+          - packages/dashboard/src/components/agents-monitor/AgentsMonitor.tsx
+        verification:
+          type: browser
+          url: "http://localhost:5175"
+          actions: ["Navigate to Agents", "Verify real data displays", "Check auto-refresh every 5s"]
+        status: pending
+
+      - id: "2.2"
+        description: "Add 'Last updated X seconds ago' timestamp"
+        service: frontend
+        files:
+          - packages/dashboard/src/components/agents-monitor/AgentsMonitor.tsx
+        verification:
+          type: manual
+          instructions: "Verify timestamp updates every second"
+        status: pending
+
+      - id: "2.3"
+        description: "Add 'Live Data' badge indicator"
+        service: frontend
+        files:
+          - packages/dashboard/src/components/agents-monitor/AgentsMonitor.tsx
+        verification:
+          type: browser
+          url: "http://localhost:5175"
+          actions: ["Verify 'Live Data' badge displays"]
+        status: pending
+
+  - id: phase-3
+    name: Error Handling & UX
+    description: Graceful fallbacks and loading states
+    subtasks:
+      - id: "3.1"
+        description: "Add loading skeleton while fetching data"
+        service: frontend
+        files:
+          - packages/dashboard/src/components/agents-monitor/AgentsSkeleton.tsx
+        verification:
+          type: manual
+          instructions: "Toggle network off/on, verify skeleton displays during fetch"
+        status: pending
+
+      - id: "3.2"
+        description: "Add error toast if API fails"
+        service: frontend
+        files:
+          - packages/dashboard/src/components/agents-monitor/AgentsMonitor.tsx
+        verification:
+          type: manual
+          instructions: "Stop API server, verify error toast displays"
+        status: pending
+
+  - id: phase-4
+    name: Testing & Validation
+    description: Ensure data is real and updates properly
+    subtasks:
+      - id: "4.1"
+        description: "Test with curl to verify API returns real Supabase data"
+        service: backend
+        verification:
+          type: command
+          command: "curl http://localhost:3000/api/metrics?limit=10"
+        status: pending
+
+      - id: "4.2"
+        description: "Unit tests for useRealAgentMetrics hook"
+        service: frontend
+        files:
+          - packages/dashboard/src/hooks/useRealAgentMetrics.test.ts
+        verification:
+          type: command
+          command: "npm run test"
+        status: pending
+
+      - id: "4.3"
+        description: "Lint & type check pass"
+        service: frontend
+        verification:
+          type: command
+          command: "npm run lint && npm run typecheck"
+        status: pending
+
+      - id: "4.4"
+        description: "E2E test: Real data displays on dashboard"
+        service: frontend
+        verification:
+          type: browser
+          url: "http://localhost:5175"
+          actions: ["Verify agents show real metrics", "Verify data from Supabase", "Verify no mock data"]
+        status: pending
