@@ -11,6 +11,8 @@ import { githubService } from './services/github';
 import { engineService } from './services/engine';
 import { tasksService } from './services/tasks';
 import { workflowsService } from './services/workflows';
+import { handoffsService } from './services/handoffs';
+import { memoryService } from './services/memory';
 
 const logger = createLogger('API');
 const app = express();
@@ -416,6 +418,88 @@ app.get('/api/workflows/list', async (req: Request, res: Response) => {
     logger.error('Failed to fetch workflows', error);
     res.status(500).json({
       error: 'Failed to fetch workflows',
+      message: (error as Error).message,
+    });
+  }
+});
+
+// ============================================================
+// Hand-offs Listing Endpoint — Agent collaboration history
+// ============================================================
+app.get('/api/handoffs/list', async (req: Request, res: Response) => {
+  try {
+    const limit = parseInt((req.query.limit as string) || '20');
+    const response = await handoffsService.listHandoffs(limit);
+
+    res.status(200).json(response);
+  } catch (error) {
+    logger.error('Failed to fetch handoffs', error);
+    res.status(500).json({
+      error: 'Failed to fetch handoffs',
+      message: (error as Error).message,
+    });
+  }
+});
+
+// ============================================================
+// Hand-offs Statistics Endpoint
+// ============================================================
+app.get('/api/handoffs/stats', async (req: Request, res: Response) => {
+  try {
+    const stats = await handoffsService.getHandoffStats();
+
+    res.status(200).json(stats);
+  } catch (error) {
+    logger.error('Failed to fetch handoff stats', error);
+    res.status(500).json({
+      error: 'Failed to fetch handoff stats',
+      message: (error as Error).message,
+    });
+  }
+});
+
+// ============================================================
+// Memory Browser Endpoint — Agent memory listing
+// ============================================================
+app.get('/api/memory/list', async (req: Request, res: Response) => {
+  try {
+    const limit = parseInt((req.query.limit as string) || '50');
+    const response = await memoryService.listMemories(limit);
+
+    res.status(200).json(response);
+  } catch (error) {
+    logger.error('Failed to fetch memories', error);
+    res.status(500).json({
+      error: 'Failed to fetch memories',
+      message: (error as Error).message,
+    });
+  }
+});
+
+// ============================================================
+// Memory Search Endpoint
+// ============================================================
+app.get('/api/memory/search', async (req: Request, res: Response) => {
+  try {
+    const keyword = (req.query.q as string) || '';
+    const limit = parseInt((req.query.limit as string) || '20');
+
+    if (!keyword) {
+      return res.status(400).json({ error: 'Search keyword required' });
+    }
+
+    const results = await memoryService.searchMemories(keyword, limit);
+
+    res.status(200).json({
+      data: results,
+      total: results.length,
+      limit,
+      query: keyword,
+    });
+  } catch (error) {
+    logger.error('Failed to search memories', error);
+    res.status(500).json({
+      error: 'Failed to search memories',
       message: (error as Error).message,
     });
   }
