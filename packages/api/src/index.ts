@@ -6,6 +6,8 @@ import { getCacheService } from './services/cache';
 import { createLogger } from './utils/logger';
 import { supabaseService } from './services/supabase';
 import { systemMetricsCollector } from './services/system-metrics';
+import { storiesService } from './services/stories';
+import { githubService } from './services/github';
 
 const logger = createLogger('API');
 const app = express();
@@ -277,6 +279,79 @@ app.post('/api/system-metrics/insert', async (req: Request, res: Response) => {
     logger.error('Failed to insert system metric', error);
     res.status(500).json({
       error: 'Failed to insert system metric',
+      message: (error as Error).message,
+    });
+  }
+});
+
+// ============================================================
+// Stories Endpoint — Real stories from docs/stories/
+// ============================================================
+app.get('/api/stories', async (req: Request, res: Response) => {
+  try {
+    const epic = (req.query.epic as string) || undefined;
+    const status = (req.query.status as string) || undefined;
+    const limit = parseInt((req.query.limit as string) || '50');
+
+    const response = await storiesService.getStories(epic, status, limit);
+
+    res.status(200).json(response);
+  } catch (error) {
+    logger.error('Failed to fetch stories', error);
+    res.status(500).json({
+      error: 'Failed to fetch stories',
+      message: (error as Error).message,
+    });
+  }
+});
+
+// ============================================================
+// GitHub Endpoints — Real data from GitHub
+// ============================================================
+app.get('/api/github/commits', async (req: Request, res: Response) => {
+  try {
+    const limit = parseInt((req.query.limit as string) || '10');
+    const response = await githubService.getRecentCommits(limit);
+
+    res.status(200).json(response);
+  } catch (error) {
+    logger.error('Failed to fetch commits', error);
+    res.status(500).json({
+      error: 'Failed to fetch commits',
+      message: (error as Error).message,
+    });
+  }
+});
+
+app.get('/api/github/prs', async (req: Request, res: Response) => {
+  try {
+    const status = (req.query.status as string) || 'all';
+    const limit = parseInt((req.query.limit as string) || '20');
+    const response = await githubService.getPullRequests(
+      status as 'open' | 'all',
+      limit
+    );
+
+    res.status(200).json(response);
+  } catch (error) {
+    logger.error('Failed to fetch pull requests', error);
+    res.status(500).json({
+      error: 'Failed to fetch pull requests',
+      message: (error as Error).message,
+    });
+  }
+});
+
+app.get('/api/github/branches', async (req: Request, res: Response) => {
+  try {
+    const limit = parseInt((req.query.limit as string) || '20');
+    const response = await githubService.getBranches(limit);
+
+    res.status(200).json(response);
+  } catch (error) {
+    logger.error('Failed to fetch branches', error);
+    res.status(500).json({
+      error: 'Failed to fetch branches',
       message: (error as Error).message,
     });
   }
