@@ -38,7 +38,7 @@ class SquadsService {
       logger.debug(`Fetching squads from ${this.squadsPath}`);
 
       // Try to read squads directory
-      let squads: Squad[] = [];
+      const squads: Squad[] = [];
 
       try {
         const entries = fs.readdirSync(this.squadsPath, { withFileTypes: true });

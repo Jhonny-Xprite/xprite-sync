@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import { glob } from 'glob';
 
 export interface Story {
   id: string;
@@ -111,7 +110,7 @@ class StoriesService {
       const priorityText = priorityMatch ? priorityMatch[1].toLowerCase() : 'medium';
 
       // Extract story points
-      const pointsMatch = content.match(/\*\*Story Points:\*\*\s*([\d\-]+)/);
+      const pointsMatch = content.match(/\*\*Story Points:\*\*\s*([\d-]+)/);
       const effort = pointsMatch ? pointsMatch[1] : '5-8';
 
       // Extract owner/assigned executor

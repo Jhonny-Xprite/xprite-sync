@@ -60,8 +60,8 @@ class MCPToolsService {
               status: mcp.enabled !== false ? 'enabled' : 'disabled',
             }));
           }
-        } catch (error) {
-          logger.warn('Failed to parse MCP registry', error);
+        } catch (_error) {
+          logger.warn('Failed to parse MCP registry', _error);
         }
       }
 
@@ -82,8 +82,8 @@ class MCPToolsService {
 
       logger.debug(`MCP tools retrieved: ${displayTools.length} items`);
       return response;
-    } catch (error) {
-      logger.error('Failed to fetch MCP tools', error);
+    } catch (_error) {
+      logger.error('Failed to fetch MCP tools', _error);
       return {
         data: [],
         total: 0,

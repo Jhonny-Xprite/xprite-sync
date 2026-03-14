@@ -56,7 +56,7 @@ class WorkflowsService {
           fileList.push(filePath);
         }
       }
-    } catch (error) {
+    } catch {
       logger.debug(`Could not read workflows directory: ${dir}`);
     }
 
@@ -105,7 +105,7 @@ class WorkflowsService {
 
       // Try to load real workflows from files
       const workflowFiles = this.findWorkflowFiles(this.workflowsPath);
-      let allWorkflows: Workflow[] = [];
+      const allWorkflows: Workflow[] = [];
 
       for (const filePath of workflowFiles) {
         const workflow = this.parseWorkflowFile(filePath);

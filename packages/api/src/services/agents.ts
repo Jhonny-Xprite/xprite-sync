@@ -38,7 +38,7 @@ class AgentsService {
       logger.debug(`Fetching agents from ${this.agentsPath}`);
 
       const files = fs.readdirSync(this.agentsPath).filter(f => f.endsWith('.md'));
-      let agents: Agent[] = [];
+      const agents: Agent[] = [];
 
       for (const file of files) {
         try {
@@ -59,7 +59,7 @@ class AgentsService {
               if (parsed) {
                 metadata = { ...metadata, ...parsed };
               }
-            } catch (e) {
+            } catch {
               logger.debug(`YAML parse error in ${file}`);
             }
           }

@@ -55,7 +55,7 @@ class TasksService {
           fileList.push(filePath);
         }
       }
-    } catch (error) {
+    } catch {
       logger.debug(`Could not read tasks directory: ${dir}`);
     }
 
@@ -84,7 +84,7 @@ class TasksService {
           if (parsed) {
             metadata = { ...metadata, ...parsed };
           }
-        } catch (e) {
+        } catch {
           logger.debug(`YAML parse error in ${filePath}`);
         }
       }
