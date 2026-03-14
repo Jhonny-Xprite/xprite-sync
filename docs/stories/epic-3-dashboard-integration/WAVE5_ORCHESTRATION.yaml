@@ -1,0 +1,516 @@
+---
+name: Epic 3 Wave 5 Orchestration
+id: epic-3-wave5-orchestration
+version: '1.0.0'
+created_at: '2026-03-14T10:00:00Z'
+created_by: '@aiox-master (Orion)'
+
+# ============================================================================
+# EPIC 3 WAVE 5: REAL DATA DASHBOARD INTEGRATION
+# ============================================================================
+# Purpose: Transform Dashboard from mock data to 100% real observability
+# Outcome: Dashboard shows agents, squads, stories, GitHub, engine, tasks,
+#          workflows, hand-offs, and memories — all LIVE from real sources
+# Timeline: 4 weeks (3.10 → 3.11+3.12 → 3.13 → 3.14+3.15)
+# ============================================================================
+
+metadata:
+  epic_id: '3'
+  epic_name: 'Dashboard Integration'
+  wave_number: 5
+  wave_theme: 'Real Data Integration'
+  stories_count: 6
+  total_points: '49-81'
+  expected_duration_weeks: 4
+  validation_status: ✅ ALL VALIDATED
+  constitution_status: ✅ FULLY COMPLIANT
+
+# ============================================================================
+# PHASE BREAKDOWN
+# ============================================================================
+
+phases:
+  # ========================================================================
+  # PHASE 1: FOUNDATION (1 week)
+  # ========================================================================
+  phase_1:
+    name: Foundation - Agent Metrics
+    duration_weeks: 1
+    start_after: Immediately
+    stories:
+      - id: '3.10'
+        title: Agent Metrics Real-Time
+        points: '5-8'
+        effort: ⭐ EASIEST
+        executor: '@dev'
+        dependencies: []
+        blockers: []
+        status: Ready to start
+        key_work: |
+          - Wire metricsService to AgentsMonitor component
+          - Connect to real /api/metrics endpoint
+          - Implement useRealAgentMetrics hook
+          - Add auto-refresh (5 seconds)
+          - Add "Live" badge and timestamp
+        unblocks:
+          - Phase 2 (3.11 & 3.12)
+        qa_criteria:
+          - Dashboard shows 5+ agents from Supabase
+          - Each agent shows real latency, success_rate, CPU%, memory%
+          - Data updates every 5 seconds
+          - "Live" badge visible
+          - "Last updated X seconds ago" displayed
+
+  # ========================================================================
+  # PHASE 2: DATA LAYER (1 week) — PARALLEL WORK
+  # ========================================================================
+  phase_2:
+    name: Data Layer - Stories/Squads + GitHub
+    duration_weeks: 1
+    start_after: Phase 1 (after 3.10 complete)
+    stories:
+      # Story 3.11 =====================================================
+      - id: '3.11'
+        title: Stories & Squads Real Reading
+        points: '8-13'
+        effort: 🔥 MEDIUM
+        executor: '@dev'
+        dependencies:
+          - Story 3.10 (for real data pattern)
+        blockers:
+          - Needs /api/stories endpoint
+        status: Ready to start
+        parallel_with: Story 3.12
+        key_work: |
+          Backend:
+          - Create StoriesService to read docs/stories/ directory
+          - Create /api/stories endpoint with filtering
+          - Return story metadata (status, priority, progress)
+
+          Frontend:
+          - Create useStories hook
+          - Replace FALLBACK_STORIES with real data
+          - Update StoryWorkspace component
+          - Add story filtering/search
+        unblocks:
+          - Phase 3 (Story 3.13)
+        qa_criteria:
+          - /api/stories returns all 15 stories
+          - StoryWorkspace displays real stories (not mock)
+          - Kanban board shows correct statuses
+          - Search/filter works on real data
+          - SquadsView shows real squads with members
+
+      # Story 3.12 =====================================================
+      - id: '3.12'
+        title: GitHub Integration
+        points: '5-8'
+        effort: 🔥 MEDIUM
+        executor: '@dev'
+        dependencies:
+          - Story 3.10 (for API pattern)
+        blockers: []
+        status: Ready to start
+        parallel_with: Story 3.11
+        key_work: |
+          Backend:
+          - Create GitHubService with Octokit client
+          - Create /api/github/commits endpoint
+          - Create /api/github/prs endpoint
+          - Create /api/github/branches endpoint
+          - Use GITHUB_TOKEN from .env
+
+          Frontend:
+          - Create useGitHubData hook
+          - Create GitHubView component
+          - Display recent commits, PRs, branches
+          - Add links to GitHub.com
+        unblocks: []
+        qa_criteria:
+          - /api/github/commits returns real commits
+          - /api/github/prs returns real PRs
+          - GitHubView displays real data (not mock)
+          - All links navigate to GitHub.com
+          - Auto-refresh every 5 minutes
+
+    parallel_note: |
+      Stories 3.11 and 3.12 are INDEPENDENT and should run in PARALLEL
+      - 3.11: Reads from docs/stories/ (filesystem)
+      - 3.12: Reads from GitHub API (external)
+      - No conflicts, different systems
+      - Can save 1 week by parallelizing
+
+  # ========================================================================
+  # PHASE 3: OBSERVABILITY CORE (1 week)
+  # ========================================================================
+  phase_3:
+    name: Observability Core - Engine/Tasks/Workflows
+    duration_weeks: 1
+    start_after: Phase 2 (after 3.11 complete)
+    stories:
+      - id: '3.13'
+        title: Engine Status, Tasks & Workflows
+        points: '13-21'
+        effort: 🔥🔥 LARGEST STORY
+        executor: '@dev'
+        dependencies:
+          - Story 3.11 (for real data patterns)
+        blockers:
+          - Needs 3 new backend services
+        status: Ready to start
+        can_split: 'RECOMMENDED - Into 3.13a (Engine) + 3.13b (Tasks/Workflows)'
+        key_work: |
+          Backend (Phase A):
+          - Create EngineService to query worker pool status
+          - Create /api/engine/status endpoint
+          - Return active workers, queue size, health metrics
+
+          Backend (Phase B):
+          - Create TasksService to list active tasks
+          - Create /api/tasks/list endpoint
+          - Return task status, progress, executor
+
+          Backend (Phase C):
+          - Create WorkflowsService to list active workflows
+          - Create /api/workflows/list endpoint
+          - Return workflow status, progress, ETA
+
+          Frontend:
+          - Create useEngineStatus, useActiveTasks, useActiveWorkflows hooks
+          - Create Engine, Tasks, Workflows cards in Dashboard
+          - Add auto-refresh (10 seconds)
+          - Color-code health (green/yellow/red)
+        unblocks:
+          - Phase 4 (Stories 3.14 & 3.15)
+        qa_criteria:
+          - /api/engine/status returns worker pool data
+          - /api/tasks/list returns active tasks
+          - /api/workflows/list returns active workflows
+          - Dashboard shows system health indicators
+          - All data is real-time (not mock)
+          - Auto-refresh working (10 seconds)
+
+    split_recommendation: |
+      Story 3.13 is LARGE (13-21 pts). Consider splitting:
+
+      3.13a: Engine Status Only (5-8 pts)
+        - Just /api/engine/status + Dashboard card
+        - Unblocks development
+        - Easier to review
+
+      3.13b: Tasks & Workflows (8-13 pts)
+        - /api/tasks/list + /api/workflows/list
+        - Uses engine patterns from 3.13a
+        - Can start after 3.13a merged
+
+  # ========================================================================
+  # PHASE 4: AGENT COLLABORATION (1 week) — PARALLEL WORK
+  # ========================================================================
+  phase_4:
+    name: Agent Collaboration - Hand-offs + Memories
+    duration_weeks: 1
+    start_after: Phase 3 (after 3.13 complete)
+    stories:
+      # Story 3.14 =====================================================
+      - id: '3.14'
+        title: Hand-offs Monitoring
+        points: '5-8'
+        effort: 🔥 MEDIUM
+        executor: '@dev'
+        dependencies:
+          - Story 3.13 (for similar patterns)
+        blockers: []
+        status: Ready to start
+        parallel_with: Story 3.15
+        key_work: |
+          Backend:
+          - Create HandoffService to read .aiox/handoffs/ directory
+          - Create /api/handoffs/history endpoint
+          - Create /api/handoffs/:id endpoint
+          - Parse YAML handoff files
+
+          Frontend:
+          - Create useHandoffs hook
+          - Create HandoffMonitor component
+          - Create HandoffTimeline visualization
+          - Display agent-to-agent transfers
+        unblocks: []
+        qa_criteria:
+          - /api/handoffs/history returns real handoffs
+          - HandoffMonitor displays timeline correctly
+          - Timestamps show relative time ("5 min ago")
+          - Hand-off details clickable and readable
+
+      # Story 3.15 =====================================================
+      - id: '3.15'
+        title: Agent Memory Visualization
+        points: '8-13'
+        effort: 🔥 MEDIUM
+        executor: '@dev'
+        dependencies:
+          - Story 3.13 (for similar patterns)
+        blockers: []
+        status: Ready to start
+        parallel_with: Story 3.14
+        key_work: |
+          Backend:
+          - Create MemoryService to read agent memory files
+          - Create /api/memory/list endpoint
+          - Create /api/memory/{file} endpoint
+          - Create /api/memory/search endpoint
+          - Read from ~/.claude/projects/*/memory/
+
+          Frontend:
+          - Create useMemory, useMemoryContent, useMemorySearch hooks
+          - Create MemoryBrowser component
+          - Create MemoryTreeView for file structure
+          - Create MemoryViewer for content display
+          - Add search with highlighting
+        unblocks: []
+        qa_criteria:
+          - /api/memory/list returns all agent memory files
+          - /api/memory/{file} returns file content
+          - /api/memory/search returns search results
+          - MemoryBrowser displays file tree correctly
+          - Search highlighting works
+          - Memory content is readable
+
+    parallel_note: |
+      Stories 3.14 and 3.15 are INDEPENDENT and should run in PARALLEL
+      - 3.14: Reads from .aiox/handoffs/ (filesystem)
+      - 3.15: Reads from ~/.claude/projects/*/memory/ (filesystem)
+      - No conflicts, different directories
+      - Can save 1 week by parallelizing
+
+# ============================================================================
+# EXECUTION PLAN
+# ============================================================================
+
+execution_plan:
+  start_date: 'Upon @po approval'
+  timeline: |
+    Week 1: Story 3.10 (Foundation)
+      Mon-Wed: Implement useRealAgentMetrics hook + wire component
+      Thu-Fri: Testing + PR review
+      Fri: Merge to master
+
+    Week 2: Stories 3.11 + 3.12 (PARALLEL)
+      3.11:
+        Mon-Tue: Backend /api/stories endpoint
+        Wed: Frontend integration
+        Thu: Testing
+
+      3.12:
+        Mon: GitHub API client setup
+        Tue-Wed: Endpoints + Frontend
+        Thu: Testing
+
+      Fri: Both merged to master
+
+    Week 3: Story 3.13 (Largest - or 3.13a + 3.13b split)
+      Mon-Tue: Engine service + endpoint
+      Wed: Tasks service + endpoint
+      Thu: Workflows service + endpoint
+      Fri: Frontend integration + PR review
+      (or split into 2 PRs if splitting story)
+
+    Week 4: Stories 3.14 + 3.15 (PARALLEL)
+      3.14:
+        Mon-Tue: Handoff service + endpoint
+        Wed: Frontend component
+        Thu: Testing
+
+      3.15:
+        Mon-Tue: Memory service + endpoints
+        Wed: Frontend components
+        Thu: Testing
+
+      Fri: Both merged to master
+
+  story_starting_order:
+    - Story 3.10 (MUST start first - foundation)
+    - Story 3.11 (can start after 3.10, parallel with 3.12)
+    - Story 3.12 (can start after 3.10, parallel with 3.11)
+    - Story 3.13 (MUST wait for 3.11 complete)
+    - Story 3.14 (can start after 3.13, parallel with 3.15)
+    - Story 3.15 (can start after 3.13, parallel with 3.14)
+
+# ============================================================================
+# DEPENDENCIES MATRIX
+# ============================================================================
+
+dependencies:
+  3.10:
+    blocks: ['3.11', '3.12']
+    blocked_by: []
+    parallel_safe: true
+    critical_path: YES (foundation)
+
+  3.11:
+    blocks: ['3.13']
+    blocked_by: ['3.10']
+    parallel_safe: YES (with 3.12)
+    critical_path: YES
+
+  3.12:
+    blocks: []
+    blocked_by: ['3.10']
+    parallel_safe: YES (with 3.11)
+    critical_path: NO
+
+  3.13:
+    blocks: ['3.14', '3.15']
+    blocked_by: ['3.11']
+    parallel_safe: true
+    critical_path: YES (largest)
+
+  3.14:
+    blocks: []
+    blocked_by: ['3.13']
+    parallel_safe: YES (with 3.15)
+    critical_path: NO
+
+  3.15:
+    blocks: []
+    blocked_by: ['3.13']
+    parallel_safe: YES (with 3.14)
+    critical_path: NO
+
+# ============================================================================
+# QUALITY GATES (Per Story)
+# ============================================================================
+
+quality_gates:
+  pre_development:
+    - ✅ Story drafted with full AC
+    - ✅ Specs approved via SPEC PIPELINE
+    - ✅ @po validation passed
+    - ✅ No Constitution violations
+
+  during_development:
+    - npm run lint (passes)
+    - npm run typecheck (passes)
+    - npm test (all tests pass)
+    - npm run build (successful)
+    - CodeRabbit review (no CRITICAL issues)
+
+  pre_merge:
+    - ✅ PR created by @dev
+    - ✅ Code review passed
+    - ✅ All tests passing
+    - ✅ Story checklist updated with File List
+
+  merge:
+    - ✅ @devops pushes to master
+    - ✅ CI/CD passes
+
+# ============================================================================
+# SUCCESS CRITERIA (Entire Wave 5)
+# ============================================================================
+
+success_criteria:
+  when_complete: |
+    Dashboard Home Page shows (LIVE, REAL DATA):
+
+    ✅ 1. Agents: 5+ agents from Supabase (LIVE)
+    ✅ 2. Squads: Real squads with member counts
+    ✅ 3. Stories: Project stories from docs/stories/ (not mock)
+    ✅ 4. GitHub: Recent commits, PRs, branches (LIVE)
+    ✅ 5. Engine: Worker pool status & queue size
+    ✅ 6. Tasks: Active tasks with progress bars
+    ✅ 7. Workflows: Running workflows with status
+    ✅ 8. Hand-offs: Agent context transfer timeline
+    ✅ 9. Memories: Agent memory file browser & search
+
+    All with "Last updated X seconds ago" and "Live" badges
+    100% real observability — zero mock data
+
+# ============================================================================
+# RISK ASSESSMENT
+# ============================================================================
+
+risks:
+  risk_1:
+    title: Story 3.13 too large
+    probability: MEDIUM
+    mitigation: Split into 3.13a (Engine) + 3.13b (Tasks/Workflows)
+    owner: '@dev'
+
+  risk_2:
+    title: Parallelization delays
+    probability: LOW
+    mitigation: 'Clear communication between @dev branches'
+    owner: '@sm'
+
+  risk_3:
+    title: API endpoint design conflicts
+    probability: LOW
+    mitigation: 'All endpoints follow same pattern (documented in hints)'
+    owner: '@architect'
+
+  risk_4:
+    title: Missing real data sources
+    probability: VERY LOW
+    mitigation: 'All data sources verified: Supabase ✓, GitHub ✓, OS ✓, filesystem ✓'
+    owner: '@architect'
+
+# ============================================================================
+# DECISION POINTS FOR @AIOX-MASTER
+# ============================================================================
+
+decision_points:
+  1:
+    question: 'Should we split Story 3.13 into 2 stories?'
+    options:
+      a: 'Keep as-is (13-21 pts, single story)'
+      b: 'Split into 3.13a (Engine 5-8 pts) + 3.13b (Tasks/Workflows 8-13 pts)'
+    recommendation: Option B (lower risk, easier reviews)
+    impact: Timeline remains 4 weeks, better quality gates
+
+  2:
+    question: 'Should all 6 stories be validated by @po before @dev starts?'
+    options:
+      a: 'Validate all 6 upfront (parallel validation)'
+      b: 'Validate per phase (validation + development overlap)'
+    recommendation: Option A (better upfront quality)
+    impact: 1-2 days validation work, prevents rework
+
+  3:
+    question: 'Should we run this Wave 5 orchestration?'
+    options:
+      a: 'Approve orchestration, start with 3.10'
+      b: 'Request modifications before starting'
+      c: 'Defer Wave 5 to later'
+    recommendation: Option A (all validations passed, ready to go)
+    impact: Dashboard reaches 100% real data in 4 weeks
+
+# ============================================================================
+# NEXT STEPS
+# ============================================================================
+
+next_steps:
+  1: '@aiox-master reviews this orchestration'
+  2: '@aiox-master approves or requests changes'
+  3: '@po validates all 6 stories'
+  4: '@dev starts with Story 3.10'
+  5: 'Weekly check-ins on progress'
+  6: 'Wave 5 complete = Dashboard 100% real observability'
+
+# ============================================================================
+# SIGN-OFF
+# ============================================================================
+
+created_by:
+  agent: '@aiox-master (Orion)'
+  timestamp: '2026-03-14T10:00:00Z'
+  validation_status: ✅ ALL VALIDATIONS PASSED
+
+validation_summary:
+  structure: ✅ VALID (Epic 3 standard pattern)
+  dependencies: ✅ VALID (parallelism identified)
+  effort: ✅ REASONABLE (49-81 pts, 4 weeks)
+  constitution: ✅ COMPLIANT (all 6 articles)
+  readiness: ✅ READY TO EXECUTE
+
+---
+# End of WAVE5_ORCHESTRATION.yaml
