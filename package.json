@@ -37,7 +37,8 @@
     "mcp:deploy": "node .aiox-core/infrastructure/scripts/mcp-deployer.js",
     "mcp:pulse": "node .aiox-core/development/scripts/mcp-pulse-ui.js",
     "mcp:vault": "node .aiox-core/development/scripts/mcp-vault.js",
-    "mcp:keys:apply": "node .aiox-core/development/scripts/mcp-config-injector.js"
+    "mcp:keys:apply": "node .aiox-core/development/scripts/mcp-config-injector.js",
+    "mcp:sync:ide": "node .aiox-core/infrastructure/scripts/mcp-sync-ide.js"
   },
   "dependencies": {
     "@clack/prompts": "^0.11.0",

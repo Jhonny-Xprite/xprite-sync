@@ -32,7 +32,13 @@ export interface HandoffsResponse {
 }
 
 class HandoffsService {
-  private handoffsDir = join(process.cwd(), '.aiox', 'handoffs');
+  private handoffsDir = (() => {
+    const cwd = process.cwd();
+    if (cwd.includes('packages' + require('path').sep + 'api')) {
+      return join(cwd, '..', '..', '.aiox', 'handoffs');
+    }
+    return join(cwd, '.aiox', 'handoffs');
+  })();
 
   /**
    * List recent hand-offs from .aiox/handoffs/ directory

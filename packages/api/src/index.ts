@@ -5,7 +5,7 @@ import { cacheMiddleware } from './middleware/cache';
 import { getCacheService } from './services/cache';
 import { createLogger } from './utils/logger';
 import { supabaseService } from './services/supabase';
-import { systemMetricsCollector } from './services/system-metrics';
+import { systemMetricsCollector, startMetricsPersistence } from './services/system-metrics';
 import { storiesService } from './services/stories';
 import { githubService } from './services/github';
 import { engineService } from './services/engine';
@@ -13,6 +13,10 @@ import { tasksService } from './services/tasks';
 import { workflowsService } from './services/workflows';
 import { handoffsService } from './services/handoffs';
 import { memoryService } from './services/memory';
+import { agentsService } from './services/agents';
+import { squadsService } from './services/squads';
+import { mcpToolsService } from './services/mcp-tools';
+import { analyticsService } from './services/analytics';
 
 const logger = createLogger('API');
 const app = express();
@@ -485,10 +489,99 @@ app.get('/api/memory/search', async (req: Request, res: Response) => {
 });
 
 // ============================================================
+// Agents Endpoints
+// ============================================================
+app.get('/api/agents', async (req: Request, res: Response) => {
+  try {
+    const limit = parseInt(req.query.limit as string) || 50;
+    const response = await agentsService.listAgents(limit);
+
+    res.status(200).json(response);
+  } catch (error) {
+    logger.error('Failed to fetch agents', error);
+    res.status(500).json({
+      error: 'Failed to fetch agents',
+      message: (error as Error).message,
+    });
+  }
+});
+
+// ============================================================
+// Squads Endpoints
+// ============================================================
+app.get('/api/squads', async (req: Request, res: Response) => {
+  try {
+    const limit = parseInt(req.query.limit as string) || 50;
+    const response = await squadsService.listSquads(limit);
+
+    res.status(200).json(response);
+  } catch (error) {
+    logger.error('Failed to fetch squads', error);
+    res.status(500).json({
+      error: 'Failed to fetch squads',
+      message: (error as Error).message,
+    });
+  }
+});
+
+// ============================================================
+// MCP Tools Endpoints
+// ============================================================
+app.get('/api/tools/mcp', async (req: Request, res: Response) => {
+  try {
+    const limit = parseInt(req.query.limit as string) || 50;
+    const response = await mcpToolsService.listTools(limit);
+
+    res.status(200).json(response);
+  } catch (error) {
+    logger.error('Failed to fetch MCP tools', error);
+    res.status(500).json({
+      error: 'Failed to fetch MCP tools',
+      message: (error as Error).message,
+    });
+  }
+});
+
+// ============================================================
+// Analytics Endpoints
+// ============================================================
+app.get('/api/analytics/overview', async (req: Request, res: Response) => {
+  try {
+    const overview = await analyticsService.getOverview();
+
+    res.status(200).json(overview);
+  } catch (error) {
+    logger.error('Failed to fetch analytics overview', error);
+    res.status(500).json({
+      error: 'Failed to fetch analytics overview',
+      message: (error as Error).message,
+    });
+  }
+});
+
+app.get('/api/analytics/performance/agents', async (req: Request, res: Response) => {
+  try {
+    const performance = await analyticsService.getAgentPerformance();
+
+    res.status(200).json({
+      data: performance,
+      total: performance.length,
+    });
+  } catch (error) {
+    logger.error('Failed to fetch agent performance', error);
+    res.status(500).json({
+      error: 'Failed to fetch agent performance',
+      message: (error as Error).message,
+    });
+  }
+});
+
+// ============================================================
 // Start Server
 // ============================================================
 const server = app.listen(PORT, async () => {
   const cache = await getCacheService();
+  startMetricsPersistence(); // Start background metrics persistence
   logger.info(`✅ AIOX Dashboard API listening on http://localhost:${PORT}`);
   logger.info(`📊 Health: http://localhost:${PORT}/api/health`);
   logger.info(`📈 Metrics: http://localhost:${PORT}/api/metrics`);
