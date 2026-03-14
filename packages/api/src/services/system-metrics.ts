@@ -1,5 +1,6 @@
 import os from 'os';
-import fs from 'fs';
+import { supabaseService } from './supabase';
+import { createLogger } from '../utils/logger';
 
 export interface SystemMetrics {
   cpu_percentage: number;
@@ -115,3 +116,50 @@ export class SystemMetricsCollector {
 }
 
 export const systemMetricsCollector = new SystemMetricsCollector();
+
+const logger = createLogger('SystemMetrics');
+
+/**
+ * Start background job to persist metrics to Supabase
+ * This should be called once when the API server starts
+ */
+export function startMetricsPersistence() {
+  const teamId = process.env.TEAM_ID || '00000000-0000-0000-0000-000000000000';
+
+  return setInterval(async () => {
+    try {
+      const metrics = systemMetricsCollector.getMetrics();
+
+      // Persist system metrics to Supabase (real data, all numeric values)
+      const success = await supabaseService.insertSystemMetric({
+        team_id: teamId,
+        cpu_percentage: metrics.cpu_percentage,
+        memory_percentage: metrics.memory_percentage,
+        memory_used_gb: metrics.memory_used_gb,
+        memory_total_gb: metrics.memory_total_gb,
+        disk_used_gb: metrics.disk_used_gb,
+        disk_total_gb: metrics.disk_total_gb,
+        network_in_mbps: 0, // Will be collected from system in future
+        network_out_mbps: 0,
+        db_connections: 0,
+        db_query_time_ms: 0,
+        api_requests_per_sec: 0,
+        api_error_rate: 0,
+        recorded_at: new Date().toISOString(),
+      });
+
+      if (success) {
+        logger.debug(`[Phase 3] Persisted metrics for team ${teamId}:`, {
+          cpu: metrics.cpu_percentage,
+          memory: metrics.memory_percentage,
+          timestamp: new Date().toISOString(),
+        });
+      } else {
+        logger.warn(`[Phase 3] Failed to persist metrics for team ${teamId}`);
+      }
+    } catch (error) {
+      logger.error('[Phase 3] Exception persisting metrics:', error);
+      // Graceful error handling - don't throw
+    }
+  }, 60000); // Every 60 seconds
+}

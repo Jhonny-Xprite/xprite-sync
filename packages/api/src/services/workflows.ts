@@ -1,3 +1,6 @@
+import * as fs from 'fs';
+import * as path from 'path';
+import * as yaml from 'js-yaml';
 import { createLogger } from '../utils/logger';
 
 const logger = createLogger('WorkflowsService');
@@ -28,6 +31,68 @@ export interface WorkflowsResponse {
 }
 
 class WorkflowsService {
+  private workflowsPath = (() => {
+    const cwd = process.cwd();
+    if (cwd.includes('packages' + path.sep + 'api')) {
+      return path.resolve(cwd, '..', '..', '.aiox-core', 'development', 'workflows');
+    }
+    return path.resolve(cwd, '.aiox-core', 'development', 'workflows');
+  })();
+
+  /**
+   * Recursively find all workflow files (.yaml, .yml)
+   */
+  private findWorkflowFiles(dir: string, fileList: string[] = []): string[] {
+    try {
+      const files = fs.readdirSync(dir);
+
+      for (const file of files) {
+        const filePath = path.join(dir, file);
+        const stat = fs.statSync(filePath);
+
+        if (stat.isDirectory()) {
+          this.findWorkflowFiles(filePath, fileList);
+        } else if (file.endsWith('.yaml') || file.endsWith('.yml')) {
+          fileList.push(filePath);
+        }
+      }
+    } catch (error) {
+      logger.debug(`Could not read workflows directory: ${dir}`);
+    }
+
+    return fileList;
+  }
+
+  /**
+   * Parse workflow metadata from YAML file
+   */
+  private parseWorkflowFile(filePath: string): Workflow | null {
+    try {
+      const content = fs.readFileSync(filePath, 'utf-8');
+      const parsed = yaml.load(content) as any;
+
+      if (!parsed) return null;
+
+      const totalSteps = parsed.steps?.length || 0;
+      const completedSteps = parsed.completedSteps || (parsed.steps?.filter((s: any) => s.status === 'completed').length || 0);
+      const progress = totalSteps > 0 ? completedSteps / totalSteps : 0;
+
+      return {
+        id: parsed.id || path.basename(filePath, path.extname(filePath)),
+        name: parsed.name || parsed.title || path.basename(filePath),
+        status: parsed.status || 'paused',
+        progress,
+        started_at: parsed.started_at || new Date().toISOString(),
+        estimated_completion: parsed.estimated_completion || new Date(Date.now() + 24 * 3600000).toISOString(),
+        total_steps: totalSteps,
+        completed_steps: completedSteps,
+      };
+    } catch (error) {
+      logger.debug(`Error parsing workflow file ${filePath}:`, error);
+      return null;
+    }
+  }
+
   /**
    * List workflows with optional filtering by status
    */
@@ -38,40 +103,19 @@ class WorkflowsService {
     try {
       logger.debug(`Fetching workflows (status=${status}, limit=${limit})`);
 
-      // TODO: Connect to actual workflow execution system
-      // For now, return realistic mock data structure
-      const allWorkflows: Workflow[] = [
-        {
-          id: 'workflow-456',
-          name: 'Epic 3 Wave 5 Execution',
-          status: 'running',
-          progress: 0.34,
-          started_at: new Date(Date.now() - 4 * 3600000).toISOString(),
-          estimated_completion: new Date(Date.now() + 8 * 3600000).toISOString(),
-          total_steps: 15,
-          completed_steps: 5,
-        },
-        {
-          id: 'workflow-457',
-          name: 'Dashboard Integration Pipeline',
-          status: 'running',
-          progress: 0.67,
-          started_at: new Date(Date.now() - 2 * 3600000).toISOString(),
-          estimated_completion: new Date(Date.now() + 2 * 3600000).toISOString(),
-          total_steps: 10,
-          completed_steps: 7,
-        },
-        {
-          id: 'workflow-458',
-          name: 'Data Synchronization',
-          status: 'paused',
-          progress: 0.5,
-          started_at: new Date(Date.now() - 24 * 3600000).toISOString(),
-          estimated_completion: new Date(Date.now() + 1 * 3600000).toISOString(),
-          total_steps: 8,
-          completed_steps: 4,
-        },
-      ];
+      // Try to load real workflows from files
+      const workflowFiles = this.findWorkflowFiles(this.workflowsPath);
+      let allWorkflows: Workflow[] = [];
+
+      for (const filePath of workflowFiles) {
+        const workflow = this.parseWorkflowFile(filePath);
+        if (workflow) {
+          allWorkflows.push(workflow);
+        }
+      }
+
+      // If no workflows found from files, return empty array (honest state, no mock data)
+      // This prevents "mentira" (lying) by disguising demo data as real
 
       // Filter by status if provided
       let filteredWorkflows = allWorkflows;
