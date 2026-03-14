@@ -2,6 +2,8 @@ import os from 'os';
 import { supabaseService } from './supabase';
 import { createLogger } from '../utils/logger';
 
+const logger = createLogger('SystemMetrics');
+
 export interface SystemMetrics {
   cpu_percentage: number;
   memory_percentage: number;
@@ -116,8 +118,6 @@ export class SystemMetricsCollector {
 }
 
 export const systemMetricsCollector = new SystemMetricsCollector();
-
-const logger = createLogger('SystemMetrics');
 
 /**
  * Start background job to persist metrics to Supabase
