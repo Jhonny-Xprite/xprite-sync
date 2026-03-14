@@ -62,31 +62,10 @@ app.get('/api/metrics', async (req: Request, res: Response) => {
     // Fetch real metrics from Supabase
     const metrics = await supabaseService.getAgentMetrics(limit, agentId);
 
-    // If no data in Supabase, generate placeholder data
+    // If no data in Supabase, return 204 (no mock data per AC requirement)
     if (metrics.length === 0) {
-      logger.info('No agent metrics in Supabase, returning placeholder');
-      const placeholder = {
-        id: 'placeholder-1',
-        agent_id: agentId || 'all',
-        team_id: DEFAULT_TEAM_ID,
-        status: 'idle' as const,
-        latency_ms: 0,
-        success_rate: 0,
-        error_count: 0,
-        processed_count: 0,
-        memory_usage_mb: 0,
-        cpu_percentage: 0,
-        recorded_at: new Date().toISOString(),
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
-
-      return res.status(200).json({
-        data: [placeholder],
-        total: 1,
-        limit,
-        message: 'No data in database yet. Insert agent metrics to see real data.',
-      });
+      logger.info('No agent metrics in Supabase, returning 204 No Content');
+      return res.status(204).send();
     }
 
     res.status(200).json({

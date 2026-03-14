@@ -1,0 +1,92 @@
+handoff:
+  from_agent: qa
+  to_agent: dev
+  timestamp: '2026-03-14T00:00:00Z'
+  status: in-progress
+  consumed: false
+
+  story_context:
+    story_id: '3.10'
+    story_path: 'docs/stories/epic-3-dashboard-integration/3.10.story.md'
+    story_title: 'Agent Metrics Real-Time'
+    story_status: 'Ready for Review'
+    current_task: 'Fix critical QA issues'
+    branch: master
+    epic: 'Epic 3 — Dashboard Integration'
+
+  from_agent_work:
+    last_command: review
+    completed: QA Gate review of Story 3.10
+    verdict: 🔴 FAIL — 3 Critical Issues Found
+    review_date: '2026-03-14'
+
+  critical_issues:
+    - issue_id: '3.10-C1'
+      title: 'Placeholder Data Instead of Real Supabase Metrics'
+      severity: CRITICAL
+      file: 'packages/api/src/index.ts'
+      lines: '65-90'
+      description: 'GET /api/metrics returns placeholder zeros (latency_ms: 0, success_rate: 0) when Supabase empty, violating AC "zero mock data"'
+      fix_options:
+        - 'Option A: Insert real test data to Supabase (RECOMMENDED)'
+        - 'Option B: Return 204 No Content instead of placeholder'
+        - 'Option C: Populate with dynamic test data on startup'
+      recommended_approach: 'Option A'
+
+    - issue_id: '3.10-C2'
+      title: '7 ESLint Errors Block PR Merge'
+      severity: CRITICAL
+      files:
+        - 'packages/dashboard/src/hooks/useApiMetrics.ts'
+        - 'packages/dashboard/src/hooks/useStories.ts'
+        - 'packages/dashboard/src/components/handoffs/HandoffMonitor.tsx'
+      error_count: 7
+      description: 'Unused imports and variables prevent linting pass'
+      required_action: 'Run npm run lint to show 0 errors'
+
+    - issue_id: '3.10-C3'
+      title: 'No Functional Tests Run'
+      severity: CRITICAL
+      description: 'Never validated real data integration end-to-end'
+      required_tests:
+        - 'Curl endpoint to verify real data returned'
+        - 'Load dashboard to verify AgentsMonitor renders'
+        - 'DevTools network check for 5s refresh'
+        - 'Stop API to verify error handling'
+
+  high_priority_issues:
+    - issue_id: '3.10-H1'
+      title: 'setState in useEffect Warnings (6 warnings)'
+      description: 'Can cause cascading renders'
+      files:
+        - 'packages/dashboard/src/components/agents-monitor/AgentsMonitor.tsx:48-52'
+        - 'packages/dashboard/src/hooks/useApiMetrics.ts:76-99'
+
+    - issue_id: '3.10-H2'
+      title: 'Missing useEffect Dependencies'
+      description: 'Stale closures in effects'
+
+  qa_documentation:
+    review_report: 'docs/qa/story-3.10-qa-review.md'
+    fix_request: 'QA_FIX_REQUEST-3.10.md'
+    verdicts: '3 Critical + 3 High priority issues'
+
+  decisions:
+    - 'Story 3.10 cannot be approved until critical issues resolved'
+    - 'All fixes must be completed before re-review'
+    - 'Functional tests must pass'
+
+  next_action: 'Execute fixes per QA_FIX_REQUEST-3.10.md, then call *review 3.10 for re-review'
+  estimated_effort: '2-4 hours'
+
+  blockers_for_wave5:
+    - 'Story 3.10 is foundation for Wave 5'
+    - 'Stories 3.11, 3.12, 3.13, 3.14, 3.15 depend on this pattern'
+    - 'Cannot proceed with Wave 5 QA until 3.10 fixed'
+
+  recommended_execution_order:
+    1: 'Fix placeholder data (Critical #1)'
+    2: 'Fix ESLint errors (Critical #2) — run npm run lint'
+    3: 'Run functional tests (Critical #3) — curl, dashboard, DevTools'
+    4: 'Fix useEffect warnings (High #1) — add missing dependencies'
+    5: 'Commit changes and call *review 3.10'
