@@ -8,6 +8,9 @@ import { supabaseService } from './services/supabase';
 import { systemMetricsCollector } from './services/system-metrics';
 import { storiesService } from './services/stories';
 import { githubService } from './services/github';
+import { engineService } from './services/engine';
+import { tasksService } from './services/tasks';
+import { workflowsService } from './services/workflows';
 
 const logger = createLogger('API');
 const app = express();
@@ -352,6 +355,67 @@ app.get('/api/github/branches', async (req: Request, res: Response) => {
     logger.error('Failed to fetch branches', error);
     res.status(500).json({
       error: 'Failed to fetch branches',
+      message: (error as Error).message,
+    });
+  }
+});
+
+// ============================================================
+// Engine Status Endpoint — Real-time engine health
+// ============================================================
+app.get('/api/engine/status', async (req: Request, res: Response) => {
+  try {
+    const response = await engineService.getStatus();
+
+    res.status(200).json(response);
+  } catch (error) {
+    logger.error('Failed to fetch engine status', error);
+    res.status(500).json({
+      error: 'Failed to fetch engine status',
+      message: (error as Error).message,
+    });
+  }
+});
+
+// ============================================================
+// Tasks Listing Endpoint — Active tasks and stats
+// ============================================================
+app.get('/api/tasks/list', async (req: Request, res: Response) => {
+  try {
+    const status = (req.query.status as string) || 'all';
+    const limit = parseInt((req.query.limit as string) || '20');
+    const response = await tasksService.listTasks(
+      status as 'pending' | 'running' | 'completed' | 'failed' | 'all',
+      limit
+    );
+
+    res.status(200).json(response);
+  } catch (error) {
+    logger.error('Failed to fetch tasks', error);
+    res.status(500).json({
+      error: 'Failed to fetch tasks',
+      message: (error as Error).message,
+    });
+  }
+});
+
+// ============================================================
+// Workflows Listing Endpoint — Active workflows and stats
+// ============================================================
+app.get('/api/workflows/list', async (req: Request, res: Response) => {
+  try {
+    const status = (req.query.status as string) || 'all';
+    const limit = parseInt((req.query.limit as string) || '20');
+    const response = await workflowsService.listWorkflows(
+      status as 'running' | 'paused' | 'completed' | 'failed' | 'all',
+      limit
+    );
+
+    res.status(200).json(response);
+  } catch (error) {
+    logger.error('Failed to fetch workflows', error);
+    res.status(500).json({
+      error: 'Failed to fetch workflows',
       message: (error as Error).message,
     });
   }
