@@ -1,0 +1,16 @@
+{
+  "storyId": "5.0",
+  "assessedAt": "2026-03-14T11:45:00Z",
+  "assessedBy": "@architect",
+  "result": "SIMPLE",
+  "dimensions": {
+    "scope": { "score": 2, "notes": "Afeta apenas o ambiente Docker local e documentação de infraestrutura." },
+    "integration": { "score": 1, "notes": "Nenhuma integração externa nova." },
+    "infrastructure": { "score": 3, "notes": "Envolve limpeza de imagens/volumes Docker." },
+    "knowledge": { "score": 1, "notes": "Usa comandos Docker padrão." },
+    "risk": { "score": 1, "notes": "Risco baixo se seguido o plano de proteção de volumes." }
+  },
+  "totalScore": 8,
+  "pipelinePhases": ["gather", "spec", "critique"],
+  "estimatedEffort": "< 2 hours"
+}

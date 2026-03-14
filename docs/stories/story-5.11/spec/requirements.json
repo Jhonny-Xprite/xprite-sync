@@ -1,0 +1,12 @@
+{
+  "storyId": "story-5.11",
+  "functional": [
+    { "id": "FR-1", "description": "Execute final prune for all systems (Local/VPS).", "priority": "P0" },
+    { "id": "FR-2", "description": "Apply resource limits (Lite/Standard/Heavy) to all MCPs.", "priority": "P1" },
+    { "id": "FR-3", "description": "Run Full Integration Test (JSON-RPC sweep).", "priority": "P0" },
+    { "id": "FR-4", "description": "Generate final System Health Report.", "priority": "P2" }
+  ],
+  "constraints": [
+    { "id": "CON-1", "type": "Stability", "description": "Zero downtime for core services during stabilization." }
+  ]
+}

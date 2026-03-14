@@ -1,0 +1,16 @@
+{
+  "storyId": "5.4",
+  "researchedAt": "2026-03-14T11:45:00Z",
+  "researchedBy": "@analyst",
+  "complexity": "STANDARD",
+  "dependencies": [
+    {
+      "name": "ajv",
+      "type": "library",
+      "verified": true,
+      "source": "manual",
+      "documentation": { "url": "https://ajv.js.org" }
+    }
+  ],
+  "researchNotes": "Ajv will be used for JSON Schema validation."
+}

@@ -1,0 +1,853 @@
+---
+epic_id: epic-3
+epic_title: Dashboard Integration with Real Project Data
+plan_owner: architect
+plan_version: 2.0
+created_date: 2026-03-14
+status: READY_FOR_IMPLEMENTATION
+
+overview: |
+  Complete implementation roadmap for Epic 3 (Dashboard Integration).
+  This plan orchestrates 8 stories across 3 implementation phases plus a critical
+  foundation phase. All stories depend on Phase 0 (Supabase setup) to function.
+
+  Total Effort: 72-94 hours (80-100 story points)
+  Timeline: 2-3 weeks (assuming full team allocation)
+  Critical Path: Phase 0 → Phase 1 (parallel) → Phase 2 → Phase 3
+
+---
+
+## PHASE 0: FOUNDATION (CRITICAL BLOCKER)
+
+phase_id: phase-0
+phase_name: Supabase Setup & Environment Configuration
+phase_duration: 2 hours
+phase_criticality: CRITICAL (blocks all other phases)
+phase_owner: user
+status: NOT_STARTED
+
+description: |
+  Foundation phase that MUST complete before ANY other work.
+  This is a blocking dependency for stories 3.10-3.17.
+
+tasks:
+  - task_id: p0-001
+    title: Create packages/api/.env
+    description: Set up API environment variables with Supabase credentials
+    subtasks:
+      - Get Supabase URL from project settings
+      - Get SUPABASE_ANON_KEY from Supabase API keys
+      - Get TEAM_ID (UUID format) from core-config.yaml or generate
+      - Create file with required variables
+      - Verify curl test returns success
+    effort_hours: 0.5
+    owner: user
+    verification: |
+      curl http://localhost:3000/api/metrics
+      Response: { data: [], total: 0 } (no 500 error)
+
+  - task_id: p0-002
+    title: Create packages/dashboard/.env
+    description: Set up dashboard environment variables
+    subtasks:
+      - Use same Supabase URL from API .env
+      - Use same SUPABASE_ANON_KEY
+      - Set VITE_API_URL=/api
+      - Create file
+    effort_hours: 0.25
+    owner: user
+    verification: "Dashboard starts without errors"
+
+  - task_id: p0-003
+    title: Create Supabase migration - team_members table
+    description: Create database migration for team_members table
+    subtasks:
+      - Create file: packages/api/migrations/20260314_team_members.sql
+      - Create team_members table with schema
+      - Disable RLS on 4 tables (temporary)
+      - Apply migration to Supabase
+    effort_hours: 0.75
+    owner: dev
+    sql_schema: |
+      CREATE TABLE IF NOT EXISTS team_members (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        team_id UUID NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        role VARCHAR(100),
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+      );
+    verification: "Table exists in Supabase; RLS disabled"
+
+  - task_id: p0-004
+    title: Verification - Health check endpoints
+    description: Verify all Phase 0 setup is working
+    subtasks:
+      - Start API server (npm run dev in packages/api)
+      - Run curl test on /api/metrics
+      - Check for 500 errors
+      - Verify environment variables loaded
+    effort_hours: 0.5
+    owner: dev
+    verification: "Curl returns { data: [], total: 0 }"
+
+blocker_check: true
+next_phase: phase-1
+unblocks:
+  - phase-1
+  - story-3.10
+  - story-3.11
+  - story-3.12
+  - story-3.13
+  - story-3.14
+  - story-3.15
+  - story-3.16
+  - story-3.17
+
+---
+
+## PHASE 1: REPLACE STUBS WITH REAL DATA (FOUNDATION PHASE)
+
+phase_id: phase-1
+phase_name: Real Data Integration (Stories 3.10-3.15)
+phase_duration: 42-52 hours
+phase_criticality: HIGH (foundation for Phase 2 & 3)
+phase_owner: dev
+status: READY
+parallel_execution: true
+note: "Stories 3.10-3.15 can run in parallel after Phase 0"
+
+stories:
+  - story_id: 3.10
+    title: Agent Metrics Real-Time
+    complexity: SIMPLE
+    effort: 6-8h
+    points: 5-8
+    priority: HIGHEST
+    sequence: 1 (can run in parallel)
+    dependencies: [phase-0]
+    description: Display real agent metrics from Supabase
+    key_deliverables:
+      - useApiMetrics hook with 5-second polling
+      - AgentsMonitor component wired to real API
+      - GET /api/metrics endpoint
+      - Loading states and error boundaries
+      - Live Data badge
+    qa_gates:
+      - AC1: API returns real agent data
+      - AC2: Auto-refresh every 5 seconds
+      - AC3: Last updated timestamp visible
+      - AC4: Error handling for API failures
+      - AC5: Graceful fallback when API unavailable
+    architecture_decisions:
+      - Use React Query for data fetching
+      - Polling strategy: 5-second refetch interval
+      - Cache: refetchOnWindowFocus disabled (custom control)
+    risk_level: LOW
+    blockers: []
+    resources:
+      - packages/dashboard/src/components/agents-monitor/
+      - packages/dashboard/src/hooks/useApiMetrics.ts (new)
+      - packages/api/src/services/metrics.ts (existing)
+
+  - story_id: 3.11
+    title: Stories & Squads Real Reading
+    complexity: SIMPLE
+    effort: 8-10h
+    points: 8-13
+    priority: HIGHEST
+    sequence: 2 (can run in parallel)
+    dependencies: [phase-0]
+    description: Display real stories and squads (not mock data)
+    key_deliverables:
+      - GET /api/stories endpoint
+      - GET /api/squads endpoint
+      - StoriesTab component wired to real data
+      - SquadsTab component wired to real data
+      - Story YAML file scanner
+      - Squad data source selection (config vs DB)
+    qa_gates:
+      - AC1: Stories fetched from YAML files
+      - AC2: Squads fetched from config or DB
+      - AC3: No mock data displayed
+      - AC4: Real-time sync with changes
+      - AC5: Empty state shown when no data
+    architecture_decisions:
+      - Story source: file system scan (docs/stories/**/[0-9]+.[0-9]+.story.md)
+      - Squad source: priority order (1) team_members table, (2) core-config.yaml
+      - Response caching: 30-second TTL for file system reads
+    risk_level: LOW
+    blockers: []
+    resources:
+      - packages/api/src/services/stories.ts (REFERENCE)
+      - packages/api/src/services/squads.ts (CREATE)
+      - packages/dashboard/src/components/tabs/StoriesTab.tsx (UPDATE)
+      - packages/dashboard/src/components/tabs/SquadsTab.tsx (UPDATE)
+
+  - story_id: 3.12
+    title: GitHub Integration
+    complexity: SIMPLE
+    effort: 4-6h
+    points: 5-8
+    priority: HIGHEST
+    sequence: 3 (can run in parallel)
+    dependencies: [phase-0]
+    description: Make GitHub repo configurable via environment
+    key_deliverables:
+      - Update github.ts to use env variables
+      - GET /api/github/config endpoint
+      - Dashboard displays correct repo
+      - Link to GitHub repo functional
+    qa_gates:
+      - AC1: GITHUB_OWNER configurable via .env
+      - AC2: GITHUB_REPO configurable via .env
+      - AC3: Fallback to hardcoded defaults if env not set
+      - AC4: Dashboard shows correct repo info
+    architecture_decisions:
+      - Env vars: GITHUB_OWNER, GITHUB_REPO (set in Phase 0)
+      - Verification: user runs git remote -v to find repo
+      - Fallback: hardcoded defaults for safety
+    risk_level: VERY_LOW
+    blockers: []
+    resources:
+      - packages/api/src/services/github.ts (UPDATE - 3 lines)
+      - packages/dashboard/src/components/header/RepoLink.tsx (UPDATE)
+
+  - story_id: 3.14
+    title: Hand-offs Monitoring
+    complexity: SIMPLE
+    effort: 6-8h
+    points: 5-8
+    priority: HIGHEST
+    sequence: 4 (can run in parallel)
+    dependencies: [phase-0]
+    description: Display agent handoff artifacts from .aiox/handoffs/
+    key_deliverables:
+      - GET /api/handoffs endpoint
+      - HandoffsTab component
+      - Handoff artifact parser
+      - Real-time monitoring capability
+    qa_gates:
+      - AC1: Handoffs fetched from .aiox/handoffs/
+      - AC2: Shows from_agent, to_agent, timestamp, status
+      - AC3: Queue monitoring working
+      - AC4: Empty state when no handoffs
+    architecture_decisions:
+      - Data source: .aiox/handoffs/ directory (YAML files)
+      - Parsing: Custom YAML parser for handoff artifacts
+      - Refresh: 10-second polling (less critical than metrics)
+    risk_level: LOW
+    blockers: []
+    resources:
+      - packages/api/src/services/handoffs.ts (CREATE)
+      - packages/dashboard/src/components/tabs/HandoffsTab.tsx (UPDATE)
+      - packages/dashboard/src/hooks/useHandoffs.ts (CREATE)
+
+  - story_id: 3.15
+    title: Agent Memory Visualization
+    complexity: SIMPLE
+    effort: 8-10h
+    points: 8-13
+    priority: HIGH
+    sequence: 5 (can run in parallel)
+    dependencies: [phase-0]
+    description: Visualize agent memory files (user, feedback, project, reference)
+    key_deliverables:
+      - GET /api/memory endpoint
+      - GET /api/memory/{agent-id} endpoint
+      - MemoryTab component
+      - Frontmatter parser
+      - Memory hierarchy display
+    qa_gates:
+      - AC1: Memory files fetched from .claude/memory/
+      - AC2: Hierarchy visualized (user, feedback, project, reference)
+      - AC3: Content preview rendered safely
+      - AC4: Metadata displayed correctly
+    architecture_decisions:
+      - Data source: .claude/projects/*/memory/ directory tree
+      - Parsing: YAML frontmatter extraction
+      - Preview: First 500 characters (prevents huge payloads)
+      - Refresh: 30-second polling (memory updates less frequent)
+    risk_level: LOW
+    blockers: []
+    resources:
+      - packages/api/src/services/memory.ts (CREATE)
+      - packages/dashboard/src/components/tabs/MemoryTab.tsx (CREATE)
+      - packages/dashboard/src/hooks/useMemory.ts (CREATE)
+
+  - story_id: 3.13
+    title: Engine/Tasks/Workflows (Phase 1 Replacement)
+    complexity: STANDARD
+    effort: 12-16h
+    points: 13-21
+    priority: HIGH
+    sequence: 6 (can start after Phase 0, depends on SystemMetricsCollector verification)
+    dependencies: [phase-0, "SystemMetricsCollector verification"]
+    description: Replace hardcoded stubs with real YAML reading and system metrics
+    key_deliverables:
+      - Refactored workflows.ts (scan YAML files)
+      - Refactored engine.ts (real system metrics + health check)
+      - Updated github.ts (env variables)
+      - GET /api/workflows/list endpoint
+      - GET /api/engine/status endpoint
+      - Health check with 2-second timeout
+      - engine_available boolean flag
+    qa_gates:
+      - AC1: Workflows read from .aiox-core/development/workflows/*.yaml
+      - AC2: Each workflow: name, description, phases, agents extracted
+      - AC3: Engine health check with 2-second timeout
+      - AC4: engine_available flag reflects real health
+      - AC5: No fake data when engine unavailable
+      - AC6: Graceful handling of missing files
+    architecture_decisions:
+      - Workflow source: file system scan with YAML parsing
+      - Engine health: HTTP GET http://localhost:4002/health (2s timeout)
+      - Metrics: SystemMetricsCollector.collectCurrentMetrics()
+      - Timeout: Make configurable via ENGINE_HEALTH_CHECK_TIMEOUT_MS env var
+      - Error handling: Never return fake data; return honest engine_available flag
+    risk_level: MEDIUM
+    blockers:
+      - Must verify SystemMetricsCollector exists and works (1-2 hours)
+      - Must confirm engine health endpoint URL and response format
+    critical_concerns:
+      - Engine timeout may be too short (2s) in slow networks
+      - Recommendation: Make timeout configurable
+    resources:
+      - packages/api/src/services/workflows.ts (REFACTOR)
+      - packages/api/src/services/engine.ts (REFACTOR)
+      - packages/api/src/services/github.ts (UPDATE)
+
+phase_completion_criteria:
+  - All 6 stories (3.10-3.15) have passing AC
+  - All endpoints return real data (verified with curl)
+  - Dashboard components render without DEMO flags
+  - No errors in browser console
+  - API response format consistent across all endpoints
+  - Performance: API responses < 500ms
+  - Error handling: All error cases handled gracefully
+
+next_phase: phase-2
+unblocks:
+  - phase-2
+  - story-3.16
+
+---
+
+## PHASE 2: CREATE MISSING ROUTES & ANALYTICS (API EXPANSION)
+
+phase_id: phase-2
+phase_name: Analytics Endpoints & Missing Routes (Story 3.16)
+phase_duration: 12-16 hours
+phase_criticality: HIGH (foundation for Phase 3)
+phase_owner: dev
+status: READY
+prerequisite: "All Phase 1 stories complete"
+parallel_execution: false
+note: "Cannot start until Phase 1 complete - depends on all Phase 1 endpoints existing"
+
+stories:
+  - story_id: 3.16
+    title: Missing Analytics & Routes
+    complexity: STANDARD
+    effort: 12-16h
+    points: 13-21
+    priority: HIGH
+    sequence: 1 (sequential after Phase 1)
+    dependencies:
+      - phase-1  # All Phase 1 stories must complete first
+      - story-3.10  # GET /api/metrics must exist
+      - story-3.11  # GET /api/stories, /api/squads must exist
+      - story-3.13  # GET /api/workflows/list, /api/engine/status must exist
+      - story-3.14  # GET /api/handoffs must exist
+      - story-3.15  # GET /api/memory must exist
+    description: Create 5 new analytics endpoints and agent/squad routes
+    key_deliverables:
+      - GET /api/agents (12 AIOX agents hardcoded)
+      - GET /api/squads (from config or DB)
+      - GET /api/tools/mcp (from mcp-registry.json)
+      - GET /api/analytics/overview (aggregated metrics)
+      - GET /api/analytics/performance/agents (per-agent stats)
+      - Database indexes for performance queries
+    qa_gates:
+      - AC1: /api/agents returns hardcoded list of 12 agents
+      - AC2: /api/squads aggregates from data source
+      - AC3: /api/tools/mcp reads from registry file
+      - AC4: /api/analytics/overview aggregates from all sources
+      - AC5: /api/analytics/performance/agents groups by agent_id with aggregations
+      - AC6: All responses consistent with ApiResponse<T> format
+      - AC7: Query performance < 1000ms even with large datasets
+    architecture_decisions:
+      - Agent list: hardcoded (12 agents are static)
+      - Squad data: priority (1) team_members table, (2) core-config.yaml
+      - MCP registry: read from extensions/mcp-registry.json
+      - Analytics aggregation: SQL queries with grouping
+      - Caching: Redis with 5-minute TTL (RECOMMENDATION)
+      - Database indexes: (agent_id, collected_at) on system_metrics table
+    risk_level: MEDIUM
+    blockers:
+      - All Phase 1 endpoints must exist and be functioning
+      - Analytics queries need database indexing for performance
+      - Squad data source inconsistency (DB vs config)
+    critical_concerns:
+      - No caching strategy defined - WILL cause performance issues
+      - Recommendation: Implement Redis caching layer before production
+      - Aggregation queries may be slow with large metrics dataset
+    resources:
+      - packages/api/src/routes/agents.ts (CREATE)
+      - packages/api/src/routes/squads.ts (CREATE)
+      - packages/api/src/routes/tools.ts (CREATE)
+      - packages/api/src/routes/analytics.ts (CREATE)
+      - packages/api/src/services/agents.ts (CREATE)
+      - packages/api/src/services/analytics.ts (CREATE)
+      - packages/api/src/services/mcp-registry.ts (CREATE)
+      - Database migration: indexes on system_metrics
+
+phase_completion_criteria:
+  - All 5 endpoints return correct data
+  - Response format consistent across endpoints
+  - Query performance acceptable (< 1000ms)
+  - Database indexes created
+  - No N+1 query patterns
+  - Aggregation logic tested with various data sizes
+
+next_phase: phase-3
+unblocks:
+  - phase-3
+  - story-3.17
+
+---
+
+## PHASE 3: COMPLETE DATA INTEGRATION (DASHBOARD WIRING)
+
+phase_id: phase-3
+phase_name: Metrics Persistence & Component Refactoring (Story 3.17)
+phase_duration: 16-20 hours
+phase_criticality: CRITICAL (final integration phase)
+phase_owner: dev
+status: READY
+prerequisite: "All Phase 1 & 2 stories complete"
+parallel_execution: false
+note: "Largest story with highest risk. Consider breaking into 3 sub-stories (3.17a, 3.17b, 3.17c)"
+
+stories:
+  - story_id: 3.17
+    title: Complete Data Integration
+    complexity: COMPLEX
+    effort: 16-20h
+    points: 8-13 (recommended split into 3 stories x 5-8 points each)
+    priority: HIGH
+    sequence: 1 (sequential after Phase 2)
+    dependencies:
+      - phase-2  # All Phase 2 must complete
+      - story-3.16  # /api/analytics endpoints must exist
+    description: |
+      Metrics persistence to Supabase + refactor 11 dashboard components
+      to use real data (no more DEMO flags)
+
+    note_high_risk: |
+      This is the LARGEST and HIGHEST-RISK story in the epic.
+      Recommendation: Break into 3 smaller stories:
+      - 3.17a: Metrics Persistence to Supabase (5-8h, 5 points)
+      - 3.17b: Hook Refactoring (5-7h, 5 points)
+      - 3.17c: Component Refactoring (6-8h, 8 points)
+
+    key_deliverables:
+      - Supabase migration: system_metrics table
+      - MetricsPersistenceService (batch collection every 60s)
+      - Metrics collection job (background async task)
+      - Refactored useDashboard hook (aggregate all endpoints)
+      - 11 refactored components:
+        - AgentsTab (from 3.10 spec)
+        - CostsTab (remove DEMO)
+        - OverviewTab (real counters)
+        - RoadmapView (fetch from API)
+        - StoriesTab (from 3.11)
+        - SquadsTab (from 3.11)
+        - WorkflowsTab (real workflows)
+        - EngineStatusCard (real metrics)
+        - HandoffsTab (from 3.14)
+        - MemoryTab (from 3.15)
+        - AnalyticsTab (new, from 3.16)
+
+    qa_gates:
+      - AC1: SystemMetricsCollector persists to Supabase every 60s
+      - AC2: All 11 components refactored (DEMO flags removed)
+      - AC3: useDashboard hook aggregates all real endpoints
+      - AC4: No hardcoded fake data visible to users
+      - AC5: Empty states shown honestly when no real data
+      - AC6: Performance regression test passes (metrics collection < 100ms CPU overhead)
+      - AC7: Error handling: if any data source fails, show what's available
+      - AC8: No console errors or warnings
+      - AC9: Dashboard loads and renders correctly
+      - AC10: Metrics appear in Supabase after 60s collection cycle
+
+    architecture_decisions:
+      - Metrics persistence: batch model (collect for 60s, insert)
+      - Collection frequency: every 60 seconds
+      - Data freshness: metrics table contains last 90 days data
+      - Persistence: non-blocking (async, no await in main flow)
+      - Error recovery: log errors, retry on next cycle, don't crash
+      - Race condition prevention: mutex on metrics buffer (p-queue or async-mutex)
+      - Component refactoring strategy: one component at a time, test after each
+      - Performance baseline: measure before/after metrics collection impact
+      - Caching: React Query with 5-second refetch for metrics
+
+    critical_risks:
+      - CRITICAL: Race condition in metrics batch logic (needs mutex)
+      - HIGH: 11 component refactoring = large regression risk
+      - HIGH: Performance impact from metrics collection
+      - MEDIUM: Component interdependencies not fully mapped
+      - MEDIUM: No rollback strategy if metrics collection fails
+
+    risk_mitigations:
+      - Risk: Race condition
+        Mitigation: Implement async-mutex or p-queue for batch operations
+        Owner: @dev
+        Effort: 1 hour
+
+      - Risk: Regression from 11 component changes
+        Mitigation: Visual regression testing + performance baseline test
+        Owner: @qa
+        Effort: 4 hours
+
+      - Risk: Performance degradation
+        Mitigation: Performance test before/after; async metrics collection
+        Owner: @dev + @qa
+        Effort: 3 hours
+
+    implementation_order:
+      - "1. Create system_metrics table migration (1h)"
+      - "2. Implement MetricsPersistenceService (2h)"
+      - "3. Start metrics collection job (1h)"
+      - "4. Verify Supabase persistence working (1h)"
+      - "5. Refactor useDashboard hook (2h)"
+      - "6. Refactor components one at a time (8h):"
+      - "   6a. AgentsTab (1h)"
+      - "   6b. CostsTab (1h)"
+      - "   6c. OverviewTab (1h)"
+      - "   6d. RoadmapView (1h)"
+      - "   6e. StoriesTab (1h)"
+      - "   6f. SquadsTab (1h)"
+      - "   6g. WorkflowsTab (1h)"
+      - "   6h. EngineStatusCard (0.5h)"
+      - "   6i. HandoffsTab (0.5h)"
+      - "   6j. MemoryTab (0.5h)"
+      - "   6k. AnalyticsTab (1h)"
+      - "7. Performance testing & optimization (2h)"
+      - "8. Final integration testing (1h)"
+
+    resources:
+      - packages/api/migrations/20260314_system_metrics.sql (CREATE)
+      - packages/api/src/services/metrics-persistence.ts (CREATE)
+      - packages/api/src/jobs/metrics-collector.ts (CREATE)
+      - packages/dashboard/src/hooks/useDashboard.ts (REFACTOR)
+      - packages/dashboard/src/components/ (11 files REFACTOR)
+
+phase_completion_criteria:
+  - Metrics successfully persisted to Supabase every 60 seconds
+  - All 11 components refactored and rendering correctly
+  - DEMO flags completely removed
+  - No console errors or warnings
+  - Performance regression test passes
+  - Error handling works for all failure scenarios
+  - Dashboard accurately reflects system state
+  - Acceptance criteria 100% passing
+
+final_verification: |
+  1. Metrics appear in Supabase system_metrics table
+  2. Dashboard shows real data (not fake/demo)
+  3. All 11 components rendering correctly
+  4. No errors in browser console
+  5. Performance impact < 100ms CPU overhead
+  6. Error states handled gracefully
+
+---
+
+## IMPLEMENTATION ROADMAP & TIMELINE
+
+roadmap:
+  week_1:
+    focus: Foundation & Phase 1 Setup
+    activities:
+      - Phase 0: Supabase setup (2h)
+      - Begin Phase 1 stories in parallel:
+        - Story 3.10 (6-8h)
+        - Story 3.11 (8-10h)
+        - Story 3.12 (4-6h)
+        - Story 3.14 (6-8h)
+        - Story 3.15 (8-10h)
+    effort_total: 34-42h
+    status: PLANNED
+
+  week_2:
+    focus: Phase 1 Completion & Phase 2 Start
+    activities:
+      - Complete Story 3.13 (12-16h)
+      - QA & testing for Phase 1 (4-6h)
+      - Start Story 3.16 (Phase 2) (8-12h)
+    effort_total: 24-34h
+    status: PLANNED
+
+  week_3:
+    focus: Phase 2 Completion & Phase 3 Start
+    activities:
+      - Complete Story 3.16 (4-6h)
+      - QA & performance testing (2-4h)
+      - Start Story 3.17 (Phase 3) (8-12h)
+    effort_total: 14-22h
+    status: PLANNED
+
+  week_4:
+    focus: Phase 3 Completion & Integration
+    activities:
+      - Complete Story 3.17 (8-12h)
+      - Integration testing & QA (4-6h)
+      - Performance optimization (2-3h)
+      - Deployment & verification (2-3h)
+    effort_total: 16-24h
+    status: PLANNED
+
+  timeline_total:
+    weeks: 4
+    hours: 88-122h (includes Phase 0 + testing overhead)
+    story_points: 80-100 SP
+    note: "Assumes full team allocation. Reduce to 8-10 weeks if part-time."
+
+critical_path: |
+  Phase 0 (2h) → Phase 1 (42-52h, parallel) → Phase 2 (12-16h) → Phase 3 (16-20h)
+  Total critical path: ~72-90h (excludes testing overhead)
+
+dependencies_graph: |
+  Phase 0
+    ├── Story 3.10 (parallel)
+    ├── Story 3.11 (parallel)
+    ├── Story 3.12 (parallel)
+    ├── Story 3.13 (sequential, depends on SystemMetricsCollector)
+    ├── Story 3.14 (parallel)
+    └── Story 3.15 (parallel)
+         └── Phase 1 Complete
+              └── Story 3.16 (Phase 2)
+                   └── Story 3.17 (Phase 3)
+
+---
+
+## ARCHITECTURE DECISIONS & RATIONALE
+
+architectural_principles:
+  - Anti-Mentira: Never return fake data. Show empty state if no real data.
+  - Graceful Degradation: If any data source fails, show what's available.
+  - Progressive Enhancement: Start simple (hardcoded), evolve to flexible.
+  - Performance First: Metrics collection must not impact dashboard UX.
+  - Testability: Each component independently testable with mock data.
+
+api_design:
+  - Response Format: All endpoints return { data: T[], total: number, limit?: number }
+  - Error Format: { error: string; code: string; statusCode: number }
+  - Auth: No authentication in MVP (assumes internal dashboard)
+  - Rate Limiting: Not implemented in MVP (can add later)
+  - Pagination: Not implemented in MVP (assume small datasets)
+
+data_sources:
+  - Agent Metrics: Supabase metrics table (populated by SystemMetricsCollector)
+  - Workflows: File system scan (.aiox-core/development/workflows/*.yaml)
+  - Stories: File system scan (docs/stories/**/[0-9]+.[0-9]+.story.md)
+  - Squads: Priority (1) team_members table, (2) core-config.yaml
+  - Handoffs: File system (.aiox/handoffs/*.yaml)
+  - Memory: File system (.claude/projects/*/memory/)
+  - MCP Registry: File system (extensions/mcp-registry.json)
+  - Engine Status: HTTP health check (localhost:4002/health) + SystemMetricsCollector
+  - GitHub: Environment variables (GITHUB_OWNER, GITHUB_REPO)
+
+caching_strategy:
+  - Metrics: React Query 5-second refetch (dashboard-level)
+  - Stories/Workflows/Handoffs: 30-second TTL (file system reads are slow)
+  - Squads: 30-second TTL
+  - Analytics: Redis 5-minute TTL (large aggregation queries, lower update frequency)
+  - Memory: 30-second TTL
+
+performance_targets:
+  - API response time: < 500ms (except analytics < 1000ms)
+  - Dashboard FCP: < 2s
+  - Metrics collection overhead: < 100ms CPU
+  - Metrics persistence: < 200ms (async, non-blocking)
+
+error_handling:
+  - API errors: Return error response with code + message
+  - Network errors: Retry with exponential backoff (React Query)
+  - Missing data: Return empty arrays (not null)
+  - Failed metrics collection: Log error, retry next cycle, don't crash
+  - Component errors: Error boundary + fallback UI
+
+---
+
+## TESTING STRATEGY
+
+testing_levels:
+  unit:
+    - Service functions (file scanning, YAML parsing, aggregations)
+    - Hook behavior (polling, error handling, caching)
+    - Effort: 8-12 hours
+
+  integration:
+    - Component rendering with mock API
+    - Hook + component interaction
+    - Error boundary behavior
+    - Effort: 8-12 hours
+
+  e2e:
+    - Full dashboard with real API
+    - Real Supabase database
+    - Metrics collection to persistence
+    - Effort: 6-10 hours
+
+  performance:
+    - Baseline: FCP, LCP, CLS before changes
+    - After: Metrics collection impact on dashboard
+    - Query performance (analytics aggregation)
+    - Effort: 4-6 hours
+
+  qa_gates:
+    - Phase 1 completion: All 6 stories AC passing
+    - Phase 2 completion: 5 endpoints verified, performance acceptable
+    - Phase 3 completion: 11 components refactored, zero DEMO code, metrics persisting
+
+total_testing_effort: 26-40 hours (separate from development)
+
+---
+
+## RESOURCE ALLOCATION & TEAM
+
+team_composition:
+  - @dev (Dex): Primary implementation (48-60h)
+  - @qa (Quinn): QA gates & testing (26-40h)
+  - @architect (Aria): Planning & technical decisions (8-12h)
+  - @data-engineer (Dara): Database schema if needed (2-4h)
+  - user: Phase 0 setup, verification (2h)
+
+skill_requirements:
+  - TypeScript/React (dashboard)
+  - Node.js/Express (API)
+  - SQL/Supabase
+  - YAML parsing
+  - System metrics collection
+  - Testing frameworks (Jest, React Testing Library, Cypress)
+
+---
+
+## SUCCESS CRITERIA & VERIFICATION
+
+done_definition:
+  - All acceptance criteria passing (100%)
+  - No console errors or warnings
+  - All API endpoints functioning
+  - Metrics persisting to Supabase
+  - Dashboard rendering with real data
+  - Performance within targets
+  - All tests passing (unit, integration, e2e)
+  - Code review approved (@qa, CodeRabbit)
+  - Documentation updated
+
+verification_checklist:
+  - [ ] Phase 0 setup verified (curl test passing)
+  - [ ] All Phase 1 stories AC passing
+  - [ ] All Phase 2 endpoints returning correct data
+  - [ ] Metrics collecting and persisting (verify in Supabase)
+  - [ ] 11 components rendering without DEMO flags
+  - [ ] Performance baseline met (dashboard FCP < 2s)
+  - [ ] Zero console errors
+  - [ ] QA approval (PASS verdict)
+
+---
+
+## RISKS & MITIGATION
+
+high_risks:
+  - Story 3.17 scope too large (11 components)
+    Mitigation: Break into 3 sub-stories (3.17a, 3.17b, 3.17c)
+    Owner: @pm
+    Timeline: Before development starts
+
+  - Metrics persistence race condition
+    Mitigation: Implement mutex (async-mutex or p-queue)
+    Owner: @dev
+    Effort: 1 hour
+
+  - Performance degradation from metrics collection
+    Mitigation: Async non-blocking, performance tests, monitoring
+    Owner: @dev + @qa
+    Effort: 3-4 hours
+
+  - Phase 0 blockers (Supabase setup delays all work)
+    Mitigation: Start Phase 0 immediately, high priority
+    Owner: user
+    Timeline: Must complete before any story work
+
+medium_risks:
+  - Analytics query performance with large datasets
+    Mitigation: Add database indexes, Redis caching
+    Owner: @dev
+    Effort: 2-3 hours
+
+  - Component interdependencies causing regression
+    Mitigation: Visual regression tests, incremental refactoring
+    Owner: @qa
+    Effort: 4-6 hours
+
+  - Engine health check timeout too short
+    Mitigation: Make configurable via ENV var
+    Owner: @dev
+    Effort: 0.5 hours
+
+---
+
+## ASSUMPTIONS & CONSTRAINTS
+
+assumptions:
+  - Supabase credentials available
+  - GitHub repo info accessible
+  - SystemMetricsCollector exists and works
+  - Team has full allocation (no competing priorities)
+  - Dashboard can be down during phases 1-3
+  - No production users depending on dashboard
+
+constraints:
+  - Must complete Phase 0 before any story work
+  - Phase 1 stories can run in parallel (ideal)
+  - Phase 2 requires all Phase 1 complete
+  - Phase 3 requires all Phase 2 complete
+  - Story 3.17 has highest risk and longest effort
+  - Performance must be maintained
+
+---
+
+## SIGN-OFF & APPROVAL
+
+plan_owner: architect
+plan_status: READY_FOR_IMPLEMENTATION
+approval_required_from:
+  - @pm (product owner approval)
+  - user (Phase 0 resource commitment)
+  - @dev (resource allocation)
+  - @qa (QA strategy agreement)
+
+notes: |
+  This plan is comprehensive and ready for execution.
+  Key success factors:
+  1. Complete Phase 0 immediately
+  2. Parallelize Phase 1 stories
+  3. Break Story 3.17 into 3 sub-stories
+  4. Implement race condition protection for metrics
+  5. Prioritize performance testing
+
+next_steps: |
+  1. Get approval from all stakeholders
+  2. Create JIRA/GitHub issues for each story
+  3. Assign developers and start Phase 0
+  4. Set up testing infrastructure and monitoring
+  5. Daily standups for Phase 3 (highest risk)
+
+---
+
+*Implementation Plan Generated: 2026-03-14 14:30:00 UTC*
+*Owner: @architect (Aria)*
+*Status: READY FOR IMPLEMENTATION ✅*

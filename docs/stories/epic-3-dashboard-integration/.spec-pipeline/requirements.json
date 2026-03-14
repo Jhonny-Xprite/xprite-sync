@@ -1,0 +1,257 @@
+{
+  "pipeline_id": "spec-pipeline-epic3-3.10-3.17",
+  "created_at": "2026-03-14T14:12:00Z",
+  "phase": "1-gather",
+  "stories": [
+    {
+      "story_id": "3.10",
+      "title": "Agent Metrics Real-Time",
+      "phase": "Phase 0 - Foundation",
+      "story_points": "5-8",
+      "priority": "HIGHEST",
+      "requirements": {
+        "functional": [
+          "Dashboard AgentsMonitor displays agents from GET /api/metrics endpoint",
+          "Each agent card shows: name/ID, status, latency_ms, success_rate, cpu_percentage, memory_usage_mb",
+          "Data updates automatically every 5 seconds via polling",
+          "Last updated timestamp visible on AgentsMonitor",
+          "Live Data badge appears when data is real (not mock)",
+          "Loading skeleton shows while fetching from API",
+          "Error handling for API failures",
+          "Graceful fallback when API unavailable"
+        ],
+        "technical": [
+          "Create useApiMetrics hook for metrics",
+          "Update useAgents hook to use real endpoint",
+          "Consume existing metrics.ts service",
+          "Connect AgentsMonitor.tsx to real data",
+          "Update AgentMonitorCard.tsx to display real metrics"
+        ],
+        "acceptance_criteria": 8
+      },
+      "blockers": [],
+      "dependencies": [
+        "Phase 0 - Foundation (Supabase, .env, RLS)"
+      ]
+    },
+    {
+      "story_id": "3.11",
+      "title": "Stories & Squads Real Reading",
+      "phase": "Phase 0 - Foundation",
+      "story_points": "8-13",
+      "priority": "HIGHEST",
+      "requirements": {
+        "functional": [
+          "StoriesTab displays real stories from YAML files",
+          "SquadsTab displays squads from project configuration",
+          "Real reading from .aiox/stories/ directory",
+          "Squads data from core-config.yaml or dynamic detection",
+          "No mock/demo data in display"
+        ],
+        "technical": [
+          "Parse story YAML files",
+          "Extract squad information",
+          "Create API endpoint GET /api/stories",
+          "Create API endpoint GET /api/squads",
+          "Connect dashboard components to real endpoints"
+        ],
+        "acceptance_criteria": 5
+      },
+      "blockers": [],
+      "dependencies": [
+        "Phase 0 - Foundation"
+      ]
+    },
+    {
+      "story_id": "3.12",
+      "title": "GitHub Integration",
+      "phase": "Phase 0 - Foundation",
+      "story_points": "5-8",
+      "priority": "HIGHEST",
+      "requirements": {
+        "functional": [
+          "GitHub repository configurable via environment variables",
+          "GITHUB_OWNER and GITHUB_REPO from .env",
+          "Display current repo info in dashboard",
+          "Link to GitHub repo from dashboard"
+        ],
+        "technical": [
+          "Make github.ts service use env variables",
+          "Create .env template with GitHub config",
+          "Update packages/api/.env with GITHUB_OWNER and GITHUB_REPO",
+          "Create GET /api/github/config endpoint"
+        ],
+        "acceptance_criteria": 4
+      },
+      "blockers": [
+        "User must run 'git remote -v' to find repo owner/name"
+      ],
+      "dependencies": [
+        "Phase 0 - Foundation"
+      ]
+    },
+    {
+      "story_id": "3.13",
+      "title": "Engine/Tasks/Workflows",
+      "phase": "Phase 1 - Replace Stubs",
+      "story_points": "13-21",
+      "priority": "HIGH",
+      "requirements": {
+        "functional": [
+          "WorkflowsService reads real YAML files from .aiox-core/development/workflows/",
+          "EngineService uses real system metrics + honest engine_available flag",
+          "EngineService honors engine health check with 2-second timeout",
+          "Parse YAML: name, description, phases, agents",
+          "Graceful handling when engine unavailable",
+          "No fake active_workers when engine down"
+        ],
+        "technical": [
+          "Refactor workflows.ts - scan and parse YAML",
+          "Refactor engine.ts - add health check logic",
+          "Implement SystemMetricsCollector integration",
+          "Create GET /api/workflows/list endpoint",
+          "Create GET /api/engine/status endpoint"
+        ],
+        "acceptance_criteria": 6
+      },
+      "blockers": [],
+      "dependencies": [
+        "Phase 0 - Foundation",
+        "Story 3.10, 3.11, 3.12"
+      ]
+    },
+    {
+      "story_id": "3.14",
+      "title": "Hand-offs Monitoring",
+      "phase": "Phase 0 - Foundation",
+      "story_points": "5-8",
+      "priority": "HIGHEST",
+      "requirements": {
+        "functional": [
+          "HandoffsTab displays agent handoff artifacts from .aiox/handoffs/",
+          "Show handoff history with from_agent, to_agent, timestamp",
+          "Display handoff status (consumed/pending)",
+          "Real-time monitoring of handoff queue"
+        ],
+        "technical": [
+          "Read YAML files from .aiox/handoffs/",
+          "Create GET /api/handoffs endpoint",
+          "Parse handoff artifacts",
+          "Connect dashboard HandoffsTab to real endpoint"
+        ],
+        "acceptance_criteria": 4
+      },
+      "blockers": [],
+      "dependencies": [
+        "Phase 0 - Foundation"
+      ]
+    },
+    {
+      "story_id": "3.15",
+      "title": "Agent Memory Visualization",
+      "phase": "Phase 0 - Foundation",
+      "story_points": "8-13",
+      "priority": "HIGH",
+      "requirements": {
+        "functional": [
+          "MemoryTab displays agent memory artifacts",
+          "Show memory hierarchy: user, feedback, project, reference",
+          "Display memory file contents and metadata",
+          "Real-time sync with .aiox/memory/ directory"
+        ],
+        "technical": [
+          "Read memory files from .claude/projects/*/memory/",
+          "Parse frontmatter metadata",
+          "Create GET /api/memory endpoint",
+          "Create GET /api/memory/{agent-id} endpoint",
+          "Connect dashboard MemoryTab to real endpoints"
+        ],
+        "acceptance_criteria": 5
+      },
+      "blockers": [],
+      "dependencies": [
+        "Phase 0 - Foundation"
+      ]
+    },
+    {
+      "story_id": "3.16",
+      "title": "Missing Analytics & Routes",
+      "phase": "Phase 2 - Create Routes",
+      "story_points": "13-21",
+      "priority": "HIGH",
+      "requirements": {
+        "functional": [
+          "Create /api/agents endpoint (12 AIOX agents)",
+          "Create /api/squads endpoint (project squads)",
+          "Create /api/tools/mcp endpoint (MCP registry)",
+          "Create /api/analytics/overview endpoint",
+          "Create /api/analytics/performance/agents endpoint"
+        ],
+        "technical": [
+          "Define agent list response schema",
+          "Define squad response schema",
+          "Define MCP registry schema",
+          "Define analytics aggregation queries",
+          "Implement performance metrics calculation"
+        ],
+        "acceptance_criteria": 5
+      },
+      "blockers": [],
+      "dependencies": [
+        "Phase 0 - Foundation",
+        "Story 3.10-3.15"
+      ]
+    },
+    {
+      "story_id": "3.17",
+      "title": "Complete Data Integration",
+      "phase": "Phases 1, 3, 4",
+      "story_points": "8-13",
+      "priority": "HIGH",
+      "requirements": {
+        "functional": [
+          "SystemMetricsCollector persists to Supabase every 60s",
+          "Dashboard AgentsTab removes DEMO data",
+          "Dashboard CostsTab removes DEMO data",
+          "Dashboard OverviewTab uses real counters",
+          "Dashboard RoadmapView fetches from API",
+          "useDashboard hook uses real MCP data",
+          "Refactor 11 dashboard components with real data"
+        ],
+        "technical": [
+          "Implement metrics persistence to Supabase",
+          "Refactor AgentsTab component",
+          "Refactor CostsTab component",
+          "Refactor OverviewTab component",
+          "Refactor RoadmapView component",
+          "Update useDashboard hook",
+          "Remove all DEMO flags and hardcoded data"
+        ],
+        "acceptance_criteria": 11
+      },
+      "blockers": [],
+      "dependencies": [
+        "Phase 0 - Foundation",
+        "Story 3.10-3.16"
+      ]
+    }
+  ],
+  "summary": {
+    "total_stories": 8,
+    "total_story_points": "80-100",
+    "total_functional_requirements": 41,
+    "total_technical_requirements": 34,
+    "critical_blockers": [
+      "Phase 0 - Foundation (Supabase setup, .env files, RLS)"
+    ],
+    "phases_covered": [
+      "Phase 0 - Foundation",
+      "Phase 1 - Replace Stubs",
+      "Phase 2 - Create Routes",
+      "Phase 3 - Metrics Persistence",
+      "Phase 4 - Dashboard Wiring"
+    ]
+  },
+  "next_phase": "2-assess-complexity",
+  "notes": "Requirements gathered from IMPLEMENTATION_PLAN.md and existing story definitions. Ready for complexity assessment by @architect."
+}

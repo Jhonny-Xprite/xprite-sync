@@ -1,0 +1,14 @@
+{
+  "storyId": "5.5",
+  "title": "MCP Observability & Pulse",
+  "functionalRequirements": [
+    { "id": "FR-1", "description": "Implementar logs centralizados para containers MCP.", "priority": "P0" },
+    { "id": "FR-2", "description": "Painel CLI para visualizar status (Pulse) de todos os MCPs.", "priority": "P1" }
+  ],
+  "nonFunctionalRequirements": [
+    { "id": "NFR-1", "category": "Monitoring", "requirement": "Latency check em cada Pulse.", "metric": "< 100ms response" }
+  ],
+  "constraints": [
+    { "id": "CON-1", "type": "Runtime", "description": "Uso de docker stats.", "impact": "Polling interval deve ser ajustável." }
+  ]
+}

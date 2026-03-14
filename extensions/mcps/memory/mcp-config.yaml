@@ -1,0 +1,18 @@
+id: "memory"
+version: "1.0.0"
+runtime: "node"
+description: "AIOX Persistent Memory (SQLite)"
+entrypoint: "src/index.ts"
+capabilities:
+  - tools
+  - resources
+env:
+  MEMORY_DB_PATH:
+    required: false
+    secret: false
+docker:
+  base_image: "node:20-slim"
+  ports:
+    - "3000"
+metadata:
+  author: "AIOX Generator"

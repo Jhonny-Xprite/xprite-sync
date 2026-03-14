@@ -1,6 +1,6 @@
 # PRD — Epic 4: VPS como Extensão Inteligente do AIOX
 
-**Status:** 🏗️ Em Execução
+**Status:** ✅ DONE
 **Versão:** 1.1.0
 **Autor:** @architect via @aiox-master
 **Data:** 2026-03-13
@@ -42,9 +42,9 @@ A VPS não é só infraestrutura — ela é **capacidade cognitiva e computacion
 
 | Story ID | Título | Executor | Quality Gate | Status |
 |----------|--------|----------|--------------|--------|
-| [4.1](../stories/epic-4-easypanel-integration/story-4.1.md) | Ponte SSH Base — AIOX ganha acesso à VPS | `@devops` | `@architect` | 🏃 In Progress |
-| [4.2](../stories/epic-4-easypanel-integration/story-4.2.md) | Gestão de Modelos & Resource Bridging (Ollama) | `@devops` / `@qa` | `@architect` | ⏳ Pendente |
-| [4.3](../stories/epic-4-easypanel-integration/story-4.3.md) | Consciência & Saúde da VPS (DevSecOps Agent) | `@devops` / `@qa` | `@architect` | ⏳ Pendente |
+| [4.1](../stories/epic-4-easypanel-integration/story-4.1.md) | Ponte SSH Base — AIOX ganha acesso à VPS | `@devops` | `@architect` | ✅ DONE |
+| [4.2](../stories/epic-4-easypanel-integration/story-4.2.md) | Gestão de Modelos & Resource Bridging (Ollama) | `@devops` / `@qa` | `@architect` | ✅ DONE |
+| [4.3](../stories/epic-4-easypanel-integration/story-4.3.md) | Consciência & Saúde da VPS (DevSecOps Agent) | `@devops` / `@qa` | `@architect` | ✅ DONE |
 
 ---
 
@@ -152,13 +152,14 @@ Easypan:  ✅  3 serviços saudáveis
 
 ## 7. Definition of Done (Epic)
 
-- [ ] AIOX executa comandos na VPS sem intervenção manual do usuário
-- [ ] Modelos fracos removidos; família Qwen 3.5 instalada e funcional
-- [ ] AIOX consegue orquestrar a integração Obsidian ↔ Ollama do zero
-- [ ] Health report da VPS executável via `npm run vps:health`
-- [ ] Alertas de RAM e disco funcionando com thresholds configuráveis
-- [ ] Zero credenciais sensíveis no histórico Git
-- [ ] Documentação suficiente para que qualquer agente AIOX entenda e opere a VPS
+- [x] AIOX executa comandos na VPS sem intervenção manual do usuário
+- [x] Modelos fracos removidos; família Qwen 3.5 instalada e funcional
+- [x] AIOX consegue orquestrar a integração Obsidian ↔ Ollama do zero
+- [x] Health report da VPS executável via `npm run vps:health`
+- [x] Alertas de RAM e disco funcionando com thresholds configuráveis
+- [x] Zero credenciais sensíveis no histórico Git
+- [x] Documentação suficiente para que qualquer agente AIOX entenda e opere a VPS
+
 
 ---
 

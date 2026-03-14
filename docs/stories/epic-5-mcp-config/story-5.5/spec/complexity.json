@@ -1,0 +1,16 @@
+{
+  "storyId": "5.5",
+  "assessedAt": "2026-03-14T11:45:00Z",
+  "assessedBy": "@architect",
+  "result": "STANDARD",
+  "totalScore": 12,
+  "dimensions": {
+    "scope": { "score": 3, "notes": "Monitoramento de múltiplos containers." },
+    "integration": { "score": 2, "notes": "Docker Engine API para métricas." },
+    "infrastructure": { "score": 2, "notes": "Logs e monitoramento." },
+    "knowledge": { "score": 3, "notes": "Requer lógica de polling e dashboard CLI." },
+    "risk": { "score": 2, "notes": "Impacto baixo se falhar (monitoramento apenas)." }
+  },
+  "pipelinePhases": ["gather", "assess", "research", "spec", "critique", "plan"],
+  "estimatedEffort": "2 days"
+}

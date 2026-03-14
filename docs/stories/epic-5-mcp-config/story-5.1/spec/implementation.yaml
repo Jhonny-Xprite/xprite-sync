@@ -1,0 +1,39 @@
+storyId: "5.1"
+createdAt: "2026-03-14T11:45:00Z"
+createdBy: "@architect"
+status: "pending"
+complexity: "STANDARD"
+phases:
+  - id: "phase-1"
+    name: "Design & Documentation"
+    subtasks:
+      - id: "1.1"
+        description: "Documentar padrões de diretórios e nomenclatura em docs/architecture/mcp-blueprint.md"
+        service: "infra"
+        files: ["docs/architecture/mcp-blueprint.md"]
+        verification:
+          type: "manual"
+          instructions: "Revisar docs de arquitetura."
+        status: "pending"
+  - id: "phase-2"
+    name: "Schema Implementation"
+    subtasks:
+      - id: "2.1"
+        description: "Criar JSON Schema para mcp-config.yaml em .aiox-core/schemas/mcp-config.schema.json"
+        service: "infra"
+        files: [".aiox-core/schemas/mcp-config.schema.json"]
+        verification:
+          type: "command"
+          command: "npm run validate:schema"
+        status: "pending"
+  - id: "phase-3"
+    name: "Templates Setup"
+    subtasks:
+      - id: "3.1"
+        description: "Criar templates de Dockerfile e mcp-config.yaml em .aiox-core/development/templates/mcp/"
+        service: "infra"
+        files: [".aiox-core/development/templates/mcp/Dockerfile.node", ".aiox-core/development/templates/mcp/mcp-config.yaml"]
+        verification:
+          type: "manual"
+          instructions: "Verificar arquivos de template."
+        status: "pending"

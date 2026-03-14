@@ -1,0 +1,14 @@
+{
+  "storyId": "5.3",
+  "title": "Integrated Docker Build & Deploy",
+  "functionalRequirements": [
+    { "id": "FR-1", "description": "Comando 'npm run mcp:build' para disparar build local.", "priority": "P0" },
+    { "id": "FR-2", "description": "Automatizar o deploy via SSH para a VPS Hostinger.", "priority": "P1" }
+  ],
+  "nonFunctionalRequirements": [
+    { "id": "NFR-1", "category": "Efficiency", "requirement": "Uso de camadas Docker para builds rápidos.", "metric": "Build time < 30s para mudanças no src" }
+  ],
+  "constraints": [
+    { "id": "CON-1", "type": "Infra", "description": "Depende da ponte SSH (Epic 4).", "impact": "Scripts devem carregar chaves SSH da .env." }
+  ]
+}

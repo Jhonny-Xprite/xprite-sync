@@ -1,0 +1,74 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AIOX MCP Configuration Schema",
+  "type": "object",
+  "required": ["id", "version", "runtime", "entrypoint"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "Unique identifier for the MCP (kebab-case)."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic versioning (e.g., 1.0.0)."
+    },
+    "runtime": {
+      "type": "string",
+      "enum": ["node", "python", "go", "rust"],
+      "description": "The execution runtime for this MCP."
+    },
+    "description": {
+      "type": "string",
+      "description": "Short description of the MCP capabilities."
+    },
+    "entrypoint": {
+      "type": "string",
+      "description": "Relative path to the main execution file."
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["tools", "resources", "prompts"]
+      },
+      "description": "List of MCP features provided by this server."
+    },
+    "env": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "required": { "type": "boolean" },
+          "description": { "type": "string" },
+          "secret": { "type": "boolean" }
+        }
+      },
+      "description": "Environment variables required by the MCP."
+    },
+    "docker": {
+      "type": "object",
+      "properties": {
+        "base_image": { "type": "string" },
+        "ports": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "volumes": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "build_args": { "type": "object" }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "author": { "type": "string" },
+        "repository": { "type": "string" },
+        "license": { "type": "string" }
+      }
+    }
+  }
+}

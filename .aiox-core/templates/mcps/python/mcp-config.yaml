@@ -1,0 +1,11 @@
+id: "{{name}}"
+version: "1.0.0"
+runtime: "python"
+description: "{{description}}"
+entrypoint: "src/main.py"
+capabilities:
+  - tools
+docker:
+  base_image: "python:3.11-alpine"
+metadata:
+  author: "AIOX Generator"

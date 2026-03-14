@@ -1,0 +1,28 @@
+storyId: "5.7"
+createdAt: "2026-03-14T11:45:00Z"
+createdBy: "@architect"
+status: "pending"
+complexity: "STANDARD"
+phases:
+  - id: "phase-1"
+    name: "Resolver Core"
+    subtasks:
+      - id: "1.1"
+        description: "Desenvolver módulo path-resolver.ts"
+        service: "infra"
+        files: [".aiox-core/development/utils/path-resolver.ts"]
+        verification:
+          type: "command"
+          command: "npm test -- --grep 'path-resolver'"
+        status: "pending"
+  - id: "phase-2"
+    name: "Integration (Centralized)"
+    subtasks:
+      - id: "2.1"
+        description: "Integrar resolver no gateway de chamadas MCP (mcp-gateway) como middleware centralizado. OBS: Não deve ser implementado individualmente nos MCPs."
+        service: "infra"
+        files: [".aiox-core/development/scripts/mcp-gateway-middleware.js"]
+        verification:
+          type: "manual"
+          instructions: "Testar passagem de path Windows para ferramenta Linux via Gateway central."
+        status: "pending"

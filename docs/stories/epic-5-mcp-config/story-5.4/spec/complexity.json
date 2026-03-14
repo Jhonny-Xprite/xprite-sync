@@ -1,0 +1,16 @@
+{
+  "storyId": "5.4",
+  "assessedAt": "2026-03-14T11:45:00Z",
+  "assessedBy": "@architect",
+  "result": "STANDARD",
+  "totalScore": 11,
+  "dimensions": {
+    "scope": { "score": 2, "notes": "Criação de um sistema de descoberta e validação." },
+    "integration": { "score": 2, "notes": "Lê múltiplos arquivos de configuração." },
+    "infrastructure": { "score": 1, "notes": "Sem mudanças de infra." },
+    "knowledge": { "score": 3, "notes": "Requer lógica de validação de schemas JSON." },
+    "risk": { "score": 3, "notes": "Um registry quebrado pode impedir o funcionamento de todos os MCPs." }
+  },
+  "pipelinePhases": ["gather", "assess", "research", "spec", "critique", "plan"],
+  "estimatedEffort": "1 day"
+}

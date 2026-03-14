@@ -1,0 +1,28 @@
+storyId: "5.0"
+createdAt: "2026-03-14T11:45:00Z"
+createdBy: "@architect"
+status: "pending"
+complexity: "SIMPLE"
+phases:
+  - id: "phase-1"
+    name: "Audit & Inventory"
+    subtasks:
+      - id: "1.1"
+        description: "Listar imagens e containers Docker para inventário"
+        service: "infra"
+        files: ["docs/infrastructure/mcp-inventory.md"]
+        verification:
+          type: "command"
+          command: "docker images --format table"
+        status: "pending"
+  - id: "phase-2"
+    name: "Cleanup"
+    subtasks:
+      - id: "2.1"
+        description: "Remover imagens dangling e volumes órfãos não-Supabase"
+        service: "infra"
+        files: ["docs/infrastructure/mcp-inventory.md"]
+        verification:
+          type: "command"
+          command: "docker image prune -f"
+        status: "pending"

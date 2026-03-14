@@ -1,0 +1,282 @@
+{
+  "pipeline_id": "spec-pipeline-epic3-3.10-3.17",
+  "phase": "2-assess",
+  "assessment_date": "2026-03-14T14:15:00Z",
+  "assessor": "architect",
+  "complexity_framework": {
+    "dimensions": [
+      "scope (files affected)",
+      "integration (external apis)",
+      "infrastructure (changes needed)",
+      "knowledge (team familiarity)",
+      "risk (criticality)"
+    ],
+    "scale": "1-5 (1=minimal, 5=extreme)"
+  },
+  "assessments": [
+    {
+      "story_id": "3.10",
+      "title": "Agent Metrics Real-Time",
+      "scores": {
+        "scope": 2,
+        "integration": 2,
+        "infrastructure": 1,
+        "knowledge": 3,
+        "risk": 2
+      },
+      "complexity_score": 10,
+      "complexity_class": "SIMPLE",
+      "effort_estimate_hours": "6-8",
+      "rationale": "Primarily UI component wiring with existing API endpoint. No infrastructure changes. Moderate knowledge of React hooks and polling patterns required.",
+      "key_challenges": [
+        "Real-time polling implementation",
+        "Loading states management",
+        "Error boundary handling"
+      ],
+      "skip_phases": [
+        "3-research (SIMPLE class)"
+      ],
+      "proceed_phases": [
+        "4-write-spec",
+        "5-critique"
+      ]
+    },
+    {
+      "story_id": "3.11",
+      "title": "Stories & Squads Real Reading",
+      "scores": {
+        "scope": 3,
+        "integration": 2,
+        "infrastructure": 1,
+        "knowledge": 2,
+        "risk": 2
+      },
+      "complexity_score": 10,
+      "complexity_class": "SIMPLE",
+      "effort_estimate_hours": "8-10",
+      "rationale": "Standard YAML parsing + API endpoint creation. Familiar patterns from existing services. Moderate scope affecting dashboard tabs.",
+      "key_challenges": [
+        "YAML file discovery and parsing",
+        "Squad data source identification",
+        "Dashboard component refactoring"
+      ],
+      "skip_phases": [
+        "3-research (SIMPLE class)"
+      ],
+      "proceed_phases": [
+        "4-write-spec",
+        "5-critique"
+      ]
+    },
+    {
+      "story_id": "3.12",
+      "title": "GitHub Integration",
+      "scores": {
+        "scope": 2,
+        "integration": 2,
+        "infrastructure": 1,
+        "knowledge": 2,
+        "risk": 1
+      },
+      "complexity_score": 8,
+      "complexity_class": "SIMPLE",
+      "effort_estimate_hours": "4-6",
+      "rationale": "Minimal changes: environment variable substitution + simple endpoint. Low risk, well-understood pattern.",
+      "key_challenges": [
+        "User environment setup verification",
+        "Git remote parsing"
+      ],
+      "skip_phases": [
+        "3-research (SIMPLE class)"
+      ],
+      "proceed_phases": [
+        "4-write-spec",
+        "5-critique"
+      ]
+    },
+    {
+      "story_id": "3.13",
+      "title": "Engine/Tasks/Workflows",
+      "scores": {
+        "scope": 4,
+        "integration": 3,
+        "infrastructure": 2,
+        "knowledge": 3,
+        "risk": 3
+      },
+      "complexity_score": 15,
+      "complexity_class": "STANDARD",
+      "effort_estimate_hours": "12-16",
+      "rationale": "Multiple services refactoring (workflows.ts, engine.ts, github.ts). Integration with health check logic. Moderate risk due to engine availability assumptions.",
+      "key_challenges": [
+        "YAML file scanning and parsing at scale",
+        "Engine health check implementation (timeout handling)",
+        "SystemMetricsCollector integration",
+        "Graceful degradation when engine unavailable"
+      ],
+      "skip_phases": [],
+      "proceed_phases": [
+        "3-research (STANDARD class)",
+        "4-write-spec",
+        "5-critique"
+      ]
+    },
+    {
+      "story_id": "3.14",
+      "title": "Hand-offs Monitoring",
+      "scores": {
+        "scope": 2,
+        "integration": 1,
+        "infrastructure": 1,
+        "knowledge": 2,
+        "risk": 2
+      },
+      "complexity_score": 8,
+      "complexity_class": "SIMPLE",
+      "effort_estimate_hours": "6-8",
+      "rationale": "File system reading + simple dashboard display. No external integrations. Familiar file I/O patterns.",
+      "key_challenges": [
+        "Handoff artifact format parsing",
+        "Real-time directory monitoring"
+      ],
+      "skip_phases": [
+        "3-research (SIMPLE class)"
+      ],
+      "proceed_phases": [
+        "4-write-spec",
+        "5-critique"
+      ]
+    },
+    {
+      "story_id": "3.15",
+      "title": "Agent Memory Visualization",
+      "scores": {
+        "scope": 3,
+        "integration": 1,
+        "infrastructure": 1,
+        "knowledge": 3,
+        "risk": 2
+      },
+      "complexity_score": 10,
+      "complexity_class": "SIMPLE",
+      "effort_estimate_hours": "8-10",
+      "rationale": "YAML frontmatter parsing + dashboard display. Moderate knowledge of memory system structure required. Moderate scope.",
+      "key_challenges": [
+        "Frontmatter metadata extraction",
+        "Memory file hierarchy traversal",
+        "Content preview rendering"
+      ],
+      "skip_phases": [
+        "3-research (SIMPLE class)"
+      ],
+      "proceed_phases": [
+        "4-write-spec",
+        "5-critique"
+      ]
+    },
+    {
+      "story_id": "3.16",
+      "title": "Missing Analytics & Routes",
+      "scores": {
+        "scope": 4,
+        "integration": 3,
+        "infrastructure": 2,
+        "knowledge": 3,
+        "risk": 3
+      },
+      "complexity_score": 15,
+      "complexity_class": "STANDARD",
+      "effort_estimate_hours": "12-16",
+      "rationale": "5 new endpoints with aggregation logic. Integration with multiple data sources (agents, squads, MCP registry). Moderate infrastructure impact.",
+      "key_challenges": [
+        "Analytics aggregation logic",
+        "Performance metrics calculation",
+        "Schema consistency across endpoints",
+        "Data source orchestration"
+      ],
+      "skip_phases": [],
+      "proceed_phases": [
+        "3-research (STANDARD class)",
+        "4-write-spec",
+        "5-critique"
+      ]
+    },
+    {
+      "story_id": "3.17",
+      "title": "Complete Data Integration",
+      "scores": {
+        "scope": 5,
+        "integration": 4,
+        "infrastructure": 3,
+        "knowledge": 4,
+        "risk": 4
+      },
+      "complexity_score": 20,
+      "complexity_class": "COMPLEX",
+      "effort_estimate_hours": "16-20",
+      "rationale": "Largest story with 11 components refactoring. Metrics persistence to Supabase. Multiple integrations (Supabase, MCP, system metrics). High risk: affects core dashboard functionality.",
+      "key_challenges": [
+        "Metrics persistence strategy (batch vs. real-time)",
+        "Supabase integration and schema",
+        "Component refactoring at scale",
+        "Data consistency across views",
+        "Performance under metrics collection",
+        "Removal of all demo/mock data patterns"
+      ],
+      "skip_phases": [],
+      "proceed_phases": [
+        "3-research (COMPLEX class)",
+        "4-write-spec",
+        "5-critique"
+      ]
+    }
+  ],
+  "summary": {
+    "total_stories": 8,
+    "simple_count": 5,
+    "standard_count": 2,
+    "complex_count": 1,
+    "total_complexity_score": 96,
+    "average_complexity": 12,
+    "total_estimated_hours": "72-94",
+    "complexity_distribution": {
+      "SIMPLE": {
+        "count": 5,
+        "stories": ["3.10", "3.11", "3.12", "3.14", "3.15"],
+        "total_hours": "32-42"
+      },
+      "STANDARD": {
+        "count": 2,
+        "stories": ["3.13", "3.16"],
+        "total_hours": "24-32"
+      },
+      "COMPLEX": {
+        "count": 1,
+        "stories": ["3.17"],
+        "total_hours": "16-20"
+      }
+    }
+  },
+  "research_recommendations": {
+    "required_for_standard": [
+      "YAML file system I/O patterns and best practices",
+      "Health check implementation patterns (timeouts, retries)",
+      "SystemMetricsCollector integration examples",
+      "Analytics aggregation query patterns"
+    ],
+    "required_for_complex": [
+      "Supabase metrics persistence strategies (batch size, frequency)",
+      "Real-time data consistency patterns for dashboard",
+      "Component refactoring at scale best practices",
+      "Performance monitoring during metrics collection"
+    ]
+  },
+  "gates": {
+    "proceed_to_write_spec": true,
+    "requires_research": true,
+    "research_scope": "STANDARD and COMPLEX stories (3.13, 3.16, 3.17)",
+    "proceed_to_critique": true
+  },
+  "next_phase": "3-research (for stories 3.13, 3.16, 3.17 only)",
+  "notes": "5 SIMPLE stories can skip research phase. 2 STANDARD stories require focused research on specific patterns. 1 COMPLEX story requires comprehensive research on persistence and integration. All stories proceed to critique phase after research or write-spec."
+}

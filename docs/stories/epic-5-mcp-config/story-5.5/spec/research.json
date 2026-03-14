@@ -1,0 +1,16 @@
+{
+  "storyId": "5.5",
+  "researchedAt": "2026-03-14T11:45:00Z",
+  "researchedBy": "@analyst",
+  "complexity": "STANDARD",
+  "dependencies": [
+    {
+      "name": "docker-ode",
+      "type": "library",
+      "verified": true,
+      "source": "manual",
+      "documentation": { "url": "https://github.com/apocas/dockerode" }
+    }
+  ],
+  "researchNotes": "Dockerode will be used to interact with the Docker API from Node.js."
+}

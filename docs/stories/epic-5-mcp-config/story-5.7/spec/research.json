@@ -1,0 +1,8 @@
+{
+  "storyId": "5.7",
+  "researchedAt": "2026-03-14T11:45:00Z",
+  "researchedBy": "@analyst",
+  "complexity": "STANDARD",
+  "dependencies": [],
+  "researchNotes": "Docker Desktop on Windows uses /run/desktop/mnt/host/c/ for C: drive by default or similar mappings depending on WSL2 backend."
+}

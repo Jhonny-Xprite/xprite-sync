@@ -1,0 +1,15 @@
+{
+  "storyId": "5.6",
+  "title": "Secure Secret Vault",
+  "functionalRequirements": [
+    { "id": "FR-1", "description": "Gestão segura de API Keys via CLI.", "priority": "P0" },
+    { "id": "FR-2", "description": "Workaround estável para o bug de secrets do Docker MCP.", "priority": "P0" },
+    { "id": "FR-3", "description": "Criptografia básica em repouso para chaves locais.", "priority": "P1" }
+  ],
+  "nonFunctionalRequirements": [
+    { "id": "NFR-1", "category": "Security", "requirement": "Zero API Keys em texto claro no git.", "metric": "Git secret scan passage" }
+  ],
+  "constraints": [
+    { "id": "CON-1", "type": "Legacy", "description": "Deve gerar o arquivo docker-mcp.yaml esperado pelo gateway.", "impact": "Formato de saída fixo." }
+  ]
+}

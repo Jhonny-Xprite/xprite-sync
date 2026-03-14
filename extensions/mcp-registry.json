@@ -1,0 +1,289 @@
+{
+  "mcps": [
+    {
+      "id": "aiox-test-node",
+      "version": "1.0.0",
+      "runtime": "node",
+      "description": "Test Node MCP",
+      "entrypoint": "src/index.ts",
+      "capabilities": [
+        "tools",
+        "resources"
+      ],
+      "env": {},
+      "docker": {
+        "base_image": "node:20-slim",
+        "ports": [
+          "3000"
+        ]
+      },
+      "metadata": {
+        "author": "AIOX Generator"
+      },
+      "localPath": "extensions\\mcps\\aiox-test-node"
+    },
+    {
+      "id": "aiox-test-python",
+      "version": "1.0.0",
+      "runtime": "python",
+      "description": "Test Python MCP",
+      "entrypoint": "src/main.py",
+      "capabilities": [
+        "tools"
+      ],
+      "docker": {
+        "base_image": "python:3.11-alpine"
+      },
+      "metadata": {
+        "author": "AIOX Generator"
+      },
+      "localPath": "extensions\\mcps\\aiox-test-python"
+    },
+    {
+      "id": "brave-search",
+      "version": "1.0.0",
+      "runtime": "node",
+      "description": "AIOX Web Research via Brave API",
+      "entrypoint": "src/index.ts",
+      "capabilities": [
+        "tools",
+        "resources"
+      ],
+      "env": {
+        "BRAVE_API_KEY": {
+          "required": true,
+          "secret": true
+        }
+      },
+      "docker": {
+        "base_image": "node:20-slim",
+        "ports": [
+          "3000"
+        ]
+      },
+      "metadata": {
+        "author": "AIOX Generator"
+      },
+      "localPath": "extensions\\mcps\\brave-search"
+    },
+    {
+      "id": "context7",
+      "version": "1.0.0",
+      "runtime": "node",
+      "description": "Up-to-date documentation reader for AI",
+      "entrypoint": "src/index.ts",
+      "capabilities": [
+        "tools",
+        "resources"
+      ],
+      "env": {},
+      "docker": {
+        "base_image": "node:20-slim",
+        "ports": [
+          "3000"
+        ]
+      },
+      "metadata": {
+        "author": "AIOX Generator"
+      },
+      "localPath": "extensions\\mcps\\context7"
+    },
+    {
+      "id": "exa",
+      "version": "1.0.0",
+      "runtime": "node",
+      "description": "Exa AI Search MCP for deep web research",
+      "entrypoint": "src/index.ts",
+      "capabilities": [
+        "tools",
+        "resources"
+      ],
+      "env": {
+        "EXA_API_KEY": {
+          "required": true,
+          "secret": true
+        }
+      },
+      "docker": {
+        "base_image": "node:20-slim",
+        "ports": [
+          "3000"
+        ]
+      },
+      "metadata": {
+        "author": "AIOX Generator"
+      },
+      "localPath": "extensions\\mcps\\exa"
+    },
+    {
+      "id": "fetch",
+      "version": "1.0.0",
+      "runtime": "node",
+      "description": "AIOX Web Content Fetcher",
+      "entrypoint": "src/index.ts",
+      "capabilities": [
+        "tools",
+        "resources"
+      ],
+      "env": {},
+      "docker": {
+        "base_image": "node:20-slim",
+        "ports": [
+          "3000"
+        ]
+      },
+      "metadata": {
+        "author": "AIOX Generator"
+      },
+      "localPath": "extensions\\mcps\\fetch"
+    },
+    {
+      "id": "github",
+      "version": "1.0.0",
+      "runtime": "node",
+      "description": "AIOX Repository Management",
+      "entrypoint": "src/index.ts",
+      "capabilities": [
+        "tools",
+        "resources"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": {
+          "required": true,
+          "secret": true
+        }
+      },
+      "docker": {
+        "base_image": "node:20-slim",
+        "ports": [
+          "3000"
+        ]
+      },
+      "metadata": {
+        "author": "AIOX Generator"
+      },
+      "localPath": "extensions\\mcps\\github"
+    },
+    {
+      "id": "memory",
+      "version": "1.0.0",
+      "runtime": "node",
+      "description": "AIOX Persistent Memory (SQLite)",
+      "entrypoint": "src/index.ts",
+      "capabilities": [
+        "tools",
+        "resources"
+      ],
+      "env": {
+        "MEMORY_DB_PATH": {
+          "required": false,
+          "secret": false
+        }
+      },
+      "docker": {
+        "base_image": "node:20-slim",
+        "ports": [
+          "3000"
+        ]
+      },
+      "metadata": {
+        "author": "AIOX Generator"
+      },
+      "localPath": "extensions\\mcps\\memory"
+    },
+    {
+      "id": "playwright",
+      "version": "1.0.0",
+      "runtime": "node",
+      "description": "Standard Playwright MCP for Browser Automation",
+      "entrypoint": "src/index.ts",
+      "capabilities": [
+        "tools",
+        "resources"
+      ],
+      "env": {},
+      "docker": {
+        "base_image": "node:20-slim",
+        "ports": [
+          "3000"
+        ]
+      },
+      "metadata": {
+        "author": "AIOX Generator"
+      },
+      "localPath": "extensions\\mcps\\playwright"
+    },
+    {
+      "id": "postgresql",
+      "version": "1.0.0",
+      "runtime": "node",
+      "description": "AIOX Data Persistence Connector",
+      "entrypoint": "src/index.ts",
+      "capabilities": [
+        "tools",
+        "resources"
+      ],
+      "env": {
+        "DATABASE_URL": {
+          "required": true,
+          "secret": true
+        }
+      },
+      "docker": {
+        "base_image": "node:20-slim",
+        "ports": [
+          "3000"
+        ]
+      },
+      "metadata": {
+        "author": "AIOX Generator"
+      },
+      "localPath": "extensions\\mcps\\postgresql"
+    },
+    {
+      "id": "puppeteer",
+      "version": "1.0.0",
+      "runtime": "node",
+      "description": "AIOX Dynamic Browser Automation",
+      "entrypoint": "src/index.ts",
+      "capabilities": [
+        "tools",
+        "resources"
+      ],
+      "env": {},
+      "docker": {
+        "base_image": "node:20-slim",
+        "ports": [
+          "3000"
+        ]
+      },
+      "metadata": {
+        "author": "AIOX Generator"
+      },
+      "localPath": "extensions\\mcps\\puppeteer"
+    },
+    {
+      "id": "sequential-thinking",
+      "version": "1.0.0",
+      "runtime": "node",
+      "description": "AIOX Sequential Thinking Loop",
+      "entrypoint": "src/index.ts",
+      "capabilities": [
+        "tools",
+        "resources"
+      ],
+      "env": {},
+      "docker": {
+        "base_image": "node:20-slim",
+        "ports": [
+          "3000"
+        ]
+      },
+      "metadata": {
+        "author": "AIOX Generator"
+      },
+      "localPath": "extensions\\mcps\\sequential-thinking"
+    }
+  ],
+  "updatedAt": "2026-03-14T21:11:12.380Z"
+}

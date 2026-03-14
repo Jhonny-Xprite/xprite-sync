@@ -1,0 +1,17 @@
+{
+  "storyId": "story-5.10",
+  "result": "COMPLEX",
+  "totalScore": 22,
+  "dimensions": {
+    "scope": 5,
+    "integration": 5,
+    "infrastructure": 4,
+    "knowledge": 4,
+    "risk": 4
+  },
+  "flags": [
+    "High integration density (6+ MCPs)",
+    "Significant secret management requirements",
+    "Requires complex Docker environment (Chromium for Puppeteer)"
+  ]
+}

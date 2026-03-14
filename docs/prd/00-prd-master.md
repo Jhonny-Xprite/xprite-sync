@@ -38,7 +38,24 @@
 - Task: Selectively restore the 121 missing assets identified during research.
 - Goal: Provide agents with complete operational guidelines.
 
-### Phase 4: Stability Guarding (Epic 2)
+### Phase 4: Stability Guarding (Epic 2) [x]
 **Step 4.1: Implement Health-Check Suite**
 - Task: Port official `tests/health-check` logic to ensure continuous framework stability.
 - Goal: Zero-regression environment.
+
+### Phase 5: Remote Infrastructure (Epic 4) [x]
+**Step 5.1: VPS Intelligence Bridge**
+- Task: SSH, Ollama management, and VPS health monitoring.
+- Goal: VPS as an operational arm.
+
+### Phase 6: Real-time Dashboard (Epic 3) [🏗️]
+**Step 6.1: Synkra AIOX Integration**
+- Task: Real-time monitoring UI, caching, and tracing.
+- Goal: Full observability.
+
+### Phase 7: MCP Ecosystem Configuration (Epic 5) [🏗️]
+**Step 7.1: MCP Automation & Standards**
+- Task: MCP Blueprint, Scaffolding CLI, and Docker Orchestration.
+- Goal: Scalable extension system.
+
+

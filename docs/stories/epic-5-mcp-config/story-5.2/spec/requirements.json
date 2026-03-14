@@ -1,0 +1,15 @@
+{
+  "storyId": "5.2",
+  "title": "AIOX MCP CLI Generator",
+  "functionalRequirements": [
+    { "id": "FR-1", "description": "Implementar 'npm run mcp:create [name]'.", "priority": "P0" },
+    { "id": "FR-2", "description": "Gerar boilerplate a partir dos templates da 5.1.", "priority": "P0" },
+    { "id": "FR-3", "description": "Suporte a flags '--type=node|python'.", "priority": "P1" }
+  ],
+  "nonFunctionalRequirements": [
+    { "id": "NFR-1", "category": "UX", "requirement": "Tempo de geração < 2s.", "metric": "Console timing" }
+  ],
+  "constraints": [
+    { "id": "CON-1", "type": "Tooling", "description": "Uso de node:fs e path.", "impact": "Zero dep externas se possível." }
+  ]
+}

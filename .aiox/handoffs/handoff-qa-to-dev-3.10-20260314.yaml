@@ -3,7 +3,7 @@ handoff:
   to_agent: dev
   timestamp: '2026-03-14T00:00:00Z'
   status: in-progress
-  consumed: false
+  consumed: true
 
   story_context:
     story_id: '3.10'

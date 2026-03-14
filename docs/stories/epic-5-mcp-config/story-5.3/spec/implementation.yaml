@@ -1,0 +1,28 @@
+storyId: "5.3"
+createdAt: "2026-03-14T11:45:00Z"
+createdBy: "@architect"
+status: "pending"
+complexity: "STANDARD"
+phases:
+  - id: "phase-1"
+    name: "Build Automation"
+    subtasks:
+      - id: "1.1"
+        description: "Criar script de build automatizado mcp-builder.js"
+        service: "infra"
+        files: [".aiox-core/development/scripts/mcp-builder.js"]
+        verification:
+          type: "command"
+          command: "npm run mcp:build context7"
+        status: "pending"
+  - id: "phase-2"
+    name: "Deploy Integration"
+    subtasks:
+      - id: "2.1"
+        description: "Implementar pipeline de deploy via SSH para VPS"
+        service: "infra"
+        files: [".aiox-core/development/scripts/mcp-deployer.js"]
+        verification:
+          type: "manual"
+          instructions: "Verificar se imagem subiu para a VPS."
+        status: "pending"

@@ -1,0 +1,28 @@
+storyId: "5.2"
+createdAt: "2026-03-14T11:45:00Z"
+createdBy: "@architect"
+status: "pending"
+complexity: "STANDARD"
+phases:
+  - id: "phase-1"
+    name: "CLI Development"
+    subtasks:
+      - id: "1.1"
+        description: "Desenvolver script mcp-generator.js em .aiox-core/development/scripts/"
+        service: "infra"
+        files: [".aiox-core/development/scripts/mcp-generator.js"]
+        verification:
+          type: "command"
+          command: "node .aiox-core/development/scripts/mcp-generator.js --test"
+        status: "pending"
+  - id: "phase-2"
+    name: "Integration"
+    subtasks:
+      - id: "2.1"
+        description: "Adicionar scripts mcp:create ao package.json"
+        service: "infra"
+        files: ["package.json"]
+        verification:
+          type: "command"
+          command: "npm run mcp:create test-mcp"
+        status: "pending"

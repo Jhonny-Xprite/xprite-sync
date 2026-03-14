@@ -83,6 +83,7 @@ class StoriesService {
   private parseStoryFile(filePath: string): Story | null {
     try {
       const content = fs.readFileSync(filePath, 'utf-8');
+      const stat = fs.statSync(filePath);
 
       // Extract story ID from filename (e.g., "3.10.story.md" -> "3.10")
       const filename = path.basename(filePath);
@@ -92,30 +93,57 @@ class StoriesService {
       const storyId = idMatch[1];
       const [epicId] = storyId.split('.');
 
-      // Extract YAML frontmatter sections
-      const titleMatch = content.match(/^# 📖 Story.*?:\s*(.+?)$/m);
-      const statusMatch = content.match(/\*\*Status:\*\*\s*[🟢🟠🔴]\s*(\w+)/);
-      const priorityMatch = content.match(/\*\*Priority:\*\*\s*[🔴🟡🟢]\s*(\w+)/);
+      // Extract title from markdown heading (# 📖 Story X.Y: Title)
+      const titleMatch = content.match(/^#\s+📖\s+Story[\s\d.]+:\s*(.+?)$/m);
+      const title = titleMatch ? titleMatch[1].trim() : `Story ${storyId}`;
+
+      // Extract status (flexible emoji + text)
+      const statusMatch = content.match(/\*\*Status:\*\*\s*[^\s]*\s+(\w+(?:\s+\w+)*)/);
+      const statusText = statusMatch ? statusMatch[1].trim().toLowerCase() : 'backlog';
+      let status: Story['status'] = 'backlog';
+      if (statusText.includes('progress')) status = 'in-progress';
+      else if (statusText.includes('review')) status = 'review';
+      else if (statusText.includes('done')) status = 'done';
+      else status = 'backlog';
+
+      // Extract priority (flexible emoji + text)
+      const priorityMatch = content.match(/\*\*Priority:\*\*\s*[^\s]*\s+(\w+)/);
+      const priorityText = priorityMatch ? priorityMatch[1].toLowerCase() : 'medium';
+
+      // Extract story points
       const pointsMatch = content.match(/\*\*Story Points:\*\*\s*([\d\-]+)/);
+      const effort = pointsMatch ? pointsMatch[1] : '5-8';
+
+      // Extract owner/assigned executor
+      const ownerMatch = content.match(/\*\*Owner:\*\*\s*(@\w+)/);
+      const assigned_executor = ownerMatch ? ownerMatch[1] : '@dev';
+
+      // Extract description from "User Story" section
+      const descMatch = content.match(/User Story\n+(.+?)(?=\n---|\n##)/s);
+      const description = descMatch ? descMatch[1].trim().substring(0, 300) : '';
 
       // Calculate progress from AC checkboxes
       const acMatch = content.match(/##\s*🎯\s*Acceptance Criteria[\s\S]*?(?=---|\n##)/);
       const checkboxes = acMatch ? (acMatch[0].match(/- \[x\]/g) || []).length : 0;
       const totalCheckboxes = acMatch ? (acMatch[0].match(/- \[.?\]/g) || []).length : 1;
-      const progress = totalCheckboxes > 0 ? (checkboxes / totalCheckboxes) * 100 : 0;
+      const progress = totalCheckboxes > 0 ? Math.round((checkboxes / totalCheckboxes) * 100) : 0;
+
+      // Get file modification times
+      const createdAt = stat.birthtime.toISOString().split('T')[0];
+      const updatedAt = stat.mtime.toISOString().split('T')[0];
 
       return {
         id: storyId,
         epic_id: epicId,
-        title: titleMatch ? titleMatch[1].trim() : `Story ${storyId}`,
-        description: '',
-        status: (statusMatch ? statusMatch[1].toLowerCase() : 'backlog') as Story['status'],
-        priority: (priorityMatch ? priorityMatch[1].toLowerCase() : 'medium') as Story['priority'],
-        effort: pointsMatch ? pointsMatch[1] : '5-8',
-        progress: Math.round(progress),
-        assigned_executor: '@dev',
-        created_at: new Date().toISOString().split('T')[0],
-        updated_at: new Date().toISOString().split('T')[0],
+        title,
+        description,
+        status,
+        priority: (priorityText as Story['priority']) || 'medium',
+        effort,
+        progress,
+        assigned_executor,
+        created_at: createdAt,
+        updated_at: updatedAt,
         file_path: filePath,
       };
     } catch (error) {

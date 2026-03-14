@@ -1,0 +1,14 @@
+{
+  "storyId": "story-5.10",
+  "functional": [
+    { "id": "FR-1", "description": "Deploy 'memory' MCP (SQLite).", "priority": "P0" },
+    { "id": "FR-2", "description": "Deploy 'sequentialthinking' MCP.", "priority": "P0" },
+    { "id": "FR-3", "description": "Deploy 'brave-search' and 'fetch' MCPs.", "priority": "P1" },
+    { "id": "FR-4", "description": "Deploy 'puppeteer' MCP.", "priority": "P1" },
+    { "id": "FR-5", "description": "Deploy 'github' MCP with PAT integration.", "priority": "P2" },
+    { "id": "FR-6", "description": "Deploy 'supabase/postgres' MCP.", "priority": "P2" }
+  ],
+  "constraints": [
+    { "id": "CON-1", "type": "Encryption", "description": "All API Keys must be in Vault." }
+  ]
+}

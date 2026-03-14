@@ -1,0 +1,47 @@
+{
+  "storyId": "5.0",
+  "title": "Audit, Cleanup & Standardization",
+  "functionalRequirements": [
+    {
+      "id": "FR-1",
+      "description": "Listar todas as imagens Docker com metadados (Repo, Tag, ID, Tamanho).",
+      "priority": "P0"
+    },
+    {
+      "id": "FR-2",
+      "description": "Identificar e listar imagens dangling (<none>).",
+      "priority": "P0"
+    },
+    {
+      "id": "FR-3",
+      "description": "Mapear containers ativos e parados.",
+      "priority": "P0"
+    },
+    {
+      "id": "FR-4",
+      "description": "Listar e identificar volumes, protegendo 'supabase_edge_runtime'.",
+      "priority": "P0"
+    },
+    {
+      "id": "FR-5",
+      "description": "Remover imagens e volumes órfãos de forma segura.",
+      "priority": "P1"
+    }
+  ],
+  "nonFunctionalRequirements": [
+    {
+      "id": "NFR-1",
+      "category": "Safety",
+      "requirement": "Garantir que volumes do Supabase não sejam deletados.",
+      "metric": "Zero deleções acidentais em volumes com label com.supabase.*"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "CON-1",
+      "type": "Environment",
+      "description": "Ambiente Windows com Docker Desktop.",
+      "impact": "Comandos de shell devem ser compatíveis com PowerShell."
+    }
+  ]
+}

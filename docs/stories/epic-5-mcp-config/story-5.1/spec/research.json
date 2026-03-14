@@ -1,0 +1,23 @@
+{
+  "storyId": "5.1",
+  "researchedAt": "2026-03-14T11:45:00Z",
+  "researchedBy": "@analyst",
+  "complexity": "STANDARD",
+  "dependencies": [
+    {
+      "name": "Model Context Protocol",
+      "type": "api",
+      "verified": true,
+      "source": "manual",
+      "documentation": { "url": "https://modelcontextprotocol.io" }
+    },
+    {
+      "name": "SynkraAI mcp-ecosystem",
+      "type": "library",
+      "verified": true,
+      "source": "codebase",
+      "documentation": { "url": "repositories/external/mcp-ecosystem/README.md" }
+    }
+  ],
+  "researchNotes": "SynkraAI uses simple JSON mappings for servers and presets. AIOX will expand this to include Docker build definitions."
+}

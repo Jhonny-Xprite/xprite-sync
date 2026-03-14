@@ -1,0 +1,13 @@
+handoff:
+  from_agent: "@architect"
+  to_agent: "@devops"
+  epic: "Epic 5 — MCP-CONFIG"
+  story: "5.3 — Integrated Docker Build & Deploy"
+  context: "Standards for Docker builds defined. Target is the VPS running linux. Need to use ssh-executor.js."
+  task: "Implement 'npm run mcp:deploy' including Docker build (multi-stage) and deployment to VPS via SSH."
+  specs:
+    - path: "docs/stories/epic-5-mcp-config/story-5.3/spec/spec.md"
+    - path: "docs/stories/epic-5-mcp-config/story-5.3/spec/requirements.json"
+    - path: "docs/stories/epic-5-mcp-config/story-5.3/spec/implementation.yaml"
+  status: "READY"
+  consumed: false

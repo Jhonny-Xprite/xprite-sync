@@ -1,0 +1,28 @@
+storyId: "5.6"
+createdAt: "2026-03-14T11:45:00Z"
+createdBy: "@architect"
+status: "pending"
+complexity: "STANDARD"
+phases:
+  - id: "phase-1"
+    name: "Vault Core"
+    subtasks:
+      - id: "1.1"
+        description: "Implementar mcp-vault.js para criptografia de keys"
+        service: "infra"
+        files: [".aiox-core/development/scripts/mcp-vault.js"]
+        verification:
+          type: "command"
+          command: "node .aiox-core/development/scripts/mcp-vault.js --encrypt"
+        status: "pending"
+  - id: "phase-2"
+    name: "Injection Logic"
+    subtasks:
+      - id: "2.1"
+        description: "Implementar gerador de docker-mcp.yaml com injeção de segredos"
+        service: "infra"
+        files: [".aiox-core/development/scripts/mcp-config-injector.js"]
+        verification:
+          type: "command"
+          command: "npm run mcp:keys:apply"
+        status: "pending"

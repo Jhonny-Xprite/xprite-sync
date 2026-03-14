@@ -1,0 +1,295 @@
+{
+  "pipeline_id": "spec-pipeline-epic3-3.10-3.17",
+  "phase": "3-research",
+  "research_date": "2026-03-14T14:18:00Z",
+  "researcher": "analyst",
+  "scope": "STANDARD (3.13, 3.16) + COMPLEX (3.17) stories",
+  "research_findings": {
+    "story_3_13_engine_tasks_workflows": {
+      "title": "Engine/Tasks/Workflows",
+      "complexity_class": "STANDARD",
+      "dependencies": [
+        {
+          "category": "File I/O & YAML Parsing",
+          "pattern": "Directory scanning + YAML parsing",
+          "reference": "Similar to StoriesService.findStoryFiles() + parseStoryFile()",
+          "key_insight": "Use fs.readdirSync() with recursive option or walk-sync library for YAML discovery",
+          "implementation_notes": "Existing pattern in codebase - copy from packages/api/src/services/stories.ts",
+          "risk_level": "LOW",
+          "effort": "2-3 hours"
+        },
+        {
+          "category": "Health Check Pattern",
+          "pattern": "HTTP endpoint health check with timeout",
+          "reference": "Engine at http://localhost:4002/health (2-second timeout)",
+          "key_insight": "Use axios or node-fetch with timeout configuration. Graceful fallback on timeout/failure.",
+          "implementation_notes": [
+            "Set timeout to 2000ms",
+            "Return engine_available: true/false flag",
+            "Never return fake data when engine unavailable",
+            "Use AbortController for request cancellation"
+          ],
+          "risk_level": "MEDIUM",
+          "effort": "3-4 hours"
+        },
+        {
+          "category": "SystemMetricsCollector Integration",
+          "pattern": "System metrics collection and formatting",
+          "reference": "Located in packages/api/src/services/ - use existing implementation",
+          "key_insight": "Call collectCurrentMetrics() and format response with health indicators",
+          "implementation_notes": [
+            "Import SystemMetricsCollector from existing service",
+            "Map system metrics to EngineStatus interface",
+            "Calculate health based on CPU threshold (<90% = healthy)"
+          ],
+          "risk_level": "LOW",
+          "effort": "2-3 hours"
+        }
+      ],
+      "critical_patterns": [
+        "Error handling: never return fake data as fallback",
+        "Honest flags: engine_available boolean must reflect real state",
+        "Graceful degradation: UI must handle unavailable engine without crashing"
+      ],
+      "blockers": [
+        "Must verify SystemMetricsCollector exists and works",
+        "Must confirm engine health endpoint URL and response format"
+      ]
+    },
+    "story_3_16_analytics_routes": {
+      "title": "Missing Analytics & Routes",
+      "complexity_class": "STANDARD",
+      "dependencies": [
+        {
+          "category": "Agent List Schema",
+          "pattern": "Define 12 AIOX agents response format",
+          "reference": ".aiox-core/data/agents-registry.yaml or hardcoded list",
+          "key_insight": "All 12 agents documented in agent authority matrix: @dev, @qa, @architect, @pm, @po, @sm, @analyst, @data-engineer, @ux-design-expert, @devops, @aiox-master, etc.",
+          "implementation_notes": [
+            "Response format: { id, name, icon, role, status }",
+            "Status can be: 'online', 'offline', 'idle'",
+            "Use hardcoded list for MVP - agents are static"
+          ],
+          "risk_level": "LOW",
+          "effort": "2 hours"
+        },
+        {
+          "category": "Squad Detection Pattern",
+          "pattern": "Extract squad information from project",
+          "reference": "core-config.yaml or team_members table",
+          "key_insight": "Squads can be extracted from: (1) core-config.yaml squads section, (2) team_members table by squad_id grouping, (3) hard-coded project structure",
+          "implementation_notes": [
+            "Check core-config.yaml first for static squad definition",
+            "Fall back to team_members table if exists",
+            "Response: { id, name, description, members_count, status }",
+            "Multiple data sources = need integration orchestration"
+          ],
+          "risk_level": "MEDIUM",
+          "effort": "3-4 hours"
+        },
+        {
+          "category": "MCP Registry Schema",
+          "pattern": "Define MCP registry response format",
+          "reference": "extensions/mcp-registry.json or .aiox-core/data/tool-registry.yaml",
+          "key_insight": "MCP servers are documented in mcp-registry.json. Need to read and format response.",
+          "implementation_notes": [
+            "Response format: { id, name, type, status, version }",
+            "Status: enabled, disabled, error",
+            "Use existing registry file as data source"
+          ],
+          "risk_level": "LOW",
+          "effort": "2-3 hours"
+        },
+        {
+          "category": "Analytics Aggregation",
+          "pattern": "Aggregate metrics from multiple sources",
+          "reference": "Combine agent metrics, system metrics, squad productivity",
+          "key_insight": "Analytics endpoint needs to aggregate from: metrics table, workflows, stories, agent activity",
+          "implementation_notes": [
+            "Create aggregation queries for: total_agents, active_agents, total_workflows, total_stories",
+            "Cache results or compute on-demand (query performance impact)",
+            "Response format: { overview: { ... }, timestamp }"
+          ],
+          "risk_level": "MEDIUM",
+          "effort": "4-5 hours"
+        },
+        {
+          "category": "Performance Metrics Calculation",
+          "pattern": "Calculate per-agent performance stats",
+          "reference": "System metrics + agent activity logs",
+          "key_insight": "Performance endpoint aggregates: success_rate, average_latency, error_count by agent",
+          "implementation_notes": [
+            "Query metrics table with agent_id grouping",
+            "Calculate percentiles: p50, p95, p99 latency",
+            "Time window: last 24h, last 7d, last 30d options",
+            "Handle missing data gracefully"
+          ],
+          "risk_level": "MEDIUM",
+          "effort": "4-6 hours"
+        }
+      ],
+      "critical_patterns": [
+        "Schema consistency: all endpoints must use consistent response format",
+        "Data source multiplicity: coordinate between hardcoded, file-based, and DB sources",
+        "Performance: aggregation queries may be slow - consider caching strategy"
+      ],
+      "blockers": [
+        "Must verify squad data source availability (core-config.yaml vs team_members table)",
+        "Must confirm MCP registry file location and format",
+        "Must validate metrics table schema for aggregation queries"
+      ]
+    },
+    "story_3_17_complete_integration": {
+      "title": "Complete Data Integration",
+      "complexity_class": "COMPLEX",
+      "dependencies": [
+        {
+          "category": "Metrics Persistence Strategy",
+          "pattern": "SystemMetricsCollector → Supabase (every 60s)",
+          "reference": "Batch persistence pattern - collect metrics and insert at interval",
+          "key_insight": "Don't insert on every metric update. Collect for 60s, then batch insert to Supabase.",
+          "implementation_notes": [
+            "Use setInterval(60000) to trigger batch insert",
+            "Collect metrics in memory buffer",
+            "Insert to Supabase system_metrics table",
+            "Handle insert errors gracefully (log, don't crash)",
+            "Consider table cleanup: archive old records > 30 days"
+          ],
+          "risk_level": "HIGH",
+          "effort": "6-8 hours"
+        },
+        {
+          "category": "Supabase Integration Schema",
+          "pattern": "Define system_metrics table schema",
+          "reference": "Needs migration: 20260314_system_metrics.sql",
+          "key_insight": "Table must support metrics collection: timestamp, agent_id, cpu, memory, latency, success_rate, etc.",
+          "implementation_notes": [
+            "Columns: id (uuid), collected_at (timestamp), agent_id, cpu_percentage, memory_usage_mb, latency_ms, success_rate, error_count, processed_count",
+            "Index on: collected_at, agent_id for query performance",
+            "Retention: keep last 90 days, auto-archive older"
+          ],
+          "risk_level": "MEDIUM",
+          "effort": "3-4 hours"
+        },
+        {
+          "category": "Component Refactoring at Scale",
+          "pattern": "Remove DEMO flags and wire real data across 11 components",
+          "reference": "AgentsTab, CostsTab, OverviewTab, RoadmapView + 7 others",
+          "key_insight": "Large scope: touch many components. Risk of regression. Need careful planning.",
+          "implementation_notes": [
+            "Components to refactor: AgentsMonitor, CostsMetrics, OverviewStats, RoadmapView, StoriesTab, SquadsTab, WorkflowsTab, EngineStatus, HandoffsTab, MemoryTab, AnalyticsTab",
+            "Strategy: one component at a time, test after each",
+            "Remove all DEMO conditional rendering and hardcoded data",
+            "Update all hooks: useAgents, useDashboard, useMetrics, etc.",
+            "Regression risk: need comprehensive testing"
+          ],
+          "risk_level": "HIGH",
+          "effort": "8-12 hours"
+        },
+        {
+          "category": "Real-Time Data Consistency",
+          "pattern": "Keep dashboard in sync with real data sources",
+          "reference": "Polling intervals, cache invalidation strategy",
+          "key_insight": "Multiple data sources may update at different rates. Need strategy for consistency.",
+          "implementation_notes": [
+            "Define refresh intervals for each data type: metrics (5s), stories (30s), workflows (30s), agents (10s)",
+            "Use React Query or SWR for cache management",
+            "Implement optimistic updates for user actions",
+            "Handle stale data gracefully (show 'data from 30s ago' indicator)"
+          ],
+          "risk_level": "MEDIUM",
+          "effort": "4-6 hours"
+        },
+        {
+          "category": "Performance Monitoring During Collection",
+          "pattern": "Monitor impact of metrics collection on dashboard",
+          "reference": "Metrics collection runs every 60s. May impact UI responsiveness.",
+          "key_insight": "Metrics persistence must not block UI. Use async/background processing.",
+          "implementation_notes": [
+            "Metrics collection should run in background (async, no await)",
+            "Monitor dashboard performance: FCP, LCP, CLS metrics",
+            "Implement error logging: if metrics insert fails, log but don't crash",
+            "Consider worker thread or background job queue for heavy operations"
+          ],
+          "risk_level": "HIGH",
+          "effort": "3-5 hours"
+        },
+        {
+          "category": "useDashboard Hook Refactoring",
+          "pattern": "Single source of truth for dashboard state",
+          "reference": "Current hook may be tightly coupled to mock data",
+          "key_insight": "Hook must aggregate data from multiple real API endpoints and manage loading/error states.",
+          "implementation_notes": [
+            "Refactor hook to: (1) fetch from all endpoints in parallel, (2) handle loading/error for each, (3) merge results, (4) provide unified state",
+            "Use Promise.allSettled() for resilience (one endpoint failing shouldn't crash others)",
+            "Implement retry logic for transient failures",
+            "Cache results to avoid re-fetching on every render"
+          ],
+          "risk_level": "MEDIUM",
+          "effort": "4-5 hours"
+        }
+      ],
+      "critical_patterns": [
+        "Async non-blocking metrics collection: background task, not blocking",
+        "Graceful degradation: if any data source fails, show what's available",
+        "Data honesty: never use fake data. Show empty state if no real data.",
+        "Performance first: metrics collection must not impact dashboard UX"
+      ],
+      "integration_order": [
+        "1. Supabase schema migration (system_metrics table)",
+        "2. SystemMetricsCollector → Supabase persistence logic",
+        "3. useDashboard hook refactoring (aggregate all real endpoints)",
+        "4. Component refactoring one at a time: remove DEMO, wire real data",
+        "5. Real-time sync: implement polling intervals and cache strategy",
+        "6. Performance testing: ensure no regression from metrics collection"
+      ],
+      "blockers": [
+        "Must have Supabase team_members table from Phase 0",
+        "Must confirm SystemMetricsCollector exists and is working",
+        "Must validate all 5 Phase 2 endpoints exist before wiring components",
+        "Must test metrics collection performance impact before deploying"
+      ]
+    }
+  },
+  "cross_story_patterns": {
+    "file_i_o_pattern": {
+      "description": "Multiple stories read files: YAML workflows, stories, handoffs, memory files",
+      "stories": ["3.13", "3.11", "3.14", "3.15"],
+      "recommendation": "Create shared utility: FileSystemReader with caching"
+    },
+    "supabase_integration": {
+      "description": "Multiple stories read/write to Supabase: team_members, metrics, etc.",
+      "stories": ["3.13", "3.16", "3.17"],
+      "recommendation": "Centralize Supabase queries. Use prepared statements to avoid N+1."
+    },
+    "api_endpoint_schema": {
+      "description": "All endpoints must use consistent response format",
+      "pattern": "{ data: T[], total: number, limit?: number }",
+      "stories": ["3.10", "3.11", "3.12", "3.13", "3.14", "3.15", "3.16"],
+      "recommendation": "Define ApiResponse<T> interface in shared types"
+    },
+    "error_handling": {
+      "description": "Consistent error handling across all new endpoints",
+      "pattern": "Never return fake data. Return { data: [], total: 0 } or error response",
+      "stories": ["All"],
+      "recommendation": "Create error handler middleware: standardize error format"
+    }
+  },
+  "research_summary": {
+    "total_findings": 18,
+    "high_risk_items": 5,
+    "medium_risk_items": 7,
+    "low_risk_items": 6,
+    "critical_blockers": 8,
+    "recommended_utilities": [
+      "FileSystemReader (for YAML, stories, handoffs, memory)",
+      "ApiResponse<T> interface (consistent response format)",
+      "HealthCheckClient (with timeout and graceful degradation)",
+      "MetricsBatchCollector (aggregation and Supabase persistence)",
+      "AnalyticsAggregator (for complex queries)"
+    ],
+    "estimated_additional_effort": "8-12 hours for utility development and testing"
+  },
+  "next_phase": "4-write-spec",
+  "notes": "Research complete. All dependencies identified. Ready for spec writing. Recommend starting with Phase 0 (Supabase setup) as prerequisite before any story implementation."
+}

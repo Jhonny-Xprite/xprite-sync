@@ -1,0 +1,8 @@
+{
+  "storyId": "5.2",
+  "researchedAt": "2026-03-14T11:45:00Z",
+  "researchedBy": "@analyst",
+  "complexity": "STANDARD",
+  "dependencies": [],
+  "researchNotes": "Existing templates in .aiox-core/development/templates will be used. Script will be added to package.json."
+}

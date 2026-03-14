@@ -1,0 +1,28 @@
+storyId: "5.5"
+createdAt: "2026-03-14T11:45:00Z"
+createdBy: "@architect"
+status: "pending"
+complexity: "STANDARD"
+phases:
+  - id: "phase-1"
+    name: "Monitoring Core"
+    subtasks:
+      - id: "1.1"
+        description: "Configurar dockerode e logger centralizado"
+        service: "infra"
+        files: [".aiox-core/development/scripts/mcp-pulse-core.js"]
+        verification:
+          type: "command"
+          command: "node .aiox-core/development/scripts/mcp-pulse-core.js --check"
+        status: "pending"
+  - id: "phase-2"
+    name: "Dashboard Development"
+    subtasks:
+      - id: "2.1"
+        description: "Desenvolver painel Pulse CLI"
+        service: "infra"
+        files: [".aiox-core/development/scripts/mcp-pulse-ui.js"]
+        verification:
+          type: "manual"
+          instructions: "Executar npm run mcp:pulse."
+        status: "pending"

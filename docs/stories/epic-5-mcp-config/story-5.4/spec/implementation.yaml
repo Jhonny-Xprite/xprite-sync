@@ -1,0 +1,28 @@
+storyId: "5.4"
+createdAt: "2026-03-14T11:45:00Z"
+createdBy: "@architect"
+status: "pending"
+complexity: "STANDARD"
+phases:
+  - id: "phase-1"
+    name: "Validation Core"
+    subtasks:
+      - id: "1.1"
+        description: "Implementar mcp-validator.js usando Ajv"
+        service: "infra"
+        files: [".aiox-core/development/scripts/mcp-validator.js"]
+        verification:
+          type: "command"
+          command: "node .aiox-core/development/scripts/mcp-validator.js --check"
+        status: "pending"
+  - id: "phase-2"
+    name: "Registry Generation"
+    subtasks:
+      - id: "2.1"
+        description: "Desenvolver mcp-registry-generator.js"
+        service: "infra"
+        files: [".aiox-core/development/scripts/mcp-registry-generator.js"]
+        verification:
+          type: "command"
+          command: "npm run mcp:sync"
+        status: "pending"

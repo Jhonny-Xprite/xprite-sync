@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  brave-search:
+    image: mcp/brave-search:latest
+    container_name: mcp-brave-search
+    environment:
+      - BRAVE_API_KEY=${BRAVE_API_KEY}
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+
+  memory:
+    image: mcp/memory:latest
+    container_name: mcp-memory
+    environment:
+      - MEMORY_DB_PATH=/app/data/memory.db
+    volumes:
+      - ./.tmp/memory:/app/data
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+
+  playwright:
+    image: mcp/playwright:latest
+    container_name: mcp-playwright
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+
+  sequential-thinking:
+    image: mcp/sequential-thinking:latest
+    container_name: mcp-sequential-thinking
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+
+  github:
+    image: mcp/github:latest
+    container_name: mcp-github
+    environment:
+      - GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_PESSOAL_ACESS_TOKEN}
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+
+  context7:
+    image: mcp/context7:latest
+    container_name: mcp-context7
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+
+  fetch:
+    image: mcp/fetch:latest
+    container_name: mcp-fetch
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+
+  exa:
+    image: mcp/exa:latest
+    container_name: mcp-exa
+    environment:
+      - EXA_API_KEY=${EXA_API_KEY}
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+
+  postgresql:
+    image: mcp/postgresql:latest
+    container_name: mcp-postgresql
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+
+  puppeteer:
+    image: mcp/puppeteer:latest
+    container_name: mcp-puppeteer
+    restart: unless-stopped
+    stdin_open: true
+    tty: true

@@ -1,0 +1,14 @@
+{
+  "storyId": "5.7",
+  "title": "Path Translation Layer",
+  "functionalRequirements": [
+    { "id": "FR-1", "description": "Módulo 'path-resolver.js' para tradução Host <-> Container.", "priority": "P0" },
+    { "id": "FR-2", "description": "Interceptador global de caminhos em argumentos de ferramentas.", "priority": "P0" }
+  ],
+  "nonFunctionalRequirements": [
+    { "id": "NFR-1", "category": "Performance", "requirement": "Overhead de tradução negligenciável.", "metric": "< 5ms por path" }
+  ],
+  "constraints": [
+    { "id": "CON-1", "type": "OS", "description": "Host Windows -> Container Linux.", "impact": "Deve lidar com backslashes e drives (D:\\\\)." }
+  ]
+}

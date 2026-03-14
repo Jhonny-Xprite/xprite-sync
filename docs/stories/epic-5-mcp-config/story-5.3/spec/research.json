@@ -1,0 +1,15 @@
+{
+  "storyId": "5.3",
+  "researchedAt": "2026-03-14T11:45:00Z",
+  "researchedBy": "@analyst",
+  "complexity": "STANDARD",
+  "dependencies": [
+    {
+      "name": "Docker CLI",
+      "type": "infrastructure",
+      "verified": true,
+      "source": "manual"
+    }
+  ],
+  "researchNotes": "SSH integration from Epic 4 is required. Docker Hub or private registry not needed yet - using direct SSH build/load."
+}

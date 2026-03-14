@@ -1,0 +1,22 @@
+{
+  "name": "exa",
+  "version": "1.0.0",
+  "description": "Exa AI Search MCP for deep web research",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc --watch",
+    "inspect": "mcp-inspect dist/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "exa-js": "^2.8.0",
+    "fs-extra": "^11.3.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

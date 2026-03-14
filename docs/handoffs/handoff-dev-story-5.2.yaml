@@ -1,0 +1,13 @@
+handoff:
+  from_agent: "@architect"
+  to_agent: "@dev"
+  epic: "Epic 5 — MCP-CONFIG"
+  story: "5.2 — AIOX MCP CLI Generator"
+  context: "Templates for Node-TS and Python MCPs created in .aiox-core/templates/mcps/. Standards defined in mcp-standards.md."
+  task: "Implement 'npm run mcp:create' allowing the user to choose name, description, and preset. Use fs-extra for scaffolding."
+  specs:
+    - path: "docs/stories/epic-5-mcp-config/story-5.2/spec/spec.md"
+    - path: "docs/stories/epic-5-mcp-config/story-5.2/spec/requirements.json"
+    - path: "docs/stories/epic-5-mcp-config/story-5.2/spec/implementation.yaml"
+  status: "READY"
+  consumed: false

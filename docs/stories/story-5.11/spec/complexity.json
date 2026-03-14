@@ -1,0 +1,12 @@
+{
+  "storyId": "story-5.11",
+  "result": "STANDARD",
+  "totalScore": 10,
+  "dimensions": {
+    "scope": 3,
+    "integration": 2,
+    "infrastructure": 3,
+    "knowledge": 1,
+    "risk": 1
+  }
+}

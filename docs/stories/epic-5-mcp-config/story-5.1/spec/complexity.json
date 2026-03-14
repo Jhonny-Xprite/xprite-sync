@@ -1,0 +1,16 @@
+{
+  "storyId": "5.1",
+  "assessedAt": "2026-03-14T11:45:00Z",
+  "assessedBy": "@architect",
+  "result": "STANDARD",
+  "totalScore": 12,
+  "dimensions": {
+    "scope": { "score": 3, "notes": "Define padrões para todo o diretório de extensões." },
+    "integration": { "score": 2, "notes": "Integração visual/de lógica com SynkraAI." },
+    "infrastructure": { "score": 2, "notes": "Configuração de Dockerfiles." },
+    "knowledge": { "score": 3, "notes": "Requer entendimento profundo do protocolo MCP." },
+    "risk": { "score": 2, "notes": "Padrão mal definido afetará todas as extensões futuras." }
+  },
+  "pipelinePhases": ["gather", "assess", "research", "spec", "critique", "plan"],
+  "estimatedEffort": "1-2 days"
+}

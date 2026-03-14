@@ -1,0 +1,19 @@
+id: "playwright"
+version: "1.0.0"
+runtime: "node"
+description: "Standard Playwright MCP for Browser Automation"
+entrypoint: "src/index.ts"
+capabilities:
+  - tools
+  - resources
+env: {}
+# Example:
+# API_KEY:
+#   required: true
+#   secret: true
+docker:
+  base_image: "node:20-slim"
+  ports:
+    - "3000"
+metadata:
+  author: "AIOX Generator"

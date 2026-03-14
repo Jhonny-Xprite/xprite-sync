@@ -1,0 +1,18 @@
+id: "exa"
+version: "1.0.0"
+runtime: "node"
+description: "Exa AI Search MCP for deep web research"
+entrypoint: "src/index.ts"
+capabilities:
+  - tools
+  - resources
+env:
+  EXA_API_KEY:
+    required: true
+    secret: true
+docker:
+  base_image: "node:20-slim"
+  ports:
+    - "3000"
+metadata:
+  author: "AIOX Generator"

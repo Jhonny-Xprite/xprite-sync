@@ -1,0 +1,15 @@
+{
+  "storyId": "5.4",
+  "title": "MCP Registry & Schema Validation",
+  "functionalRequirements": [
+    { "id": "FR-1", "description": "Scanner de diretórios para '/extensions/mcps/'.", "priority": "P0" },
+    { "id": "FR-2", "description": "Validação de schema JSON 'mcp-config.yaml'.", "priority": "P0" },
+    { "id": "FR-3", "description": "Geração do relatório 'mcp-registry.json'.", "priority": "P1" }
+  ],
+  "nonFunctionalRequirements": [
+    { "id": "NFR-1", "category": "Quality", "requirement": "Bloquear build se o schema estiver inválido.", "metric": "Lint failure" }
+  ],
+  "constraints": [
+    { "id": "CON-1", "type": "Format", "description": "Compatível com presets SynkraAI.", "impact": "Registry deve ser exportável." }
+  ]
+}

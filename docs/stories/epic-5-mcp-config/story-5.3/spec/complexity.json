@@ -1,0 +1,16 @@
+{
+  "storyId": "5.3",
+  "assessedAt": "2026-03-14T11:45:00Z",
+  "assessedBy": "@architect",
+  "result": "STANDARD",
+  "totalScore": 13,
+  "dimensions": {
+    "scope": { "score": 3, "notes": "Afeta scripts de build e processos de deploy." },
+    "integration": { "score": 3, "notes": "Integração via SSH com servidor remoto." },
+    "infrastructure": { "score": 3, "notes": "Criação de containers e orquestração Docker." },
+    "knowledge": { "score": 2, "notes": "Usa padrões Docker e Shell." },
+    "risk": { "score": 2, "notes": "Risco de downtime em MCPs remotos se o deploy falhar." }
+  },
+  "pipelinePhases": ["gather", "assess", "research", "spec", "critique", "plan"],
+  "estimatedEffort": "1-2 days"
+}

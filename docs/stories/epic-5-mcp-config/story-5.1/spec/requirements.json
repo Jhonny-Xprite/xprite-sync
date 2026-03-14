@@ -1,0 +1,16 @@
+{
+  "storyId": "5.1",
+  "title": "AIOX MCP Blueprint & Standards",
+  "functionalRequirements": [
+    { "id": "FR-1", "description": "Definir hierarquia de diretórios em '/extensions/mcps/{name}/'.", "priority": "P0" },
+    { "id": "FR-2", "description": "Especificar Schema JSON para 'mcp-config.yaml'.", "priority": "P0" },
+    { "id": "FR-3", "description": "Padronizar nomenclatura de ferramentas (snake_case).", "priority": "P0" },
+    { "id": "FR-4", "description": "Definir padrão de Dockerfile multi-stage.", "priority": "P1" }
+  ],
+  "nonFunctionalRequirements": [
+    { "id": "NFR-1", "category": "Standards", "requirement": "Compatibilidade com SynkraAI mcp-ecosystem.", "metric": "Validação de schema bem-sucedida" }
+  ],
+  "constraints": [
+    { "id": "CON-1", "type": "Technical", "description": "Deve suportar Node.js e Python.", "impact": "Templates devem ser políglotas." }
+  ]
+}

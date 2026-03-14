@@ -1,0 +1,15 @@
+{
+  "storyId": "5.6",
+  "researchedAt": "2026-03-14T11:45:00Z",
+  "researchedBy": "@analyst",
+  "complexity": "STANDARD",
+  "dependencies": [
+    {
+      "name": "crypto",
+      "type": "library",
+      "verified": true,
+      "source": "manual"
+    }
+  ],
+  "researchNotes": "The Docker MCP bug relates to how env vars are passed to containers. The vault will pre-process these into the YAML file."
+}

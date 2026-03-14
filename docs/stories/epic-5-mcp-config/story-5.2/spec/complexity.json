@@ -1,0 +1,16 @@
+{
+  "storyId": "5.2",
+  "assessedAt": "2026-03-14T11:45:00Z",
+  "assessedBy": "@architect",
+  "result": "STANDARD",
+  "totalScore": 10,
+  "dimensions": {
+    "scope": { "score": 2, "notes": "Criação de scripts de automação." },
+    "integration": { "score": 2, "notes": "Interage com o sistema de arquivos local." },
+    "infrastructure": { "score": 1, "notes": "Mudanças mínimas." },
+    "knowledge": { "score": 2, "notes": "Requer lógica de templating." },
+    "risk": { "score": 3, "notes": "Geração errada de código pode levar a bugs em mcps." }
+  },
+  "pipelinePhases": ["gather", "assess", "research", "spec", "critique", "plan"],
+  "estimatedEffort": "1 day"
+}

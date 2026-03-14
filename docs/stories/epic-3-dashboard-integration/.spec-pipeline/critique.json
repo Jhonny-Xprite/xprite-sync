@@ -1,0 +1,398 @@
+{
+  "pipeline_id": "spec-pipeline-epic3-3.10-3.17",
+  "phase": "5-critique",
+  "critique_date": "2026-03-14T14:25:00Z",
+  "reviewer": "qa",
+  "review_scope": "All 8 story specifications in spec-bundle.md",
+  "overall_verdict": "APPROVED",
+  "overall_score": 4.2,
+  "score_breakdown": {
+    "completeness": 4.5,
+    "clarity": 4.3,
+    "technical_feasibility": 4.0,
+    "risk_identification": 4.1,
+    "test_coverage": 4.0,
+    "architecture_alignment": 4.2
+  },
+  "strengths": [
+    "Comprehensive API contracts defined for all endpoints",
+    "Clear acceptance criteria mapped to user stories",
+    "Detailed implementation steps with code examples",
+    "Research phase identified key patterns and blockers",
+    "Risk levels explicitly stated for each dependency",
+    "Testing strategy defined at multiple levels (unit, integration, e2e)",
+    "Performance considerations included (especially for story 3.17)",
+    "Graceful degradation patterns emphasized throughout",
+    "Database migration SQL provided",
+    "Implementation order specified (critical for story 3.17)"
+  ],
+  "concerns": [
+    {
+      "severity": "MEDIUM",
+      "area": "Story 3.17 - Metrics Persistence",
+      "issue": "Race condition potential during setInterval collection",
+      "recommendation": "Implement mutex/lock on metrics buffer OR use queue-based approach",
+      "impact": "Data duplication or loss in metrics if collection overlaps",
+      "suggested_fix": "Use p-queue or bull for job queue management"
+    },
+    {
+      "severity": "MEDIUM",
+      "area": "Story 3.13 - Engine Health Check",
+      "issue": "2-second timeout may be too short depending on network latency",
+      "recommendation": "Make timeout configurable via environment variable",
+      "impact": "Engine may appear unavailable when just slow",
+      "suggested_fix": "Set ENGINE_HEALTH_CHECK_TIMEOUT_MS env var with 2000ms default"
+    },
+    {
+      "severity": "LOW",
+      "area": "Story 3.16 - Analytics Aggregation",
+      "issue": "No caching strategy defined for aggregation queries",
+      "recommendation": "Implement Redis caching with 5-minute TTL",
+      "impact": "Potential performance issue with frequent analytics requests",
+      "suggested_fix": "Add Redis-based query caching layer"
+    },
+    {
+      "severity": "LOW",
+      "area": "Story 3.11 - Squad Data Source Switching",
+      "issue": "Switching between core-config.yaml and team_members table may cause inconsistency",
+      "recommendation": "Define clear priority order: DB first, config fallback",
+      "impact": "Confusion if data sources disagree",
+      "suggested_fix": "Document priority in API contract: 'Reads from team_members table; falls back to core-config.yaml if empty'"
+    },
+    {
+      "severity": "LOW",
+      "area": "All Stories - Error Handling",
+      "issue": "Generic error handling pattern not specified",
+      "recommendation": "Define standardized error response format",
+      "impact": "Inconsistent error messages across endpoints",
+      "suggested_fix": "Create ApiError interface: { error: string; code: string; statusCode: number }"
+    }
+  ],
+  "blockers": [
+    {
+      "id": "blocker-1",
+      "story": "All (prerequisite)",
+      "title": "Phase 0 - Foundation (Supabase setup required)",
+      "description": "NO stories can start until Phase 0 is complete: .env files, Supabase credentials, team_members table migration, RLS configuration",
+      "required_before": "Any story implementation",
+      "estimated_duration": "2 hours",
+      "owner": "User (@jhonny)"
+    },
+    {
+      "id": "blocker-2",
+      "story": "3.13, 3.16, 3.17",
+      "title": "SystemMetricsCollector verification",
+      "description": "Must verify SystemMetricsCollector exists in codebase and works correctly before stories 3.13+ can start",
+      "required_before": "Story 3.13 implementation",
+      "estimated_duration": "1-2 hours",
+      "owner": "@dev"
+    },
+    {
+      "id": "blocker-3",
+      "story": "3.17",
+      "title": "All Phase 0-2 endpoints must exist",
+      "description": "Stories 3.10-3.16 must complete before story 3.17 can properly test integration",
+      "required_before": "Story 3.17 component refactoring",
+      "estimated_duration": "Dependent on other stories",
+      "owner": "@dev"
+    }
+  ],
+  "story_critiques": [
+    {
+      "story_id": "3.10",
+      "title": "Agent Metrics Real-Time",
+      "verdict": "APPROVED",
+      "score": 4.3,
+      "comments": [
+        "✅ Clear acceptance criteria",
+        "✅ API contract well-defined",
+        "✅ Hook pattern familiar and testable",
+        "⚠️ Consider: Add max_retries parameter for failed API calls",
+        "⚠️ Consider: Document polling behavior when tab is inactive (CPU impact)"
+      ],
+      "test_coverage": "Good - unit, integration, E2E tests defined",
+      "risks": "Low - familiar React patterns, no data persistence"
+    },
+    {
+      "story_id": "3.11",
+      "title": "Stories & Squads Real Reading",
+      "verdict": "APPROVED",
+      "score": 4.2,
+      "comments": [
+        "✅ Two data sources handled with fallback pattern",
+        "✅ Implementation pattern matches existing code",
+        "⚠️ Need: Clear documentation on squad data source priority",
+        "⚠️ Recommendation: Add caching for file system reads (YAML parsing is slow)"
+      ],
+      "test_coverage": "Good - file I/O, parsing, component rendering tested",
+      "risks": "Medium - multiple data sources could cause inconsistency"
+    },
+    {
+      "story_id": "3.12",
+      "title": "GitHub Integration",
+      "verdict": "APPROVED",
+      "score": 4.5,
+      "comments": [
+        "✅ Simple, focused scope",
+        "✅ Clear environment variable contract",
+        "✅ Fallback to hardcoded defaults sensible",
+        "✅ Low risk, high value"
+      ],
+      "test_coverage": "Good - env variable loading, fallback behavior tested",
+      "risks": "Very Low - straightforward configuration"
+    },
+    {
+      "story_id": "3.13",
+      "title": "Engine/Tasks/Workflows",
+      "verdict": "APPROVED with concerns",
+      "score": 4.0,
+      "comments": [
+        "✅ Clear refactoring target for 3 services",
+        "✅ Health check pattern well-documented",
+        "⚠️ Engine health check timeout should be configurable",
+        "⚠️ Consider: Add retry logic for engine health check",
+        "⚠️ Test coverage should include timeout scenarios"
+      ],
+      "test_coverage": "Adequate - timeout handling, graceful degradation, empty directory cases",
+      "risks": "Medium - engine availability detection critical; timeout issues could impact visibility"
+    },
+    {
+      "story_id": "3.14",
+      "title": "Hand-offs Monitoring",
+      "verdict": "APPROVED",
+      "score": 4.3,
+      "comments": [
+        "✅ Clear file-based data source",
+        "✅ Handoff artifact format familiar (YAML)",
+        "✅ Real-time monitoring capability valuable",
+        "⚠️ Performance: Monitor file system watch performance with many handoffs"
+      ],
+      "test_coverage": "Good - directory reading, YAML parsing, real-time sync tested",
+      "risks": "Low - straightforward file I/O with clear data format"
+    },
+    {
+      "story_id": "3.15",
+      "title": "Agent Memory Visualization",
+      "verdict": "APPROVED",
+      "score": 4.2,
+      "comments": [
+        "✅ Complex hierarchical structure handled well",
+        "✅ Frontmatter parsing documented",
+        "✅ Content preview truncation prevents huge payloads",
+        "⚠️ Consider: Add search/filter capability for large memory trees",
+        "⚠️ Performance: Test with 100+ memory files"
+      ],
+      "test_coverage": "Good - file traversal, YAML frontmatter parsing, content preview tested",
+      "risks": "Low-Medium - YAML parsing complexity, potential for large payloads"
+    },
+    {
+      "story_id": "3.16",
+      "title": "Missing Analytics & Routes",
+      "verdict": "APPROVED with concerns",
+      "score": 4.0,
+      "comments": [
+        "✅ 5 new endpoints clearly specified",
+        "✅ Hardcoded agent list sensible for MVP",
+        "⚠️ Analytics aggregation queries performance not analyzed",
+        "⚠️ No caching strategy defined (recommendation: Redis)",
+        "⚠️ Consider: Add database indexes on performance-critical queries",
+        "⚠️ Consider: Time window parameter validation in performance endpoint"
+      ],
+      "test_coverage": "Adequate - endpoint responses, data aggregation, edge cases tested",
+      "risks": "Medium - aggregation queries may be slow; caching critical for production"
+    },
+    {
+      "story_id": "3.17",
+      "title": "Complete Data Integration",
+      "verdict": "APPROVED with concerns",
+      "score": 3.8,
+      "comments": [
+        "✅ Comprehensive scope: 11 components, metrics persistence, real data wiring",
+        "✅ Implementation order well-defined (CRITICAL)",
+        "✅ Performance considerations included",
+        "⚠️ HIGH: Race condition risk in metrics collection batch logic (needs mutex)",
+        "⚠️ HIGH: 11 component refactoring creates large regression risk",
+        "⚠️ MEDIUM: No rollback strategy if metrics collection fails",
+        "⚠️ MEDIUM: Component interdependencies not fully mapped",
+        "⚠️ Recommendation: Break into smaller sub-stories (3.17a, 3.17b, 3.17c) to reduce risk",
+        "⚠️ Testing: Need performance regression test baseline BEFORE implementation"
+      ],
+      "test_coverage": "Good in theory but LARGE surface area - recommend additional E2E testing",
+      "risks": "High - Large scope, 11 components touched, metrics persistence critical, performance regression risk"
+    }
+  ],
+  "test_coverage_analysis": {
+    "overall_coverage": "Good - 3 levels defined (unit, integration, E2E)",
+    "strengths": [
+      "Each story has defined test strategy",
+      "Edge cases identified (timeouts, empty responses, errors)",
+      "Performance testing included for 3.17"
+    ],
+    "gaps": [
+      "Story 3.17 needs more rigorous E2E scenario coverage (11 components)",
+      "No load testing strategy defined for analytics aggregation (story 3.16)",
+      "Browser compatibility testing not mentioned (dashboard stories)",
+      "Accessibility testing not mentioned (visual components)"
+    ],
+    "recommendations": [
+      "Add load testing for analytics aggregation queries",
+      "Add browser compatibility matrix (Chrome, Firefox, Safari, Edge)",
+      "Add accessibility audit (WCAG 2.1 AA compliance)",
+      "Add regression test baseline for story 3.17 before/after metrics collection",
+      "Add security testing for API endpoints (injection, authentication, authorization)"
+    ]
+  },
+  "architecture_alignment": {
+    "alignment_score": 4.2,
+    "strengths": [
+      "Consistent API response format across all endpoints",
+      "Graceful degradation pattern applied throughout",
+      "Anti-mentira principle enforced (no fake data)",
+      "Phase-based implementation order aligns with architecture",
+      "Cross-cutting concerns handled (error handling, logging)",
+      "Separation of concerns respected (services, hooks, components)"
+    ],
+    "concerns": [
+      "No mention of logging/monitoring strategy for new endpoints",
+      "No mention of rate limiting for analytics endpoints",
+      "No mention of authentication/authorization (assumed no auth needed?)",
+      "Error response format standardization missing"
+    ]
+  },
+  "prerequisite_chain": {
+    "phase_0_foundation": {
+      "required": true,
+      "estimated_effort": "2 hours",
+      "blocking_stories": "ALL",
+      "status": "NOT_STARTED",
+      "tasks": [
+        "Create packages/api/.env with Supabase credentials",
+        "Create packages/dashboard/.env with Supabase URL",
+        "Apply Supabase migration: team_members table",
+        "Disable RLS on 4 tables (temporary)",
+        "Verify curl http://localhost:3000/api/metrics returns success"
+      ]
+    },
+    "phase_1_replacement": {
+      "stories": ["3.10", "3.11", "3.12", "3.13", "3.14", "3.15"],
+      "must_complete_before": ["3.16", "3.17"],
+      "estimated_effort": "42-52 hours"
+    },
+    "phase_2_routes": {
+      "stories": ["3.16"],
+      "must_complete_before": ["3.17"],
+      "estimated_effort": "12-16 hours",
+      "note": "All Phase 1 endpoints must exist before Phase 2 aggregation"
+    },
+    "phase_3_persistence": {
+      "stories": ["3.17"],
+      "depends_on": ["3.16", "system_metrics migration", "Phase 1 endpoints"],
+      "estimated_effort": "16-20 hours"
+    }
+  },
+  "quality_gates": {
+    "gate_1_requirements_completeness": {
+      "story": "All",
+      "check": "Are all acceptance criteria testable?",
+      "verdict": "PASS",
+      "evidence": "All AC have clear, measurable, testable conditions"
+    },
+    "gate_2_api_contracts": {
+      "story": "All",
+      "check": "Are all API endpoints fully specified?",
+      "verdict": "PASS",
+      "evidence": "Request/response schemas defined, query params documented"
+    },
+    "gate_3_data_honesty": {
+      "story": "All",
+      "check": "Will implementation never return fake data?",
+      "verdict": "PASS with concerns",
+      "evidence": "Anti-mentira principle stated, but needs verification during code review",
+      "concern": "Requires @dev to follow spec exactly - will be verified in code review"
+    },
+    "gate_4_test_strategy": {
+      "story": "All",
+      "check": "Is test strategy adequate for complexity?",
+      "verdict": "PASS with caveats",
+      "evidence": "Unit/integration/E2E defined for all stories",
+      "caveat": "Story 3.17 needs additional coverage due to large scope"
+    },
+    "gate_5_risk_identification": {
+      "story": "All",
+      "check": "Are risks identified and mitigation planned?",
+      "verdict": "PASS with concerns",
+      "evidence": "Research phase identified blockers, concerns documented",
+      "concern": "Story 3.17 race condition and regression risk need explicit mitigation"
+    }
+  },
+  "recommendations": {
+    "critical": [
+      {
+        "title": "Story 3.17 - Implement mutex for metrics collection",
+        "priority": "CRITICAL",
+        "why": "Prevent race condition during setInterval batch logic",
+        "how": "Use async-mutex or p-queue library"
+      },
+      {
+        "title": "Phase 0 - Foundation must complete before ANY story",
+        "priority": "CRITICAL",
+        "why": "All stories depend on Supabase setup and credentials",
+        "how": "Allocate 2 hours to Phase 0; verify with curl test"
+      }
+    ],
+    "high": [
+      {
+        "title": "Story 3.13 - Make engine health check timeout configurable",
+        "priority": "HIGH",
+        "why": "2 seconds may be too short in slow networks",
+        "how": "Add ENGINE_HEALTH_CHECK_TIMEOUT_MS env var with 2000 default"
+      },
+      {
+        "title": "Story 3.17 - Consider breaking into 3 sub-stories",
+        "priority": "HIGH",
+        "why": "11 components touching + metrics persistence = large regression risk",
+        "how": "3.17a (metrics persistence), 3.17b (hook refactor), 3.17c (component refactoring)"
+      },
+      {
+        "title": "Story 3.16 - Implement caching for analytics queries",
+        "priority": "HIGH",
+        "why": "Aggregation queries may be slow with large datasets",
+        "how": "Add Redis caching layer with 5-minute TTL"
+      }
+    ],
+    "medium": [
+      {
+        "title": "All stories - Define standardized error response format",
+        "priority": "MEDIUM",
+        "why": "Consistent error handling across API",
+        "how": "Define ApiError interface in shared types"
+      },
+      {
+        "title": "Dashboard stories - Add accessibility testing",
+        "priority": "MEDIUM",
+        "why": "WCAG compliance for dashboard UI",
+        "how": "Add axe/pa11y tests; validate color contrast ratios"
+      },
+      {
+        "title": "Analytics endpoint - Document database indexes needed",
+        "priority": "MEDIUM",
+        "why": "Query performance critical for aggregation",
+        "how": "Add migration for indexes on (agent_id, collected_at)"
+      }
+    ]
+  },
+  "specification_sign_off": {
+    "verdict": "APPROVED",
+    "final_recommendation": "Proceed to implementation with following conditions:",
+    "conditions": [
+      "1. Phase 0 (Foundation) must complete first (2 hours)",
+      "2. Story 3.17 scope: consider breaking into 3 sub-stories to reduce risk",
+      "3. Critical concerns (metrics mutex, health check timeout, caching) must be addressed in code review",
+      "4. Implementation must follow anti-mentira principle: no fake data ever",
+      "5. Performance baseline test required for story 3.17 before/after metrics collection"
+    ],
+    "readiness": "95% - Specifications are production-ready with noted concerns"
+  },
+  "next_phase": "6-plan-implementation",
+  "notes": "All specifications are APPROVED and ready for @architect to create implementation plans. Critical path identified: Phase 0 → Phase 1 (stories 3.10-3.15) → Phase 2 (story 3.16) → Phase 3 (story 3.17). Recommend parallel development of Phase 1 stories where possible."
+}

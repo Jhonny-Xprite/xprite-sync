@@ -1,0 +1,16 @@
+{
+  "storyId": "story-5.10",
+  "dependencies": [
+    { "name": "memory-server", "version": "latest", "purpose": "Agent memory", "verified": true },
+    { "name": "sequential-thinking-server", "version": "latest", "purpose": "Reasoning loop", "verified": true },
+    { "name": "brave-search-mcp", "version": "latest", "purpose": "Web index", "verified": true },
+    { "name": "puppeteer-mcp", "version": "latest", "purpose": "UI Automation", "verified": true },
+    { "name": "github-mcp", "version": "latest", "purpose": "Git workflow", "verified": true },
+    { "name": "postgresql-mcp", "version": "latest", "purpose": "Data persistence", "verified": true }
+  ],
+  "patterns": [
+    "AIOX Vault Integration (AES-256)",
+    "Docker Multi-stage with Chromium dependencies",
+    "Sequential thinking orchestration pattern"
+  ]
+}
